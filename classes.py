@@ -1,8 +1,12 @@
+# This file contains all classes will be used in the program
 class PicData:
     def __init__(self, pid, count = 1):
         self.pid = pid
         self.count = count
-        self.metadata = False
+        self.fileType = None
+        self.path = None
+        self.liked = False
+        self.metadata = False # under this line is the information in metadata(.txt file)
         self.title = None
         self.user = None
         self.userId = None
@@ -15,6 +19,15 @@ class PicData:
     def setcount(self,count):
         if count > self.count:
             self.count = count
+    
+    def addType(self, fileType):
+        self.fileType = fileType
+
+    def addPath(self, path):
+        self.path = path
+
+    def setLiked(self):
+        self.liked = True
 
     def addMetadata(self):
         self.metadata = True
@@ -44,6 +57,15 @@ class PicData:
     
     def getCount(self):
         return self.count
+        
+    def getType(self):
+        return self.fileType
+
+    def getPath(self):
+        return self.path
+
+    def getLiked(self):
+        return self.liked
     
     def isMetadataExist(self):
         return self.metadata
@@ -73,6 +95,9 @@ class PicData:
         return {
             "pid": self.pid,
             "count": self.count,
+            "fileType": self.fileType,
+            "path": self.path,
+            "liked": self.liked,
             "metadata": self.metadata,
             "title": self.title,
             "user": self.user,
