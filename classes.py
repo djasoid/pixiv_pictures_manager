@@ -3,6 +3,8 @@ class PicData:
     def __init__(self, pid, count = 1):
         self.pid = pid
         self.count = count
+        self.resolution = {}
+        self.size = {}
         self.fileType = None
         self.path = None
         self.liked = False
@@ -19,7 +21,13 @@ class PicData:
     def setcount(self,count):
         if count > self.count:
             self.count = count
-    
+
+    def addResolution(self, resolution):
+        self.resolution.update(resolution)
+
+    def addSize(self, size):
+        self.size.update(size)
+
     def addType(self, fileType):
         self.fileType = fileType
 
@@ -58,6 +66,12 @@ class PicData:
     def getCount(self):
         return self.count
         
+    def getResolution(self):
+        return self.resolution
+    
+    def getSize(self):
+        return self.size
+    
     def getType(self):
         return self.fileType
 
@@ -95,6 +109,8 @@ class PicData:
         return {
             "pid": self.pid,
             "count": self.count,
+            "resolution": self.resolution,
+            "size": self.size,
             "fileType": self.fileType,
             "path": self.path,
             "liked": self.liked,
