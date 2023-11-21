@@ -1,5 +1,5 @@
-# This file contains all functions will be used in the program
-# v1.2 (1.metadata file now contains resolution and size information. 2. add function to add new data into existing metadata file. 3. add function to merge two directories)
+# This file contains all json related functions will be used in the program
+# v1.3 (add tag count and sort function)
 
 import os
 import json
@@ -149,37 +149,69 @@ def writeJson(data, output_path):
 
 # ----------------------code for testing----------------------
 
-def getAllTags(metadataFile):
-    """This function accepts a metadata file in the .json format and extracts all the tags present in the file. It then stores these tags in a text file located in the same directory"""
-    fileName = "tag_list.txt"
-    output = os.path.join(os.path.dirname(metadataFile),fileName)
-    tags = []
+def isR18(metadata):
+    """This function takes in a dictionary of picture informations and check if it contains R18 tag. If it does, return True, else return False"""
+    for tag in metadata["tags"]:
+        if tag == "#R-18":
+            return True
+    return False
+
+def getTagCount(metadataFile):
+    """This function accepts a metadata file in the .json format and extracts all the tags present in the file. It then counts the number of times each tag appears and returns a tuple with two dictionary, the first dictionary contains all ages tags and the second dictionary contains R-18 tags. in the dictionary, the tag is the key and the number of times it appears is the value."""
+    tags = {}
+    r18tags = {}
+    r18pid = []
 
     # read metadata file
     with open (metadataFile, "r", encoding='utf-8') as file:
         metadata = json.load(file)
-    
+
+    # iterate every picture handle all ages tags 
     for data in metadata:
         # check it has metadata or not
         if data["metadata"] != False:
-            for tag in data["tags"]:
-                #check if tag is already existed or not
-                if not tag in tags:
-                    tags.append(tag)
-                else:
-                    pass
+            if isR18(data):# check if it is R18
+                r18pid.append(data["pid"])# add pid to r18pid list
+            else:# not R18
+                for tag in data["tags"]:
+                    if tag in tags:
+                        tags[tag] += 1
+                    else:
+                        tags[tag] = 1
         else:
             pass
-    
-    # generate txt file with tags in it
-    with open(output, "w", encoding='utf-8') as file:
-        for item in tags:
-            file.write(item + "\n")
-    print (f"\nthe file is at {output}")
+
+    # handle R18 tags
+    for pid in r18pid:# iterate every R18 picture
+        result = pidSearch(metadata, pid)# find the picture in metadata
+        for tag in metadata[result[1]]["tags"]:# iterate every tag in the picture
+            if tag in tags:# check if the tag is already in tags
+                pass
+            else:
+                if tag in r18tags:
+                    r18tags[tag] += 1
+                else:
+                    r18tags[tag] = 1
+    return (tags, r18tags)
+
+def sortTags(tags):
+    """This function takes in a dictionary of tags then returns a sorted tuple with every element in it is a dictionary of tag and its count. The tuple is sorted in decreasing order of count"""
+    sorted_tags = sorted(tags.items(), key=lambda x: x[1], reverse=True)
+    return sorted_tags
+
+def storeTags(tags, output_path, filename = "Tags.json"):
+    """This function takes in a list of tuple of counted and sorted tags and a path for output, write the tuple into a json file"""
+    output_file = os.path.join(output_path, filename)
+    with open(output_file, "w", encoding='utf-8') as file:
+        json.dump(tags, file, indent=4, ensure_ascii=False)
+    print (f"\nthe file is at {output_file}")
 
 # ----------------------code for testing----------------------
-# metadataFile = "E:/Metadata.json"
-# getAllTags(metadataFile)
+# tagcount = getTagCount(PIC_DATA)
+# sorted_all_age_tags = sortTags(tagcount[0])
+# sorted_r18_tags = sortTags(tagcount[1])
+# storeTags(sorted_all_age_tags, os.path.dirname(PIC_DATA))
+# storeTags(sorted_r18_tags, os.path.dirname(PIC_DATA), "R18Tags.json")
 # print ("\nfinished!")
 # ----------------------code for testing----------------------
 
@@ -214,4 +246,22 @@ def merge_dirs(src, dst):
 # addNewData(NEW_PIC_BASE, PIC_DATA)
 # merge_dirs(NEW_PIC_BASE, PIC_BASE)
 # print ("\nfinished!")
+# ----------------------code for testing----------------------
+
+def isSorted(metadataFile):
+    """This function takes in a list of dictionaries of pic info and check if the list is sorted in increasing order of pid"""
+    with open (metadataFile, "r", encoding='utf-8') as file:
+        metadata = json.load(file)
+    count = 0
+    for i in range(len(metadata) - 1):
+        count += 1
+        print(f'Processed {count}', end='\r')
+        if metadata[i]["pid"] > metadata[i + 1]["pid"]:
+            return False
+    return True
+
+# ----------------------code for testing----------------------
+# test if the metadata file is sorted in increasing order of pid
+
+# print (isSorted(PIC_DATA))
 # ----------------------code for testing----------------------
