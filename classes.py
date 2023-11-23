@@ -105,20 +105,22 @@ class PicData:
     def getUrl(self):
         return "https://www.pixiv.net/i/" + str(self.pid)
     
-    def getMetadata(self):
+    def getMetadata(self) -> dict:
         return {
-            "pid": self.pid,
-            "count": self.count,
-            "resolution": self.resolution,
-            "size": self.size,
-            "fileType": self.fileType,
-            "path": self.path,
-            "liked": self.liked,
-            "metadata": self.metadata,
-            "title": self.title,
-            "user": self.user,
-            "userId": self.userId,
-            "tags": self.tags,
-            "date": self.date,
-            "description": self.description
+            str(self.pid):{
+                "pid": self.pid,
+                "count": self.count,
+                "resolution": self.resolution,
+                "size": self.size,
+                "fileType": self.fileType,
+                "path": self.path,
+                "liked": self.liked,
+                "metadata": self.metadata,
+                "title": self.title,
+                "user": self.user,
+                "userId": self.userId,
+                "tags": self.tags,
+                "date": self.date,
+                "description": self.description
+                }
         }
