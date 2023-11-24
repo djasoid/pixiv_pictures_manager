@@ -267,19 +267,19 @@ def getPicPath(metadataDict: dict, pid: int) -> str:
     Returns:
     str: The path of the picture.
     """
-    return metadataDict[pid]["path"]
+    return metadataDict[str(pid)]["path"]
 
-def loadMetadata(metadataFile: str) -> dict:
+def loadMetadataFile(metadataFile: str) -> dict:
     """
-    Loads a metadata file and returns a list of dictionaries of picture info in the file.
+    Loads a metadata file and returns a dictionary of picture info in the file.
 
     This function should be used when initializing the program.
 
     Parameters:
-    metadataFile: The metadata file to load.
+    metadataFile (str): The metadata file path to load.
 
     Returns:
-    list: A list of dictionaries of picture info in the file.
+    dict: A dictionary of picture info in the file.
     """
     with open (metadataFile, "r", encoding='utf-8') as file:
         metadataDict = json.load(file)
@@ -292,7 +292,7 @@ def getIllustratorInfo(metadataDict: dict) -> dict:
     This function takes in a metadata list and returns a dictionary with illustrator info (id, name, pidList).
 
     Parameters:
-    metadataDict: A metadata list.
+    metadataDict (dict): A metadata dict.
 
     Returns:
     dict: A dictionary with illustrator info (id, name, pidList).
@@ -309,3 +309,25 @@ def getIllustratorInfo(metadataDict: dict) -> dict:
             else:# illustrator not in the dictionary
                 illustratorDict.update({uid: {"uid": data["userId"], "name":[data["user"]], "pidList":[data["pid"]]}})
     return illustratorDict
+
+def getNoMetadata(metadataDict: dict) -> list:
+    """
+    Returns a list of pids with no metadata.
+
+    This function takes in a metadata list and returns a list of pids with no metadata.
+
+    Parameters:
+    metadataDict (dict): A metadata dict.
+
+    Returns:
+    list: A list of pids with no metadata.
+    """
+    noMetadata = []
+    for pid in metadataDict:# iterate every picture info
+        data = metadataDict[pid]
+        if data["metadata"] == False:
+            noMetadata.append(pid)
+    return noMetadata
+
+
+
