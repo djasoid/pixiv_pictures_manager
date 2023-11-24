@@ -1,0 +1,337 @@
+{
+    "tag": {
+        "name": "tag",
+        "isTag": false,
+        "parent": [],
+        "synonyms": [],
+        "subTags": {
+            "全年龄": {
+                "name": "全年龄",
+                "isTag": false,
+                "parent": ["tag"],
+                "synonyms": [],
+                "subTags": {
+                    "角色": {
+                        "name": "角色",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+                            "游戏": {
+                                "name": "游戏",
+                                "isTag": false,
+                                "parent": ["角色"],
+                                "synonyms": [],
+                                "subTags": {
+                                    "#明日方舟": {
+                                        "name": "#明日方舟",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#碧蓝航线": {
+                                        "name": "#碧蓝航线",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#原神": {
+                                        "name": "#原神",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#公主连结": {
+                                        "name": "#公主连结",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#崩坏3": {
+                                        "name": "#崩坏3",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#少女前线": {
+                                        "name": "#少女前线",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#Fate/GrandOrder": {
+                                        "name": "#Fate/GrandOrder",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#碧蓝档案": {
+                                        "name": "#碧蓝档案",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#ATRI": {
+                                        "name": "#ATRI",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": ["#ATRI -My Dear Moments-"],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#东方Project": {
+                                        "name": "#东方project",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": ["#東方"],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#舰队Collection": {
+                                        "name": "#舰队collection",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": ["#艦隊これくしょん"],
+                                        "subTags": {
+        
+                                        }
+                                    },
+                                    "#守望先锋": {
+                                        "name": "#守望先锋",
+                                        "isTag": true,
+                                        "parent": ["游戏"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    }
+                                }
+                            },
+                            "动漫": {
+                                "name": "动漫",
+                                "isTag": false,
+                                "parent": ["角色"],
+                                "synonyms": [],
+                                "subTags": {
+                                "#孤独摇滚": {
+                                    "name": "#孤独摇滚",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": [],
+                                    "subTags": {
+
+                                    }
+                                },
+                                "#轻音少女": {
+                                    "name": "#轻音少女",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": ["#K-On"],
+                                    "subTags": {
+
+                                    }
+                                },
+                                "#魔法少女小圆": {
+                                    "name": "#魔法少女小圆",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": ["#魔法少女まどかマギカ"],
+                                    "subTags": {
+
+                                    }
+                                },
+                                "#请问您今天要来点兔子吗？": {
+                                    "name": "#请问您今天要来点兔子吗？",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": ["#ご注文はうさぎですか？"],
+                                    "subTags": {
+
+                                    }
+                                },
+                                "#魔女之旅": {
+                                    "name": "#魔女之旅",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": ["#魔女の旅々"],
+                                    "subTags": {
+
+                                    }
+                                },
+                                "#Lycoris Recoil": {
+                                    "name": "#Lycoris Recoil",
+                                    "isTag": true,
+                                    "parent": ["动漫"],
+                                    "synonyms": ["#リコリス・リコイル"],
+                                    "subTags": {
+
+                                    }
+                                }
+                                    }
+                            },
+                            "#虚拟主播": {
+                                "name": "#虚拟主播",
+                                "isTag": true,
+                                "parent": ["角色"],
+                                "synonyms": ["#Vtuber"],
+                                "subTags": {
+
+                                }
+                            },
+                            "#虚拟歌手": {
+                                "name": "#虚拟歌手",
+                                "isTag": true,
+                                "parent": ["角色"],
+                                "synonyms": [],
+                                "subTags": {
+                                    "#VOCALOID": {
+                                        "name": "#VOCALOID",
+                                        "isTag": true,
+                                        "parent": ["#虚拟歌手"],
+                                        "synonyms": [],
+                                        "subTags": {
+        
+                                        }
+                                    }
+                                }
+                            },
+                            "#原创人物": {
+                                "name": "#原创人物",
+                                "isTag": true,
+                                "parent": ["角色"],
+                                "synonyms": [],
+                                "subTags": {
+
+                                }
+                            }
+                        }
+                    },
+                    "外观": {
+                        "name": "外观",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+                            "身体部位": {
+                                "name": "身体部位",
+                                "isTag": false,
+                                "parent": ["外观"],
+                                "synonyms": [],
+                                "subTags": {
+
+                                }
+                            },
+                            "服装": {
+                                "name": "服装",
+                                "isTag": false,
+                                "parent": ["外观"],
+                                "synonyms": [],
+                                "subTags": {
+
+                                }
+                            }
+                        }
+                    },
+                    "动作": {
+                        "name": "动作",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    },
+                    "场景": {
+                        "name": "场景",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    },
+                    "日期": {
+                        "name": "日期",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    },
+                    "身份": {
+                        "name": "身份",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    },
+                    "物品": {
+                        "name": "物品",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    },
+                    "描述": {
+                        "name": "描述",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+
+                        }
+                    }
+                }
+            },
+            "#R-18": {
+                "name": "#R-18",
+                "isTag": true,
+                "parent": ["tag"],
+                "synonyms": [],
+                "subTags": {
+
+                }
+            },
+            "用途": {
+                "name": "用途",
+                "isTag": false,
+                "parent": ["tag"],
+                "synonyms": [],
+                "subTags": {
+
+                }
+            }
+        }
+    }
+}
