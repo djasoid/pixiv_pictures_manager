@@ -1,6 +1,6 @@
 {
-    "tag": {
-        "name": "tag",
+    "标签": {
+        "name": "标签",
         "isTag": false,
         "parent": [],
         "synonyms": [],
@@ -8,7 +8,7 @@
             "全年龄": {
                 "name": "全年龄",
                 "isTag": false,
-                "parent": ["tag"],
+                "parent": ["标签"],
                 "synonyms": [],
                 "subTags": {
                     "角色": {
@@ -311,13 +311,30 @@
                         "subTags": {
 
                         }
+                    },
+                    "类型": {
+                        "name": "类型",
+                        "isTag": false,
+                        "parent": ["全年龄"],
+                        "synonyms": [],
+                        "subTags": {
+                            "漫画": {
+                                "name": "漫画",
+                                "isTag": false,
+                                "parent": ["类型"],
+                                "synonyms": [],
+                                "subTags": {
+
+                                }
+                            }
+                        }
                     }
                 }
             },
             "#R-18": {
                 "name": "#R-18",
                 "isTag": true,
-                "parent": ["tag"],
+                "parent": ["标签"],
                 "synonyms": [],
                 "subTags": {
 
@@ -326,7 +343,7 @@
             "用途": {
                 "name": "用途",
                 "isTag": false,
-                "parent": ["tag"],
+                "parent": ["标签"],
                 "synonyms": [],
                 "subTags": {
 

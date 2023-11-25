@@ -1,5 +1,5 @@
 # This file contains all json related functions will be used in the program
-# v2.0 (Changed the data structure for storing data, now using a dictionary instead of a list for better performance. Added documentation strings for all functions and implemented the collection of illustrator data.)
+# v2.1 (implemented pic searching based on tag tree)
 
 import os
 import json
@@ -7,6 +7,12 @@ import shutil
 import classes
 import linecache
 from PIL import Image
+
+# the program will generate four json files
+# Metadata.json: contains all metadata
+# TagIndex.json: contains all end tags (tags at the end of the tag tree) and pids that contain the tags
+# IllustratorIndex.json: contains all illustrators info
+# NoMetadata.json: contains all pids without metadata
 
 # ----------------------code for testing----------------------
 PIC_FOLDER = "D:/Pixiv_Pictures"
@@ -329,5 +335,87 @@ def getNoMetadata(metadataDict: dict) -> list:
             noMetadata.append(pid)
     return noMetadata
 
+def initTagTree(tagTreeFile: str) -> classes.TagTree:
+    """
+    Initializes a TagTree object from a JSON file.
 
+    This function takes in a JSON file and returns a TagTree object.
 
+    Parameters:
+    tagTreeFile (str): The JSON file to load.
+
+    Returns:
+    classes.TagTree: A TagTree object.
+    """
+    with open(tagTreeFile, "r", encoding='utf-8') as file:
+        tagTreeDict = json.load(file)
+    tagTree = classes.TagTree(tagTreeDict["标签"])
+    tagTreeDict = None
+    return tagTree
+
+def initTagIndex(metadataDict: dict, tagTree: classes.TagTree) -> dict:
+    """
+    Initializes a tag index from a metadata dictionary and a TagTree object.
+
+    This function takes in a metadata dictionary and a TagTree object, and returns a tag index dictionary.
+
+    the index only contains end tags(tags that at the end of the tag tree)
+
+    Parameters:
+    metadataDict (dict): A metadata dictionary.
+    tagTree (classes.TagTree): A TagTree object.
+
+    Returns:
+    dict: A tag index dictionary.
+    """
+    tagList = tagTree.getEndTagList()
+    tagIndex = {}
+    for tag in tagList:
+        tagIndex[tag] = []
+    for pid in metadataDict:
+        data = metadataDict[pid]
+        if data["metadata"] != False:
+            for tag in data["tags"]:
+                if tag in tagIndex:
+                    tagIndex[tag].append(pid)
+    return tagIndex
+
+def tagSearch(tagIndex: dict, tagTree: classes.TagTree, includeTag: list, excludeTag: list) -> list:
+    """
+    Searches for tags in a tag index and returns a list of pids.
+
+    This function takes in a tag index, a TagTree object, and two lists of tags. It then searches for the tags in the tag index and returns a list of pids that contain the tags.
+
+    Parameters:
+    tagIndex (dict): A tag index dictionary.
+    tagTree (classes.TagTree): A TagTree object.
+    includeTag (list): A list of tags to include.
+    excludeTag (list): A list of tags to exclude.
+
+    Returns:
+    list: A list of pids that contain the tag.
+    """
+    # from includeTag and excludeTag get all end tags(end tags are tags that at the end of the tag tree)
+    includeEndTag = []
+    excludeEndTag = []
+    for tag in includeTag:
+        includeEndTag += tagTree.getEndTagList(tag)
+    for tag in excludeTag:
+        excludeEndTag += tagTree.getEndTagList(tag)
+
+    # from tag index get all pids that contain the tags
+    includePid = []
+    excludePid = []
+    for tag in includeEndTag:
+        includePid += tagIndex[tag]
+    for tag in excludeEndTag:
+        excludePid += tagIndex[tag]
+    
+    # remove duplicate pids
+    result = []
+    for pid in includePid:
+        if pid not in excludePid:
+            result.append(pid)
+    
+    return result
+    
