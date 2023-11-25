@@ -1,6 +1,5 @@
 # This file contains all classes will be used in the program
-# add tag management system
-import json
+# updated tag management system
 
 class PicData:
     def __init__(self, pid: int, count = 1):
@@ -137,6 +136,7 @@ class Tag:
         self.subTags = subTags
 
     def to_dict(self) -> dict:
+        """Convert the Tag object to a dictionary"""
         subTags_dict = {}
         for k, v in self.subTags.items():
             subTags_dict[k] = v.to_dict()
@@ -151,9 +151,8 @@ class Tag:
 
 class TagTree:
     def __init__(self, tag_data: dict) -> None:
-        self.tagDict = {}
-        self.root = self.build_tree(tag_data)
-        self.tagDict = None #clear the tagDict after building the tree
+        self.tagDict = {} #a dictionary of all tags
+        self.root = self.build_tree(tag_data) #the root of the TagTree(is a Tag object)
 
     def build_tree(self, data: dict, parent=None) -> Tag:
         """Build a Tag object from the data dictionary"""
@@ -256,14 +255,33 @@ class TagTree:
         tag = self.findTag(path)
         tag.subTags[newTag.name] = newTag
 
-# Load the JSON data
-with open('tag_tree.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
+    def getEndTagList(self, tag = None) -> list:
+        """
+        Get a list of all end tags in the TagTree
+        """
+        endTagList = []
+        if tag == None:
+            for tag in self.tagDict.values():
+                if not tag.subTags:
+                    endTagList.append(tag.name)
+        else:
+            if not tag.subTags:
+                endTagList.append(tag.name)
+            else:
+                for subTag in tag.subTags.values():
+                    endTagList += self.getEndTagList(subTag)
+        return endTagList
 
-# Create a TagTree
-tag_tree = TagTree(data['tag'])
-
-# Get all paths
-paths = tag_tree.getAllPath()
-for name, paths in paths.items():
-    print(f"{name}: {paths}")
+    def addParentTag(self, subTag: str, parentTag: str) -> None:
+        """Add a parent tag to a sub tag, tag must be in the TagTree"""
+        if subTag not in self.tagDict:
+            print("subTag not found")
+            return
+        
+        if parentTag not in self.tagDict:
+            print("parentTag not found")
+            return
+        
+        self.tagDict[subTag].parent.append(parentTag)
+        self.tagDict[parentTag].subTags[subTag] = self.tagDict[subTag]
+        print(f"added {subTag} to {parentTag}")
