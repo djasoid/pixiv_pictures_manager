@@ -151,7 +151,7 @@ class Tag:
 
 class TagTree:
     def __init__(self, tag_data: dict) -> None:
-        self.tagDict = {} #a dictionary of all tags
+        self.tagDict = {} #a dictionary of all tag opjects
         self.root = self.build_tree(tag_data) #the root of the TagTree(is a Tag object)
 
     def build_tree(self, data: dict, parent=None) -> Tag:
@@ -183,98 +183,97 @@ class TagTree:
         self.tagDict[name] = newTag
 
         return newTag
-
-    # path template: ['tag', '全年龄', '角色', '#Fate/GrandOrder']
-
-    def findTag(self, path: list) -> Tag:
-        """Find a Tag object in the TagTree using a list of names(like a path)"""
-        tag = self.root
-        for name in path:
-            tag = tag.subTags.get(name)
-            if not tag:
-                return None
-        return tag
     
-    def getSubTags(self, path: list) -> list:
-        """Get a list of subTags of a Tag object using a list of names(like a path)"""
-        tag = self.findTag(path)
-        return list(tag.subTags.keys()) if tag else None
+    def getSubTags(self, tag: str) -> list:
+        """Get a list of all subTags of a Tag recursively"""
+        if tag not in self.tagDict:
+            print("tag not found")
+            return None
 
-    def getAllPath(self, node: Tag = None, path: list =[], path_dict: dict ={}) -> dict:
-        """Get all paths in the TagTree"""
-        if node is None:
-            node = self.root
+        subTags = list(self.tagDict[tag].subTags.keys())
+        allSubTags = subTags.copy()
+        for subTag in subTags:
+            allSubTags.extend(self.getSubTags(subTag))
 
-        # Create a new copy of the path and append the current node's name
-        new_path = path + [node.name]
+        return allSubTags
 
-        # If the tag already exists in the dictionary, append the new path
-        if node.name in path_dict:
-            path_dict[node.name].append(new_path)
-        else:
-            path_dict[node.name] = [new_path]
+    def getAllSubTags(self) -> dict:
+        """
+        Get all subtag of tags in the TagTree
 
-        for subTag in node.subTags.values():
-            self.getAllPath(subTag, new_path, path_dict)
+        Return a dictionary of all subtags of tags in the TagTree
 
-        return path_dict
+        use before creating tag index
+        """
+        subTags = {}
+        for tag in self.tagDict:
+            subTags[tag] = self.getSubTags(tag)
+        return subTags
     
-    def getAllTagPath(self, node: Tag = None, path: list =[], path_dict: dict ={}, includeSynonyms: bool = False) -> dict:
-        """Get all tag paths in the TagTree(only include tags), if includeSynonyms is True, add the same path for each synonym"""
-        if node is None:
-            node = self.root
+    def getAllParentTag(self, tag: Tag = None, parent: set = set(), parent_dict: dict ={}, includeSynonyms: bool = False) -> dict:
+        """Get all parent tags of tags in the TagTree"""
+        if tag is None:
+            tag = self.root
 
-        # Create a new copy of the path and append the current node's name
-        # only if node.isTag is True
-        if node.isTag:
-            new_path = path + [node.name]
-        else:
-            new_path = path
+        if tag.isTag:
+            # Add the parent tag to the parent set
+            parentSet = parent.copy()
 
-        # If the tag already exists in the dictionary, append the new path
-        if node.isTag:
-            if node.name in path_dict:
-                path_dict[node.name].append(new_path)
+            # Add the parent set to the parent_dict
+            if tag.name in parent_dict:
+                parent_dict[tag.name].update(parentSet)
             else:
-                path_dict[node.name] = [new_path]
-            # If includeSynonyms is True, add the same path for each synonym
+                parent_dict[tag.name] = parentSet
+
+            # Add the parent set to the parent_dict for each synonym
             if includeSynonyms:
-                for synonym in node.synonyms:
-                    if synonym in path_dict:
-                        path_dict[synonym].append(new_path)
+                for synonym in tag.synonyms:
+                    if synonym in parent_dict:
+                        parent_dict[synonym].update(parentSet)
                     else:
-                        path_dict[synonym] = [new_path]
+                        parent_dict[synonym] = parentSet
 
-        for subTag in node.subTags.values():
-            self.getAllTagPath(subTag, new_path, path_dict)
-
-        return path_dict
-
-    def addTag(self, path: list, newTag: Tag):
-        """Add the new tag to the TagTree at path"""
-        tag = self.findTag(path)
-        tag.subTags[newTag.name] = newTag
-
-    def getEndTagList(self, tag = None) -> list:
-        """
-        Get a list of all end tags in the TagTree
-        """
-        endTagList = []
-        if tag == None:
-            for tag in self.tagDict.values():
-                if not tag.subTags:
-                    endTagList.append(tag.name)
+            parentSet.add(tag.name)
         else:
-            if not tag.subTags:
-                endTagList.append(tag.name)
-            else:
-                for subTag in tag.subTags.values():
-                    endTagList += self.getEndTagList(subTag)
-        return endTagList
+            parentSet = parent
 
-    def addParentTag(self, subTag: str, parentTag: str) -> None:
-        """Add a parent tag to a sub tag, tag must be in the TagTree"""
-        if subTag not in self.tagDict:
+        for subTag in tag.subTags.values():
+            self.getAllParentTag(subTag, parentSet, parent_dict)
+
+        return parent_dict
+
+    def addNewTag(self, parentTag: str, newTag: Tag):
+        """
+        Add a new tag object to the TagTree at sub tag of parentTag
+        parentTag must be in the TagTree
+        newTag must not be in the TagTree
+        """
+        if parentTag not in self.tagDict:
+            print("parentTag not found")
+            return
+        
+        if newTag.name in self.tagDict:
+            print("newTag already exists")
+            return
+        
+        self.tagDict[newTag.name] = newTag
+        self.tagDict[parentTag].subTags[newTag.name] = newTag
+        self.tagDict[newTag.name].parent.append(parentTag)
+        print(f"added {newTag.name} to {parentTag}")
+
+    def getTagList(self) -> list:
+        """
+        Get a list of all tags in the TagTree
+        """
+        tagList = []
+        for tag in self.tagDict:
+            if self.tagDict[tag].isTag:
+                tagList.append(tag)
+        return tagList
+
+    def addParentTag(self, tag: str, parentTag: str) -> None:
+        """Add a parent tag to a existing tag, tag must be in the TagTree"""
+        if tag not in self.tagDict:
             print("subTag not found")
             return
         
@@ -282,6 +281,24 @@ class TagTree:
             print("parentTag not found")
             return
         
-        self.tagDict[subTag].parent.append(parentTag)
-        self.tagDict[parentTag].subTags[subTag] = self.tagDict[subTag]
-        print(f"added {subTag} to {parentTag}")
+        self.tagDict[tag].parent.append(parentTag)
+        self.tagDict[parentTag].subTags[tag] = self.tagDict[tag]
+        print(f"added {tag} to {parentTag}")
+
+    def isSubTag(self, tag: str, subTag: str) -> bool:
+        """Check if subTag is a sub tag of tag"""
+        if tag not in self.tagDict:
+            return False
+
+        if subTag in self.tagDict[tag].subTags:
+            return True
+
+        # Get the sub tags of the tag
+        subTags = self.tagDict[tag].subTags.keys()
+
+        # Check if subTag is a sub tag of any of the sub tags
+        for subTagName in subTags:
+            if self.isSubTag(subTagName, subTag):
+                return True
+
+        return False
