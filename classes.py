@@ -1,25 +1,77 @@
-# This file contains all classes will be used in the program
-# updated tag management system
+# This file contains objects in the program
+# modified picData class to handle more work
 
 class PicData:
-    def __init__(self, pid: int, count = 1):
+    def __init__(self, pid: str, count: int = 1):
+        self.source = None
         self.pid = pid
         self.count = count
         self.resolution = {}
         self.size = {}
-        self.fileType = None
-        self.path = None
+        self.fileName = {}
+        self.directory = ""
         self.liked = False
         self.metadata = False # under this line is the information in metadata(.txt file)
-        self.title = None
-        self.user = None
-        self.userId = None
-        self.tags = None
-        self.date = None
-        self.description = None
+        self.title = ""
+        self.user = ""
+        self.userId = ""
+        self.tags = []
+        self.date = ""
+        self.description = ""
+    
+    #lodad functions
 
+    def loadData(self, data: dict):
+        self.source = "dict"
+        self.pid = data["pid"]
+        self.count = data["count"]
+        self.resolution = data["resolution"]
+        self.size = data["size"]
+        self.fileName = data["fileName"]
+        self.directory = data["directory"]
+        self.liked = data["liked"]
+        self.metadata = data["metadata"]
+        self.title = data["title"]
+        self.user = data["user"]
+        self.userId = data["userId"]
+        self.tags = data["tags"]
+        self.date = data["date"]
+        self.description = data["description"]
+
+    #update functions
+
+    def updateToDict(self, data: dict):
+        """update the data dictionary with the PicData object"""
+        if self.source == "dict":
+            pass
+        else:
+            if self.metadata:
+                data["metadata"] = self.metadata
+                data["title"] = self.title
+                data["user"] = self.user
+                data["userId"] = self.userId
+                data["tags"] = self.tags
+                data["date"] = self.date
+                data["description"] = self.description
+                return data
+            else:
+                if self.count > data["count"]:
+                    data["count"] = self.count
+                data["resolution"].update(self.resolution)
+                data["size"].update(self.size)
+                data["fileName"].update(self.fileName)
+                return data
+
+    
     #Adders
 
+    def setSource(self, source: str):
+        """Set the source of the PicData object"""
+        if source not in ["dict", "metadata", "picture"]:
+            print("invalid source")
+            return
+        self.source = source
+    
     def setcount(self,count: int):
         if count > self.count:
             self.count = count
@@ -30,11 +82,11 @@ class PicData:
     def addSize(self, size: dict):
         self.size.update(size)
 
-    def addType(self, fileType: str):
-        self.fileType = fileType
+    def addFileName(self, fileName: dict):
+        self.fileName.update(fileName)
 
-    def addPath(self, path: str):
-        self.path = path
+    def addDirectory(self, directory: str):
+        self.directory = directory
 
     def setLiked(self):
         self.liked = True
@@ -52,7 +104,10 @@ class PicData:
         self.userId = userId
 
     def addTags(self, tags):
-        self.tags = tags
+        if self.tags is None:
+            self.tags = tags
+        else:
+            self.tags.extend(tags)
 
     def addDate(self, date):
         self.date = date
@@ -74,11 +129,11 @@ class PicData:
     def getSize(self):
         return self.size
     
-    def getType(self):
-        return self.fileType
+    def getFileName(self):
+        return self.fileName
 
-    def getPath(self):
-        return self.path
+    def getDirectory(self):
+        return self.directory
 
     def getLiked(self):
         return self.liked
@@ -105,17 +160,17 @@ class PicData:
         return self.description
     
     def getUrl(self):
-        return "https://www.pixiv.net/i/" + str(self.pid)
+        return "https://www.pixiv.net/i/" + self.pid
     
-    def getMetadata(self) -> dict:
+    def toDict(self) -> dict:
         return {
-            str(self.pid):{
+            self.pid:{
                 "pid": self.pid,
                 "count": self.count,
                 "resolution": self.resolution,
                 "size": self.size,
-                "fileType": self.fileType,
-                "path": self.path,
+                "fileName": self.fileName,
+                "directory": self.directory,
                 "liked": self.liked,
                 "metadata": self.metadata,
                 "title": self.title,
@@ -124,7 +179,7 @@ class PicData:
                 "tags": self.tags,
                 "date": self.date,
                 "description": self.description
-                }
+            }
         }
 
 class Tag:
