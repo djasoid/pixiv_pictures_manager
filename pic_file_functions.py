@@ -1,9 +1,9 @@
 # contains functions for processing picture files and metadata files.
 
 import os
-import shutil
+from shutil import copy2
 import classes
-import linecache
+from linecache import getline
 from PIL import Image
 
 def parsePicture(filePath: str) -> classes.PicData:
@@ -24,7 +24,7 @@ def parsePicture(filePath: str) -> classes.PicData:
     name.pop()
     name = str(name[0])
     parts = name.split("_p")# apart id and ordinal number
-    pid = int(parts[0])
+    pid = parts[0]
     ordNum = 1
     if len(parts) > 1:
         ordNum += int(parts[1])
@@ -50,26 +50,26 @@ def parseMetadata(filePath: str) -> classes.PicData:
     classes.PicData: A PicData object containing the metadata from the file.
     """
     tags = []
-    Data = classes.PicData(linecache.getline(filePath, 2).strip())
+    Data = classes.PicData(getline(filePath, 2).strip())
     Data.setSource("metadata")
     Data.addDirectory(os.path.dirname(filePath))
     Data.addMetadata()
-    Data.addTitle(linecache.getline(filePath, 5).strip())
-    Data.addUser(linecache.getline(filePath, 8).strip())
-    Data.addUserId(linecache.getline(filePath, 11).strip())
+    Data.addTitle(getline(filePath, 5).strip())
+    Data.addUser(getline(filePath, 8).strip())
+    Data.addUserId(getline(filePath, 11).strip())
 
     for i in range(17, 1000):
-        if linecache.getline(filePath, i) != "\n":
+        if getline(filePath, i) != "\n":
             # read and store tags
-            tags.append(linecache.getline(filePath, i).strip())
+            tags.append(getline(filePath, i).strip())
         else:
             # all tags read, store them in picData
             Data.addTags(tags)
             # read and store description
-            Data.addDate(linecache.getline(filePath, i + 2).strip())
+            Data.addDate(getline(filePath, i + 2).strip())
             lines = []
             for line_num in range(i+6, 1000):
-                line = linecache.getline(filePath, line_num)
+                line = getline(filePath, line_num)
                 if line:
                     # read and store description line by line
                     lines.append(line)
@@ -148,4 +148,4 @@ def mergeDirs(src: str, dst: str) -> None:
             dst_file = os.path.join(dst_dir, file_)
             if os.path.exists(dst_file):
                 continue
-            shutil.copy2(src_file, dst_dir)
+            copy2(src_file, dst_dir)

@@ -45,16 +45,44 @@ class core:
         self.illustratorInfo = illustratorInfo
         self.noMetadata = noMetadata
         self.allParentTagDict = None
+        self.unknowTag = set()
     
-    def genVarForInitializing(self) -> None:
+    def genVarForInit(self) -> None:
         """
         Generates variables for initializing the program.
+
+        specificly, it generates allParentTagDict, which will be used in completeTag() and initTagIndex()
         """
-        self.allParentTagDict = self.tagTree.getAllParentTag()
+        self.allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=True)
+
+    def completeTag(self) -> None:
+        """
+        Completes tags in metadataDict.
+
+        This function takes a metadata dictionary and completes the tags in the dictionary.
+        """
+        if self.allParentTagDict == None:
+            self.genVarForInit()
+
+        for pid in self.metadataDict:
+            data = self.metadataDict[pid]
+            if data["metadata"] != False:
+                tags = data["tags"]
+                newTags = set()
+                for tag in tags:
+                    if tag in self.allParentTagDict:
+                        newTags.add(tag)
+                        newTags.update(self.allParentTagDict[tag])
+                    else:
+                        self.unknowTag.add(tag)
+                        newTags.add(tag)
+                self.metadataDict[pid]["tags"] = list(newTags)
 
     def initTagIndex(self) -> dict:
         """
         Initializes a tag index from a metadata dictionary and a parent tag dictionary.
+        
+        use after completeTag()
 
         This function uses a metadata dictionary and a parent tag dictionary to initialize a tag index. 
         The tag index is a dictionary where the key is a tag and the value is a list of pids that contain the tag.
@@ -62,6 +90,9 @@ class core:
         Returns:
         dict: A tag index dictionary.
         """
+        if self.allParentTagDict == None:
+            self.genVarForInit()
+
         tagIndex = {}
 
         # interate every picture info
@@ -254,3 +285,11 @@ class core:
         for pid in newData:
             if pid not in self.metadataDict:
                 self.metadataDict.update({pid: newData[pid]})
+
+    def getUnknowTag(self) -> list:
+        """
+        Returns a list of unknown tags.
+
+        This function returns a list of unknown tags.
+        """
+        return list(self.unknowTag)
