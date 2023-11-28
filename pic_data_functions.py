@@ -10,39 +10,33 @@ import classes
 # 3. IllustratorIndex.json: contains all illustrators info
 # 4. NoMetadata.json: contains all pids without metadata
 
-def writeJson(data, output_path: str, filename: str = "Metadata.json") -> None:
+def writeJson(data, output_directory: str, filename: str) -> None:
     """
-    Writes a dictionary to a JSON file.
+    Writes data to a JSON file.
 
-    This function takes a dictionary, a path for output, and a filename, then writes the dictionary into a JSON file at the specified location.
+    This function takes data, a directory for output, and a filename, then writes the data into a JSON file at the specified location.
 
     Parameters:
     data (dict): The data to write to the file.
-    output_path (str): The directory to write the file to.
-    filename (str, optional): The name of the file to write. Defaults to "Metadata.json".
+    output_directory (str): The directory to write the file to.
+    filename (str): The name of the file to write.
     """
-    output_file = os.path.join(output_path, filename)
+    output_file = os.path.join(output_directory, filename)
     with open(output_file, "w", encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print (f"\nthe file is at {output_file}")
+    print (f"\nthe {filename} is at {output_file}")
 
-def loadMetadataFile(metadataFile: str) -> dict:
+def loadJson(filePath: str):
     """
-    Loads a metadata file and returns a dictionary of picture info in the file.
+    Loads a JSON file.
 
-    This function should be used when initializing the program.
-
-    Parameters:
-    metadataFile (str): The metadata file path to load.
-
-    Returns:
-    dict: A dictionary of picture info in the file.
+    returns data in the JSON file.
     """
-    with open (metadataFile, "r", encoding='utf-8') as file:
-        metadataDict = json.load(file)
-    return metadataDict
+    with open(filePath, "r", encoding='utf-8') as file:
+        data = json.load(file)
+    return data
 
-def loadTagTree(tagTreeFile: str) -> classes.TagTree:
+def loadTagTree(tagTreeFile: str = "tag_tree.json") -> classes.TagTree:
     """
     Initializes a TagTree object from a JSON file.
 
@@ -59,35 +53,3 @@ def loadTagTree(tagTreeFile: str) -> classes.TagTree:
     tagTree = classes.TagTree(tagTreeDict["标签"])
     tagTreeDict = None
     return tagTree
-
-def loadIllustratorInfo(illustratorInfoFile: str) -> dict:
-    """
-    Loads a illustrator info file and returns a dictionary of illustrator info in the file.
-
-    This function should be used when initializing the program.
-
-    Parameters:
-    illustratorInfoFile (str): The illustrator info file path to load.
-
-    Returns:
-    dict: A dictionary of illustrator info in the file.
-    """
-    with open (illustratorInfoFile, "r", encoding='utf-8') as file:
-        illustratorInfo = json.load(file)
-    return illustratorInfo
-
-def loadNoMetadata(noMetadataFile: str) -> dict:
-    """
-    Loads a no metadata file and returns a dictionary of picture info in the file.
-
-    This function should be used when initializing the program.
-
-    Parameters:
-    noMetadataFile (str): The no metadata file path to load.
-
-    Returns:
-    dict: A dictionary of picture info in the file.
-    """
-    with open (noMetadataFile, "r", encoding='utf-8') as file:
-        noMetadata = json.load(file)
-    return noMetadata
