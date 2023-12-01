@@ -13,6 +13,7 @@ picFilePath = "D:/Pixiv_Pictures/pixiv"
 
 tagTree = dataFn.loadTagTree()
 
+parent = tagTree.getAllParentTag(includeSynonyms=True)
 
-metadataDict = fileFn.getAllData(picFilePath)
-dataFn.writeJson(metadataDict, picDataPath, "Metadata.json")
+for i in parent:
+    print(f"{i}: {parent[i]}")

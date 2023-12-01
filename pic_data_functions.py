@@ -17,7 +17,7 @@ def writeJson(data, output_directory: str, filename: str) -> None:
     This function takes data, a directory for output, and a filename, then writes the data into a JSON file at the specified location.
 
     Parameters:
-    data (dict): The data to write to the file.
+    data: The data to write to the file.
     output_directory (str): The directory to write the file to.
     filename (str): The name of the file to write.
     """

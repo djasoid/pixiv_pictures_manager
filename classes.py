@@ -183,12 +183,13 @@ class PicData:
         }
 
 class Tag:
-    def __init__(self, name: str, isTag: bool, parent: list, synonyms: list, subTags: dict):
+    def __init__(self, name: str, isTag: bool, parent: list, synonyms: list, subTags: dict, depth: int):
         self.name = name
         self.isTag = isTag
         self.parent = parent
         self.synonyms = synonyms
         self.subTags = subTags
+        self.depth = depth
 
     def to_dict(self) -> dict:
         """Convert the Tag object to a dictionary"""
@@ -237,7 +238,7 @@ class TagTree:
         self.tagDict = {} #a dictionary of all tag objects
         self.root = self.build_tree(tag_data) #the root of the TagTree(is a Tag object)
 
-    def build_tree(self, data: dict, parent=None) -> Tag:
+    def build_tree(self, data: dict, parent=None, depth: int = 0) -> Tag:
         """Build a Tag object from the data dictionary"""
         name = data['name']
         isTag = data['isTag']
@@ -257,18 +258,19 @@ class TagTree:
         # Iterate over the key-value pairs in the subTags_data dictionary
         for k, v in subTags_data.items():
             # For each key-value pair, build a new Tag object
-            subTag = self.build_tree(v, name)
+            subTag = self.build_tree(v, name, depth + 1)
             # Add the new Tag object to the subTags dictionary
             subTags[k] = subTag
         
         #create a new Tag and add it to the tagDict
-        newTag = Tag(name, isTag, parent, synonyms, subTags)
+        newTag = Tag(name, isTag, parent, synonyms, subTags, depth)
         self.tagDict[name] = newTag
 
         return newTag
     
     def getSubTags(self, tag: str) -> list:
-        """Get a list of all subTags of a Tag recursively"""
+        """USELESS
+        Get a list of all subTags of a Tag recursively"""
         if tag not in self.tagDict:
             print("tag not found")
             return None
@@ -281,7 +283,7 @@ class TagTree:
         return allSubTags
 
     def getAllSubTags(self) -> dict:
-        """
+        """USELESS
         Get all subtag of tags in the TagTree
 
         Return a dictionary of all subtags of tags in the TagTree
@@ -322,23 +324,23 @@ class TagTree:
             if tag.name in parent_dict:
                 parent_dict[tag.name].update(parentSet)
             else:
-                parent_dict[tag.name] = parentSet
+                parent_dict[tag.name] = parentSet.copy()
 
             # Add the parent set to the parent_dict for each synonym
             if includeSynonyms:
                 synonyms = tag.getSynonyms()
                 for synonym in synonyms:
                     if synonym in parent_dict:
-                        parent_dict[synonym].update(parentSet)
+                        parent_dict[synonym].update(parentSet.copy())
                     else:
-                        parent_dict[synonym] = parentSet
+                        parent_dict[synonym] = parentSet.copy()
 
             parentSet.add(tag.name)
         else:
             parentSet = parent
 
         for subTag in tag.subTags.values():
-            self.getAllParentTag(subTag, parentSet, parent_dict, includeSynonyms)
+            parent_dict.update(self.getAllParentTag(subTag, parentSet, parent_dict, includeSynonyms))
 
         return parent_dict
 
