@@ -6,14 +6,15 @@ import program_functions as progFn
 
 
 
+# just for test
 
 # from cfg
-picDataPath = "D:/Pixiv_Pictures/pixiv_picture_data"
-picFilePath = "D:/Pixiv_Pictures/pixiv"
+# picDataPath = "D:/Pixiv_Pictures/pixiv_picture_data"
+# picFilePath = "D:/Pixiv_Pictures/pixiv"
 
-tagTree = dataFn.loadTagTree()
+# tagTree = dataFn.loadTagTree()
 
-parent = tagTree.getAllParentTag(includeSynonyms=True)
+# parent = tagTree.getAllParentTag(includeSynonyms=True)
 
-for i in parent:
-    print(f"{i}: {parent[i]}")
+# for i in parent:
+#     print(f"{i}: {parent[i]}")

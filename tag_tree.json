@@ -4,837 +4,811 @@
         "isTag": false,
         "parent": [],
         "synonyms": [],
-        "subTags": {
-            "角色": {
-                "name": "角色",
-                "isTag": false,
-                "parent": [
-                    "全年龄"
-                ],
-                "synonyms": [],
-                "subTags": {
-                    "游戏": {
-                        "name": "游戏",
-                        "isTag": false,
-                        "parent": [
-                            "角色"
-                        ],
-                        "synonyms": [],
-                        "subTags": {
-                            "#明日方舟": {
-                                "name": "#明日方舟",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {
-                                    "#阿米娅": {
-                                        "name": "#阿米娅",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#明日方舟",
-                                            "#兔耳"
-                                        ],
-                                        "synonyms": [
-                                            "#Amiya"
-                                        ],
-                                        "subTags": {}
-                                    }
-                                }
-                            },
-                            "#碧蓝航线": {
-                                "name": "#碧蓝航线",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {
-                                    "#独角兽": {
-                                        "name": "#独角兽",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#碧蓝航线"
-                                        ],
-                                        "synonyms": [
-                                            "#Unicorn"
-                                        ],
-                                        "subTags": {}
-                                    }
-                                }
-                            },
-                            "#原神": {
-                                "name": "#原神",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {
-                                    "#甘雨": {
-                                        "name": "#甘雨",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#原神"
-                                        ],
-                                        "synonyms": [
-                                            "#Ganyu"
-                                        ],
-                                        "subTags": {}
-                                    }
-                                }
-                            },
-                            "#公主连结": {
-                                "name": "#公主连结",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#崩坏3": {
-                                "name": "#崩坏3",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#少女前线": {
-                                "name": "#少女前线",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#Fate/GrandOrder": {
-                                "name": "#Fate/GrandOrder",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#碧蓝档案": {
-                                "name": "#碧蓝档案",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#ATRI": {
-                                "name": "#ATRI",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [
-                                    "#ATRI -My Dear Moments-"
-                                ],
-                                "subTags": {}
-                            },
-                            "#东方Project": {
-                                "name": "#东方project",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [
-                                    "#東方"
-                                ],
-                                "subTags": {
-                                    "#博丽灵梦": {
-                                        "name": "#博丽灵梦",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#东方Project"
-                                        ],
-                                        "synonyms": [
-                                            "#博麗霊夢"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#雾雨魔理沙": {
-                                        "name": "#雾雨魔理沙",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#东方Project"
-                                        ],
-                                        "synonyms": [
-                                            "#霧雨魔理沙"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#十六夜咲夜": {
-                                        "name": "#十六夜咲夜",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#东方Project"
-                                        ],
-                                        "synonyms": [
-                                            "#十六夜咲夜"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#蕾米莉亚·斯卡雷特": {
-                                        "name": "#蕾米莉亚·斯卡雷特",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#东方Project"
-                                        ],
-                                        "synonyms": [
-                                            "#レミリア・スカーレット"
-                                        ],
-                                        "subTags": {}
-                                    }
-                                }
-                            },
-                            "#舰队Collection": {
-                                "name": "#舰队collection",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [
-                                    "#艦隊これくしょん"
-                                ],
-                                "subTags": {}
-                            },
-                            "#守望先锋": {
-                                "name": "#守望先锋",
-                                "isTag": true,
-                                "parent": [
-                                    "游戏"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            }
-                        }
-                    },
-                    "动漫": {
-                        "name": "动漫",
-                        "isTag": false,
-                        "parent": [
-                            "角色"
-                        ],
-                        "synonyms": [],
-                        "subTags": {
-                            "#孤独摇滚": {
-                                "name": "#孤独摇滚",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            },
-                            "#轻音少女": {
-                                "name": "#轻音少女",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [
-                                    "#K-On"
-                                ],
-                                "subTags": {}
-                            },
-                            "#魔法少女小圆": {
-                                "name": "#魔法少女小圆",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [
-                                    "#魔法少女まどかマギカ"
-                                ],
-                                "subTags": {}
-                            },
-                            "#请问您今天要来点兔子吗？": {
-                                "name": "#请问您今天要来点兔子吗？",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [
-                                    "#ご注文はうさぎですか？"
-                                ],
-                                "subTags": {}
-                            },
-                            "#魔女之旅": {
-                                "name": "#魔女之旅",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [
-                                    "#魔女の旅々"
-                                ],
-                                "subTags": {}
-                            },
-                            "#Lycoris Recoil": {
-                                "name": "#Lycoris Recoil",
-                                "isTag": true,
-                                "parent": [
-                                    "动漫"
-                                ],
-                                "synonyms": [
-                                    "#リコリス・リコイル"
-                                ],
-                                "subTags": {}
-                            }
-                        }
-                    },
-                    "#虚拟主播": {
-                        "name": "#虚拟主播",
-                        "isTag": true,
-                        "parent": [
-                            "角色"
-                        ],
-                        "synonyms": [
-                            "#Vtuber"
-                        ],
-                        "subTags": {}
-                    },
-                    "#虚拟歌手": {
-                        "name": "#虚拟歌手",
-                        "isTag": true,
-                        "parent": [
-                            "角色"
-                        ],
-                        "synonyms": [],
-                        "subTags": {
-                            "#VOCALOID": {
-                                "name": "#VOCALOID",
-                                "isTag": true,
-                                "parent": [
-                                    "#虚拟歌手"
-                                ],
-                                "synonyms": [],
-                                "subTags": {
-                                    "#初音未来": {
-                                        "name": "#初音未来",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [
-                                            "#Hatsune Miku"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#镜音铃": {
-                                        "name": "#镜音铃",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [
-                                            "#Kagamine Rin"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#镜音连": {
-                                        "name": "#镜音连",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [
-                                            "#Kagamine Len"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#巡音流歌": {
-                                        "name": "#巡音流歌",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [
-                                            "#Megurine Luka"
-                                        ],
-                                        "subTags": {}
-                                    },
-                                    "#MEIKO": {
-                                        "name": "#MEIKO",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {}
-                                    },
-                                    "#KAITO": {
-                                        "name": "#KAITO",
-                                        "isTag": true,
-                                        "parent": [
-                                            "#VOCALOID"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {}
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "#原创人物": {
-                        "name": "#原创人物",
-                        "isTag": true,
-                        "parent": [
-                            "角色"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    }
-                }
-            },
-            "属性": {
-                "name": "属性",
-                "isTag": false,
-                "parent": [
-                    "全年龄"
-                ],
-                "synonyms": [],
-                "subTags": {
-                    "外观": {
-                        "name": "外观",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {
-                            "身体部位": {
-                                "name": "身体部位",
-                                "isTag": false,
-                                "parent": [
-                                    "外观"
-                                ],
-                                "synonyms": [],
-                                "subTags": {
-                                    "耳朵": {
-                                        "name": "耳朵",
-                                        "isTag": false,
-                                        "parent": [
-                                            "身体部位"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {
-                                            "#兔耳": {
-                                                "name": "#兔耳",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "耳朵"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {
-                                                    "#阿米娅": {
-                                                        "name": "#阿米娅",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "#明日方舟",
-                                                            "#兔耳"
-                                                        ],
-                                                        "synonyms": [
-                                                            "#Amiya"
-                                                        ],
-                                                        "subTags": {}
-                                                    }
-                                                }
-                                            },
-                                            "#猫耳": {
-                                                "name": "#猫耳",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "耳朵"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#狐耳": {
-                                                "name": "#狐耳",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "耳朵"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#狼耳": {
-                                                "name": "#狼耳",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "耳朵"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            }
-                                        }
-                                    },
-                                    "尾巴": {
-                                        "name": "尾巴",
-                                        "isTag": false,
-                                        "parent": [
-                                            "身体部位"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {
-                                            "#兔尾": {
-                                                "name": "#兔尾",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "尾巴"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#猫尾": {
-                                                "name": "#猫尾",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "尾巴"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#狐尾": {
-                                                "name": "#狐尾",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "尾巴"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#狼尾": {
-                                                "name": "#狼尾",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "尾巴"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            }
-                                        }
-                                    },
-                                    "翅膀": {
-                                        "name": "翅膀",
-                                        "isTag": false,
-                                        "parent": [
-                                            "身体部位"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {
-                                            "#天使翅膀": {
-                                                "name": "#天使翅膀",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "翅膀"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#恶魔翅膀": {
-                                                "name": "#恶魔翅膀",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "翅膀"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            },
-                                            "#蝴蝶翅膀": {
-                                                "name": "#蝴蝶翅膀",
-                                                "isTag": true,
-                                                "parent": [
-                                                    "翅膀"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {}
-                                            }
-                                        }
-                                    },
-                                    "头发": {
-                                        "name": "头发",
-                                        "isTag": false,
-                                        "parent": [
-                                            "身体部位"
-                                        ],
-                                        "synonyms": [],
-                                        "subTags": {
-                                            "颜色": {
-                                                "name": "颜色",
-                                                "isTag": false,
-                                                "parent": [
-                                                    "头发"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {
-                                                    "#白发": {
-                                                        "name": "#白发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#金发": {
-                                                        "name": "#金发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#黑发": {
-                                                        "name": "#黑发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#蓝发": {
-                                                        "name": "#蓝发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#红发": {
-                                                        "name": "#红发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#紫发": {
-                                                        "name": "#紫发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#绿发": {
-                                                        "name": "#绿发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#棕发": {
-                                                        "name": "#棕发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "颜色"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    }
-                                                }
-                                            },
-                                            "长度": {
-                                                "name": "长度",
-                                                "isTag": false,
-                                                "parent": [
-                                                    "头发"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {
-                                                    "#长发": {
-                                                        "name": "#长发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "长度"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#短发": {
-                                                        "name": "#短发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "长度"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    }
-                                                }
-                                            },
-                                            "样式": {
-                                                "name": "样式",
-                                                "isTag": false,
-                                                "parent": [
-                                                    "头发"
-                                                ],
-                                                "synonyms": [],
-                                                "subTags": {
-                                                    "#双马尾": {
-                                                        "name": "#双马尾",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "样式"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#单马尾": {
-                                                        "name": "#单马尾",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "样式"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#长直": {
-                                                        "name": "#长直",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "样式"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    },
-                                                    "#卷发": {
-                                                        "name": "#卷发",
-                                                        "isTag": true,
-                                                        "parent": [
-                                                            "样式"
-                                                        ],
-                                                        "synonyms": [],
-                                                        "subTags": {}
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "服装": {
-                                "name": "服装",
-                                "isTag": false,
-                                "parent": [
-                                    "外观"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            }
-                        }
-                    },
-                    "动作": {
-                        "name": "动作",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "场景": {
-                        "name": "场景",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "日期": {
-                        "name": "日期",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "身份": {
-                        "name": "身份",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "物品": {
-                        "name": "物品",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "描述": {
-                        "name": "描述",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    },
-                    "类型": {
-                        "name": "类型",
-                        "isTag": false,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {
-                            "#漫画": {
-                                "name": "#漫画",
-                                "isTag": true,
-                                "parent": [
-                                    "类型"
-                                ],
-                                "synonyms": [],
-                                "subTags": {}
-                            }
-                        }
-                    },
-                    "#R-18": {
-                        "name": "#R-18",
-                        "isTag": true,
-                        "parent": [
-                            "属性"
-                        ],
-                        "synonyms": [],
-                        "subTags": {}
-                    }
-                }
-            },
-            "用途": {
-                "name": "用途",
-                "isTag": false,
-                "parent": [
-                    "标签"
-                ],
-                "synonyms": [],
-                "subTags": {}
-            }
-        }
+        "subTags": ["角色", "属性", "用途"]
+    },
+    "角色": {
+        "name": "角色",
+        "isTag": false,
+        "parent": [
+            "标签"
+        ],
+        "synonyms": [],
+        "subTags": ["游戏", "动漫", "#虚拟主播", "#虚拟歌手", "#原创人物"]
+    },
+    "游戏": {
+        "name": "游戏",
+        "isTag": false,
+        "parent": [
+            "角色"
+        ],
+        "synonyms": [],
+        "subTags": ["#明日方舟", "#碧蓝航线", "#原神", "#公主连结", "#崩坏3", "#少女前线", "#Fate/GrandOrder", "#碧蓝档案", "#ATRI", "#东方Project", "#舰队Collection", "#守望先锋"]
+    },
+    "#明日方舟": {
+        "name": "#明日方舟",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": ["#阿米娅"]
+    },
+    "#阿米娅": {
+        "name": "#阿米娅",
+        "isTag": true,
+        "parent": [
+            "#明日方舟",
+            "#兔耳"
+        ],
+        "synonyms": [
+            "#Amiya"
+        ],
+        "subTags": []
+    },
+    "#碧蓝航线": {
+        "name": "#碧蓝航线",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": ["#独角兽"]
+    },
+    "#独角兽": {
+        "name": "#独角兽",
+        "isTag": true,
+        "parent": [
+            "#碧蓝航线"
+        ],
+        "synonyms": [
+            "#Unicorn"
+        ],
+        "subTags": []
+    },
+    "#原神": {
+        "name": "#原神",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": ["#甘雨"]
+    },
+    "#甘雨": {
+        "name": "#甘雨",
+        "isTag": true,
+        "parent": [
+            "#原神"
+        ],
+        "synonyms": [
+            "#Ganyu"
+        ],
+        "subTags": []
+    },
+
+    "#公主连结": {
+        "name": "#公主连结",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#崩坏3": {
+        "name": "#崩坏3",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#少女前线": {
+        "name": "#少女前线",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#Fate/GrandOrder": {
+        "name": "#Fate/GrandOrder",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#碧蓝档案": {
+        "name": "#碧蓝档案",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#ATRI": {
+        "name": "#ATRI",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [
+            "#ATRI -My Dear Moments-"
+        ],
+        "subTags": []
+    },
+    "#东方Project": {
+        "name": "#东方project",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [
+            "#東方"
+        ],
+        "subTags": ["#博丽灵梦", "#雾雨魔理沙", "#十六夜咲夜", "#蕾米莉亚·斯卡雷特"]
+    },
+    "#博丽灵梦": {
+        "name": "#博丽灵梦",
+        "isTag": true,
+        "parent": [
+            "#东方Project"
+        ],
+        "synonyms": [
+            "#博麗霊夢"
+        ],
+        "subTags": []
+    },
+    "#雾雨魔理沙": {
+        "name": "#雾雨魔理沙",
+        "isTag": true,
+        "parent": [
+            "#东方Project"
+        ],
+        "synonyms": [
+            "#霧雨魔理沙"
+        ],
+        "subTags": []
+    },
+    "#十六夜咲夜": {
+        "name": "#十六夜咲夜",
+        "isTag": true,
+        "parent": [
+            "#东方Project"
+        ],
+        "synonyms": [
+            "#十六夜咲夜"
+        ],
+        "subTags": []
+    },
+    "#蕾米莉亚·斯卡雷特": {
+        "name": "#蕾米莉亚·斯卡雷特",
+        "isTag": true,
+        "parent": [
+            "#东方Project"
+        ],
+        "synonyms": [
+            "#レミリア・スカーレット"
+        ],
+        "subTags": []
+    },
+
+    "#舰队Collection": {
+        "name": "#舰队collection",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [
+            "#艦隊これくしょん"
+        ],
+        "subTags": []
+    },
+    "#守望先锋": {
+        "name": "#守望先锋",
+        "isTag": true,
+        "parent": [
+            "游戏"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "动漫": {
+        "name": "动漫",
+        "isTag": false,
+        "parent": [
+            "角色"
+        ],
+        "synonyms": [],
+        "subTags": ["#孤独摇滚", "#轻音少女", "#魔法少女小圆", "#请问您今天要来点兔子吗？", "#魔女之旅", "#Lycoris Recoil"]
+    },
+    "#孤独摇滚": {
+        "name": "#孤独摇滚",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#轻音少女": {
+        "name": "#轻音少女",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [
+            "#K-On"
+        ],
+        "subTags": []
+    },
+    "#魔法少女小圆": {
+        "name": "#魔法少女小圆",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [
+            "#魔法少女まどかマギカ"
+        ],
+        "subTags": []
+    },
+    "#请问您今天要来点兔子吗？": {
+        "name": "#请问您今天要来点兔子吗？",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [
+            "#ご注文はうさぎですか？"
+        ],
+        "subTags": []
+    },
+    "#魔女之旅": {
+        "name": "#魔女之旅",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [
+            "#魔女の旅々"
+        ],
+        "subTags": []
+    },
+    "#Lycoris Recoil": {
+        "name": "#Lycoris Recoil",
+        "isTag": true,
+        "parent": [
+            "动漫"
+        ],
+        "synonyms": [
+            "#リコリス・リコイル"
+        ],
+        "subTags": []
+    },
+
+    "#虚拟主播": {
+        "name": "#虚拟主播",
+        "isTag": true,
+        "parent": [
+            "角色"
+        ],
+        "synonyms": [
+            "#Vtuber"
+        ],
+        "subTags": []
+    },
+    "#虚拟歌手": {
+        "name": "#虚拟歌手",
+        "isTag": true,
+        "parent": [
+            "角色"
+        ],
+        "synonyms": [],
+        "subTags": ["#VOCALOID"]
+    },
+    "#VOCALOID": {
+        "name": "#VOCALOID",
+        "isTag": true,
+        "parent": [
+            "#虚拟歌手"
+        ],
+        "synonyms": [],
+        "subTags": ["#初音未来", "#镜音铃", "#镜音连", "#巡音流歌", "#MEIKO", "#KAITO"]
+    },
+    "#初音未来": {
+        "name": "#初音未来",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [
+            "#Hatsune Miku"
+        ],
+        "subTags": []
+    },
+    "#镜音铃": {
+        "name": "#镜音铃",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [
+            "#Kagamine Rin"
+        ],
+        "subTags": []
+    },
+    "#镜音连": {
+        "name": "#镜音连",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [
+            "#Kagamine Len"
+        ],
+        "subTags": []
+    },
+    "#巡音流歌": {
+        "name": "#巡音流歌",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [
+            "#Megurine Luka"
+        ],
+        "subTags": []
+    },
+    "#MEIKO": {
+        "name": "#MEIKO",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#KAITO": {
+        "name": "#KAITO",
+        "isTag": true,
+        "parent": [
+            "#VOCALOID"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#原创人物": {
+        "name": "#原创人物",
+        "isTag": true,
+        "parent": [
+            "角色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "属性": {
+            "name": "属性",
+            "isTag": false,
+            "parent": [
+                "标签"
+            ],
+            "synonyms": [],
+            "subTags": ["外观", "动作", "场景", "日期", "身份", "物品", "描述", "类型", "#R-18"]
+        },
+    "外观": {
+        "name": "外观",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": ["身体部位", "服装"]
+    },
+    "身体部位": {
+        "name": "身体部位",
+        "isTag": false,
+        "parent": [
+            "外观"
+        ],
+        "synonyms": [],
+        "subTags": ["耳朵", "尾巴", "翅膀", "头发"]
+    },
+    "耳朵": {
+        "name": "耳朵",
+        "isTag": false,
+        "parent": [
+            "身体部位"
+        ],
+        "synonyms": [],
+        "subTags": ["#兔耳", "#猫耳", "#狐耳", "#狼耳"]
+    },
+    "#兔耳": {
+        "name": "#兔耳",
+        "isTag": true,
+        "parent": [
+            "耳朵"
+        ],
+        "synonyms": [],
+        "subTags": ["#阿米娅"]
+    },
+    "#猫耳": {
+        "name": "#猫耳",
+        "isTag": true,
+        "parent": [
+            "耳朵"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#狐耳": {
+        "name": "#狐耳",
+        "isTag": true,
+        "parent": [
+            "耳朵"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#狼耳": {
+        "name": "#狼耳",
+        "isTag": true,
+        "parent": [
+            "耳朵"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "尾巴": {
+        "name": "尾巴",
+        "isTag": false,
+        "parent": [
+            "身体部位"
+        ],
+        "synonyms": [],
+        "subTags": ["#兔尾", "#猫尾", "#狐尾", "#狼尾"]
+    },
+    "#兔尾": {
+        "name": "#兔尾",
+        "isTag": true,
+        "parent": [
+            "尾巴"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#猫尾": {
+        "name": "#猫尾",
+        "isTag": true,
+        "parent": [
+            "尾巴"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#狐尾": {
+        "name": "#狐尾",
+        "isTag": true,
+        "parent": [
+            "尾巴"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#狼尾": {
+        "name": "#狼尾",
+        "isTag": true,
+        "parent": [
+            "尾巴"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "翅膀": {
+        "name": "翅膀",
+        "isTag": false,
+        "parent": [
+            "身体部位"
+        ],
+        "synonyms": [],
+        "subTags": ["#天使翅膀", "#恶魔翅膀", "#蝴蝶翅膀"]
+    },
+    "#天使翅膀": {
+        "name": "#天使翅膀",
+        "isTag": true,
+        "parent": [
+            "翅膀"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#恶魔翅膀": {
+        "name": "#恶魔翅膀",
+        "isTag": true,
+        "parent": [
+            "翅膀"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#蝴蝶翅膀": {
+        "name": "#蝴蝶翅膀",
+        "isTag": true,
+        "parent": [
+            "翅膀"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+
+    "头发": {
+        "name": "头发",
+        "isTag": false,
+        "parent": [
+            "身体部位"
+        ],
+        "synonyms": [],
+        "subTags": ["颜色", "长度", "样式"]
+    },
+    "颜色": {
+        "name": "颜色",
+        "isTag": false,
+        "parent": [
+            "头发"
+        ],
+        "synonyms": [],
+        "subTags": ["#白发", "#金发", "#黑发", "#蓝发", "#红发", "#紫发", "#绿发", "#棕发"]
+    },
+    "#白发": {
+        "name": "#白发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#金发": {
+        "name": "#金发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#黑发": {
+        "name": "#黑发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#蓝发": {
+        "name": "#蓝发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#红发": {
+        "name": "#红发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#紫发": {
+        "name": "#紫发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#绿发": {
+        "name": "#绿发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#棕发": {
+        "name": "#棕发",
+        "isTag": true,
+        "parent": [
+            "颜色"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+
+    "长度": {
+        "name": "长度",
+        "isTag": false,
+        "parent": [
+            "头发"
+        ],
+        "synonyms": [],
+        "subTags": ["#长发", "#短发"]
+    },
+    "#长发": {
+        "name": "#长发",
+        "isTag": true,
+        "parent": [
+            "长度"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#短发": {
+        "name": "#短发",
+        "isTag": true,
+        "parent": [
+            "长度"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+
+    "样式": {
+        "name": "样式",
+        "isTag": false,
+        "parent": [
+            "头发"
+        ],
+        "synonyms": [],
+        "subTags": ["#双马尾", "#单马尾", "#长直", "#卷发"]
+    },
+    "#双马尾": {
+        "name": "#双马尾",
+        "isTag": true,
+        "parent": [
+            "样式"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#单马尾": {
+        "name": "#单马尾",
+        "isTag": true,
+        "parent": [
+            "样式"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#长直": {
+        "name": "#长直",
+        "isTag": true,
+        "parent": [
+            "样式"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#卷发": {
+        "name": "#卷发",
+        "isTag": true,
+        "parent": [
+            "样式"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+
+
+    "服装": {
+        "name": "服装",
+        "isTag": false,
+        "parent": [
+            "外观"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "动作": {
+        "name": "动作",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "场景": {
+        "name": "场景",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "日期": {
+        "name": "日期",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "身份": {
+        "name": "身份",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "物品": {
+        "name": "物品",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "描述": {
+        "name": "描述",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "类型": {
+        "name": "类型",
+        "isTag": false,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": ["#漫画"]
+    },
+    "#漫画": {
+        "name": "#漫画",
+        "isTag": true,
+        "parent": [
+            "类型"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "#R-18": {
+        "name": "#R-18",
+        "isTag": true,
+        "parent": [
+            "属性"
+        ],
+        "synonyms": [],
+        "subTags": []
+    },
+    "用途": {
+            "name": "用途",
+            "isTag": false,
+            "parent": [
+                "标签"
+            ],
+            "synonyms": [],
+            "subTags": []
     }
 }

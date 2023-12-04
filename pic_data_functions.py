@@ -31,6 +31,9 @@ def loadJson(filePath: str):
     Loads a JSON file.
 
     returns data in the JSON file.
+
+    Do not use this function to load tag_tree.json.
+    please use loadTagTree() instead.
     """
     with open(filePath, "r", encoding='utf-8') as file:
         data = json.load(file)
@@ -50,6 +53,6 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> classes.TagTree:
     """
     with open(tagTreeFile, "r", encoding='utf-8') as file:
         tagTreeDict = json.load(file)
-    tagTree = classes.TagTree(tagTreeDict["标签"])
-    tagTreeDict = None
+    tagTree = classes.TagTree(tagTreeDict)
+    tagTreeDict = None # clear memory
     return tagTree

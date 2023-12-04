@@ -1,5 +1,5 @@
 # This file contains objects in the program
-# modified picData class to handle more work
+# modified the tag_tree.json file structure
 
 class PicData:
     def __init__(self, pid: str, count: int = 1):
@@ -191,18 +191,21 @@ class Tag:
         self.subTags = subTags
         self.depth = depth
 
-    def to_dict(self) -> dict:
+    def toDict(self) -> dict:
         """Convert the Tag object to a dictionary"""
-        subTags_dict = {}
-        for k, v in self.subTags.items():
-            subTags_dict[k] = v.to_dict()
+        subTagList = []
+        for k in self.subTags.keys():
+            subTagList.append(k)
 
         return {
-            'name': self.name,
-            'isTag': self.isTag,
-            'parent': self.parent,
-            'synonyms': self.synonyms,
-            'subTags': subTags_dict
+            self.name: 
+            {
+                'name': self.name,
+                'isTag': self.isTag,
+                'parent': self.parent,
+                'synonyms': self.synonyms,
+                'subTags': subTagList
+            }
         }
     
     def addParentTag(self, parentTag: str) -> None:
@@ -234,11 +237,14 @@ class Tag:
         return self.synonyms
     
 class TagTree:
-    def __init__(self, tag_data: dict) -> None:
+    def __init__(self, tagTreeData: dict, root = "标签") -> None:
+        """Initialize the TagTree object from the data in tagTree.json file"""
+        self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
         self.tagDict = {} #a dictionary of all tag objects
-        self.root = self.build_tree(tag_data) #the root of the TagTree(is a Tag object)
+        self.root = self.buildTree(tagTreeData[root]) #the root of the TagTree(is a Tag object)
+        self.tagTreeData = None #delete the tagTreeData to save memory
 
-    def build_tree(self, data: dict, parent=None, depth: int = 0) -> Tag:
+    def buildTree(self, data: dict, parent=None, depth: int = 0) -> Tag:
         """Build a Tag object from the data dictionary"""
         name = data['name']
         isTag = data['isTag']
@@ -250,24 +256,24 @@ class TagTree:
             return self.tagDict[name]
 
         # Get the 'subTags' value from the data dictionary
-        subTags_data = data['subTags']
+        subTagNames = data['subTags']
 
         # Initialize an empty dictionary for the subTags
         subTags = {}
 
         # Iterate over the key-value pairs in the subTags_data dictionary
-        for k, v in subTags_data.items():
+        for subTagName in subTagNames:
             # For each key-value pair, build a new Tag object
-            subTag = self.build_tree(v, name, depth + 1)
+            subTag = self.buildTree(self.tagTreeData[subTagName], name, depth + 1)
             # Add the new Tag object to the subTags dictionary
-            subTags[k] = subTag
+            subTags[subTagName] = subTag
         
         #create a new Tag and add it to the tagDict
         newTag = Tag(name, isTag, parent, synonyms, subTags, depth)
         self.tagDict[name] = newTag
 
         return newTag
-    
+
     def getSubTags(self, tag: str) -> list:
         """USELESS
         Get a list of all subTags of a Tag recursively"""
@@ -404,3 +410,11 @@ class TagTree:
                 return True
 
         return False
+    
+    def toDict(self) -> dict:
+        """Convert the TagTree object to a dictionary"""
+        outputDict = {}
+        for tag in self.tagDict:
+            outputDict.update(self.tagDict[tag].toDict())
+
+        return outputDict
