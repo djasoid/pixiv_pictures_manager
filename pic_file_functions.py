@@ -58,18 +58,20 @@ def parseMetadata(filePath: str) -> classes.PicData:
     Data.addUser(getline(filePath, 8).strip())
     Data.addUserId(getline(filePath, 11).strip())
 
-    for i in range(17, 1000):
-        if getline(filePath, i) != "\n":
+    lineNum = 17
+    while True:
+        if getline(filePath, lineNum) != "\n":
             # read and store tags
-            tags.append(getline(filePath, i).strip())
+            tags.append(getline(filePath, lineNum).strip())
         else:
             # all tags read, store them in picData
             Data.addTags(tags)
             # read and store description
-            Data.addDate(getline(filePath, i + 2).strip())
+            Data.addDate(getline(filePath, lineNum + 2).strip())
             lines = []
-            for line_num in range(i+6, 1000):
-                line = getline(filePath, line_num)
+            lineNum += 6
+            while True:
+                line = getline(filePath, lineNum)
                 if line:
                     # read and store description line by line
                     lines.append(line)
@@ -77,6 +79,8 @@ def parseMetadata(filePath: str) -> classes.PicData:
                     # all description read, store them in picData
                     Data.addDescription(''.join(lines))
                     return Data
+                lineNum += 1
+        lineNum += 1
 
 def getAllData(directory: str) -> dict:
     """

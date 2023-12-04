@@ -38,7 +38,7 @@ initialize complete
 """
 
 class core:
-    def __init__(self, metadataDict: dict = None, tagTree: classes.TagTree = None, tagIndex: dict = None, illustratorInfo: dict = None, noMetadata: dict = None):
+    def __init__(self, metadataDict: dict, tagTree: classes.TagTree, tagIndex: dict = None, illustratorInfo: dict = None, noMetadata: dict = None):
         self.metadataDict = metadataDict
         self.tagTree = tagTree
         self.tagIndex = tagIndex
