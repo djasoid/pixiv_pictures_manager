@@ -28,7 +28,7 @@ def parsePicture(filePath: str) -> classes.PicData:
     ordNum = 1
     if len(parts) > 1:
         ordNum += int(parts[1])
-    # create a PicData object
+    # create a PicData object then store the information
     Data = classes.PicData(pid, ordNum)
     Data.setSource("picture")
     Data.addResolution({ordNum:resolution})

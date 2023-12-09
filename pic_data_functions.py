@@ -53,6 +53,6 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> classes.TagTree:
     """
     with open(tagTreeFile, "r", encoding='utf-8') as file:
         tagTreeDict = json.load(file)
-    tagTree = classes.TagTree(tagTreeDict)
-    tagTreeDict = None # clear memory
-    return tagTree
+    Tree = classes.TagTree(tagTreeDict)
+    del tagTreeDict # clear memory
+    return Tree
