@@ -2,6 +2,7 @@
 # modified the tag_tree.json file structure
 
 class PicData:
+    __slots__ = ["source", "pid", "count", "resolution", "size", "fileName", "directory", "liked", "metadata", "title", "user", "userId", "tags", "date", "description"]
     def __init__(self, pid: str, count: int = 1):
         self.source = None
         self.pid = pid
@@ -22,7 +23,8 @@ class PicData:
     #lodad functions
 
     def loadData(self, data: dict):
-        self.source = "dict"
+        self.source = "dict" # indicate that the data is from a dictionary
+        
         self.pid = data["pid"]
         self.count = data["count"]
         self.resolution = data["resolution"]
@@ -183,13 +185,26 @@ class PicData:
         }
 
 class Tag:
-    def __init__(self, name: str, isTag: bool, parent: list, synonyms: list, subTags: dict, depth: int):
+    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth"]
+    def __init__(self, name: str, isTag: bool = True, parent: list = None, synonyms: list = None, subTags: dict = None, depth: int = -1):
         self.name = name
         self.isTag = isTag
-        self.parent = parent
-        self.synonyms = synonyms
-        self.subTags = subTags
-        self.depth = depth
+
+        if parent is None:
+            self.parent = []
+        else:
+            self.parent = parent
+
+        if synonyms is None:
+            self.synonyms = []
+        else:
+            self.synonyms = synonyms
+
+        if subTags is None:
+            self.subTags = {}
+        else:
+            self.subTags = subTags
+        self.depth = depth # Note: A tag may exist in multiple locations within the tree. Therefore, depth is only meaningful for tags that don't exist in multiple locations.
 
     def toDict(self) -> dict:
         """Convert the Tag object to a dictionary"""
@@ -224,25 +239,13 @@ class Tag:
         if synonym not in self.synonyms:
             self.synonyms.append(synonym)
     
-    def getName(self) -> str:
-        """Get the name of the tag"""
-        return self.name
-    
-    def getSubTags(self) -> dict:
-        """Get the sub tags of the tag"""
-        return self.subTags
-    
-    def getSynonyms(self) -> list:
-        """Get the synonyms of the tag"""
-        return self.synonyms
-    
 class TagTree:
     def __init__(self, tagTreeData: dict, root = "标签") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
         self.tagDict = {} #a dictionary of all tag objects
         self.root = self.buildTree(tagTreeData[root]) #the root of the TagTree(is a Tag object)
-        self.tagTreeData = None #delete the tagTreeData to save memory
+        self.tagTreeData = None #clear memory
 
     def buildTree(self, data: dict, parent=None, depth: int = 0) -> Tag:
         """Build a Tag object from the data dictionary"""
@@ -275,8 +278,9 @@ class TagTree:
         return newTag
 
     def getSubTags(self, tag: str) -> list:
-        """USELESS
-        Get a list of all subTags of a Tag recursively"""
+        """
+        Get a list of all subTags of a Tag recursively
+        """
         if tag not in self.tagDict:
             print("tag not found")
             return None
@@ -334,7 +338,7 @@ class TagTree:
 
             # Add the parent set to the parent_dict for each synonym
             if includeSynonyms:
-                synonyms = tag.getSynonyms()
+                synonyms = tag.synonyms
                 for synonym in synonyms:
                     if synonym in parent_dict:
                         parent_dict[synonym].update(parentSet.copy())
@@ -350,24 +354,45 @@ class TagTree:
 
         return parent_dict
 
-    def addNewTag(self, parentTag: str, newTag: Tag):
+    def addNewTag(self, newTag: str, parentTag: str):
         """
-        Add a new tag object to the TagTree at sub tag of parentTag
+        Add a new tag to the TagTree at sub tag of parentTag
         parentTag must be in the TagTree
         newTag must not be in the TagTree
         """
         if parentTag not in self.tagDict:
-            print("parentTag not found")
+            print(f"parentTag {parentTag} not found")
             return
         
-        if newTag.getName() in self.tagDict:
-            print("newTag already exists")
+        if newTag in self.tagDict:
+            print(f"newTag {newTag} already exists")
             return
         
-        self.tagDict[newTag.name] = newTag
-        self.tagDict[parentTag].addSubTag(newTag)
-        self.tagDict[newTag.name].addParentTag(parentTag)
-        print(f"added {newTag.name} to {parentTag}")
+        NewTag = Tag(newTag)
+
+        self.tagDict[NewTag.name] = NewTag
+        self.tagDict[parentTag].addSubTag(NewTag)
+        self.tagDict[NewTag.name].addParentTag(parentTag)
+        print(f"added {newTag} to {parentTag}")
+
+    def deleteTag(self, tag: str, parentTag: str) -> None:
+        """Delete a tag from a parent tag, tag must be in the TagTree"""
+        if tag not in self.tagDict:
+            print(f"tag {tag} not found")
+            return
+        
+        if parentTag not in self.tagDict:
+            print(f"parentTag {parentTag} not found")
+            return
+        
+        self.tagDict[parentTag].subTags.pop(tag)
+        self.tagDict[tag].parent.remove(parentTag)
+
+        # check if the tag has any parent tag left
+        if not self.tagDict[tag].parent:
+            self.tagDict.pop(tag)
+
+        print(f"deleted {tag} from {parentTag}")
 
     def getTagList(self) -> list:
         """
@@ -382,11 +407,11 @@ class TagTree:
     def addParentTag(self, tag: str, parentTag: str) -> None:
         """Add a parent tag to a existing tag, tag must be in the TagTree"""
         if tag not in self.tagDict:
-            print("subTag not found")
+            print(f"subTag {tag} not found")
             return
         
         if parentTag not in self.tagDict:
-            print("parentTag not found")
+            print(f"parentTag {parentTag} not found")
             return
         
         self.tagDict[tag].addParentTag(parentTag)
@@ -398,11 +423,11 @@ class TagTree:
         if tag not in self.tagDict:
             return False
 
-        if subTag in self.tagDict[tag].getSubTags():
+        if subTag in self.tagDict[tag].subTags:
             return True
 
         # Get the sub tags of the tag
-        subTags = self.tagDict[tag].getSubTags().keys()
+        subTags = self.tagDict[tag].subTags.keys()
 
         # Check if subTag is a sub tag of any of the sub tags
         for subTagName in subTags:
