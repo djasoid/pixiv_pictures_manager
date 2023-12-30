@@ -18,7 +18,10 @@ def parsePicture(filePath: str) -> classes.PicData:
     Returns:
     picData (classes.PicData): A PicData object containing the extracted information.
     """
-    resolution = Image.open(filePath).size
+    with Image.open(filePath) as img:# get resolution
+        resolution = img.size
+    del img # clear memory
+
     fileName = os.path.basename(filePath)
     name = fileName.split(".")# seprate the file name and file extention
     name.pop()
