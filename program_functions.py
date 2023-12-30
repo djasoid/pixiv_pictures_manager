@@ -7,7 +7,6 @@ Notes, ignore this
 
 initializing
     >>read config file
-    ***initialize = true***
 
 get metadata dict from pictures
     >>input picture path
@@ -31,7 +30,6 @@ get tag index
     <<output tagIndex
 
 initialize complete
-    ***initialize = false***
     ***picDataPath = ***
     ***picFilePath = ***
     <<write config file
@@ -61,7 +59,7 @@ class core:
 
         This function takes a metadata dictionary and completes the tags in the dictionary.
         """
-        if self.allParentTagDict == None:
+        if self.allParentTagDict is None:
             self.genVarForInit()
 
         for pid in self.metadataDict:
@@ -90,7 +88,7 @@ class core:
         Returns:
         dict: A tag index dictionary.
         """
-        if self.allParentTagDict == None:
+        if self.allParentTagDict is None:
             self.genVarForInit()
 
         tagIndex = {}

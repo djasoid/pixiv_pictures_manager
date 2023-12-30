@@ -589,7 +589,7 @@
         "name": "#白发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -598,7 +598,7 @@
         "name": "#金发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -607,7 +607,7 @@
         "name": "#黑发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -616,7 +616,7 @@
         "name": "#蓝发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -625,7 +625,7 @@
         "name": "#红发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -634,7 +634,7 @@
         "name": "#紫发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -643,7 +643,7 @@
         "name": "#绿发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -652,13 +652,13 @@
         "name": "#棕发",
         "isTag": true,
         "parent": [
-            "颜色"
+            "颜色(头发)"
         ],
         "synonyms": [],
         "subTags": []
     },
-    "颜色": {
-        "name": "颜色",
+    "颜色(头发)": {
+        "name": "颜色(头发)",
         "isTag": false,
         "parent": [
             "头发"
@@ -679,7 +679,7 @@
         "name": "#长发",
         "isTag": true,
         "parent": [
-            "长度"
+            "长度(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -688,13 +688,13 @@
         "name": "#短发",
         "isTag": true,
         "parent": [
-            "长度"
+            "长度(头发)"
         ],
         "synonyms": [],
         "subTags": []
     },
-    "长度": {
-        "name": "长度",
+    "长度(头发)": {
+        "name": "长度(头发)",
         "isTag": false,
         "parent": [
             "头发"
@@ -709,7 +709,7 @@
         "name": "#双马尾",
         "isTag": true,
         "parent": [
-            "样式"
+            "样式(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -718,7 +718,7 @@
         "name": "#单马尾",
         "isTag": true,
         "parent": [
-            "样式"
+            "样式(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -727,7 +727,7 @@
         "name": "#长直",
         "isTag": true,
         "parent": [
-            "样式"
+            "样式(头发)"
         ],
         "synonyms": [],
         "subTags": []
@@ -736,13 +736,13 @@
         "name": "#卷发",
         "isTag": true,
         "parent": [
-            "样式"
+            "样式(头发)"
         ],
         "synonyms": [],
         "subTags": []
     },
-    "样式": {
-        "name": "样式",
+    "样式(头发)": {
+        "name": "样式(头发)",
         "isTag": false,
         "parent": [
             "头发"
@@ -763,9 +763,9 @@
         ],
         "synonyms": [],
         "subTags": [
-            "颜色",
-            "长度",
-            "样式"
+            "颜色(头发)",
+            "长度(头发)",
+            "样式(头发)"
         ]
     },
     "身体部位": {
