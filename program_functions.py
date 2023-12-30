@@ -1,6 +1,6 @@
 # core functions of the program
 
-import classes
+import program_objects as proObj
 
 """
 Notes, ignore this
@@ -36,7 +36,7 @@ initialize complete
 """
 
 class core:
-    def __init__(self, metadataDict: dict, tagTree: classes.TagTree, tagIndex: dict = None, illustratorInfo: dict = None, noMetadata: dict = None):
+    def __init__(self, metadataDict: dict, tagTree: proObj.TagTree, tagIndex: dict = None, illustratorInfo: dict = None, noMetadata: dict = None):
         self.metadataDict = metadataDict
         self.tagTree = tagTree
         self.tagIndex = tagIndex

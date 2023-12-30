@@ -1,7 +1,7 @@
 # This file is used to manage the tag tree, it can add new tag, add parent tag, add synonym, delete tag, search tag and print tag info.
 
 import re
-import classes
+import program_objects as proObj
 import pic_data_functions as dataFn
 
 def parseCommand(command):
@@ -32,7 +32,7 @@ def parseCommand(command):
     elif command == "ud": # undo the last operation
         if len(history) > 1:
             _, undone_operation = history.pop()
-            Tree = classes.TagTree(history[-1][0])
+            Tree = proObj.TagTree(history[-1][0])
             print(f"Undone operation: {undone_operation}")
         else:
             print("no operation to undo")
