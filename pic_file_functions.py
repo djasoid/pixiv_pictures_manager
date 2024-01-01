@@ -2,11 +2,11 @@
 
 import os
 from shutil import copy2
-import program_objects as proObj
+import program_objects as progObjs
 from linecache import getline
 from PIL import Image
 
-def parsePicture(filePath: str) -> proObj.PicData:
+def parsePicture(filePath: str) -> progObjs.PicData:
     """
     Extracts and returns information about a picture.
 
@@ -32,7 +32,7 @@ def parsePicture(filePath: str) -> proObj.PicData:
     if len(parts) > 1:
         ordNum += int(parts[1])
     # create a PicData object then store the information
-    Data = proObj.PicData(pid, ordNum)
+    Data = progObjs.PicData(pid, ordNum)
     Data.setSource("picture")
     Data.addResolution({ordNum:resolution})
     Data.addSize({ordNum:os.path.getsize(filePath)})
@@ -40,7 +40,7 @@ def parsePicture(filePath: str) -> proObj.PicData:
     Data.addDirectory(os.path.dirname(filePath))
     return Data
 
-def parseMetadata(filePath: str) -> proObj.PicData:
+def parseMetadata(filePath: str) -> progObjs.PicData:
     """
     Parses a metadata file and returns a PicData object.
 
@@ -53,7 +53,7 @@ def parseMetadata(filePath: str) -> proObj.PicData:
     proObj.PicData: A PicData object containing the metadata from the file.
     """
     tags = []
-    Data = proObj.PicData(getline(filePath, 2).strip())
+    Data = progObjs.PicData(getline(filePath, 2).strip())
     Data.setSource("metadata")
     Data.addDirectory(os.path.dirname(filePath))
     Data.addMetadata()

@@ -1,5 +1,5 @@
 # main process of the program (with UI)
-import program_objects as proObj
+import program_objects as progObjs
 import pic_data_functions as dataFn
 import pic_file_functions as fileFn
 import program_functions as progFn

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>890</width>
+    <width>921</width>
     <height>750</height>
    </rect>
   </property>
@@ -26,7 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>标签管理</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -93,12 +93,12 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" name="tag_layout">
+          <layout class="QHBoxLayout" name="new_tag_layout">
            <property name="spacing">
             <number>0</number>
            </property>
            <item>
-            <widget class="QListWidget" name="new_tag_transl_lst">
+            <widget class="QListWidget" name="new_tag_orignal_lst">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -114,6 +114,9 @@
              <property name="verticalScrollBarPolicy">
               <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
              <property name="dragEnabled">
               <bool>true</bool>
              </property>
@@ -126,7 +129,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="new_tag_orignal_lst">
+            <widget class="QListWidget" name="new_tag_transl_lst">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -184,6 +187,9 @@
              <width>16777215</width>
              <height>30</height>
             </size>
+           </property>
+           <property name="acceptRichText">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -264,7 +270,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>890</width>
+     <width>921</width>
      <height>21</height>
     </rect>
    </property>
