@@ -60,18 +60,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def showTagInfo(self):
         """show the tag info of the selected tag in the tag tree widget"""
         # Get the currently selected item
-        current_item = self.sender().currentItem()
+        currentItem = self.sender().currentItem()
 
         # If no item is selected, do nothing
-        if current_item is None:
+        if currentItem is None:
             return
 
         # Get the tag name of the currently selected item
-        tagName = current_item.text(0)
+        tagName = currentItem.text(0)
         tag = self.tagTree.tagDict[tagName]
 
-        # If the selected item is not a tag, do nothing
+        # If the selected item is not a tag, clear the tag info text edit and return
         if not tag.isTag:
+            self.tag_info.clear()
             return
         
         # Show the tag info in the tag info text edit
