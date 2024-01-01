@@ -2,7 +2,7 @@
 
 import os
 import json
-import program_objects as proObj
+import program_objects as progObjs
 
 # the program will generate four json files to store pic data
 # 1. Metadata.json: contains all metadata
@@ -39,7 +39,7 @@ def loadJson(filePath: str):
         data = json.load(file)
     return data
 
-def loadTagTree(tagTreeFile: str = "tag_tree.json") -> proObj.TagTree:
+def loadTagTree(tagTreeFile: str = "tag_tree.json") -> progObjs.TagTree:
     """
     Initializes a TagTree object from a JSON file.
 
@@ -53,6 +53,6 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> proObj.TagTree:
     """
     with open(tagTreeFile, "r", encoding='utf-8') as file:
         tagTreeDict = json.load(file)
-    Tree = proObj.TagTree(tagTreeDict)
+    Tree = progObjs.TagTree(tagTreeDict)
     del tagTreeDict # clear memory
     return Tree

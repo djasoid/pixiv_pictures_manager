@@ -1,6 +1,8 @@
 # This file contains objects in the program
 # modified the tag_tree.json file structure
 
+from PySide6.QtWidgets import QTreeWidgetItem
+
 class PicData:
     __slots__ = ["source", "pid", "count", "resolution", "size", "fileName", "directory", "liked", "metadata", "title", "user", "userId", "tags", "date", "description"]
     def __init__(self, pid: str, count: int = 1):
@@ -443,3 +445,18 @@ class TagTree:
             outputDict.update(self.tagDict[tag].toDict())
 
         return outputDict
+    
+    def toTreeWidgetItem(self, tag: Tag = None) -> QTreeWidgetItem:
+        """Convert the TagTree object to a QTreeWidgetItem"""
+        if tag is None:
+            tag = self.root
+
+        # Create a new QTreeWidgetItem
+        TreeWidgetItem = QTreeWidgetItem()
+        TreeWidgetItem.setText(0, tag.name)
+
+        # Add the sub tags to the QTreeWidgetItem
+        for subTag in tag.subTags.values():
+            TreeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
+
+        return TreeWidgetItem
