@@ -125,6 +125,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.new_tag_input.sizePolicy().hasHeightForWidth())
         self.new_tag_input.setSizePolicy(sizePolicy1)
         self.new_tag_input.setMaximumSize(QSize(16777215, 30))
+        self.new_tag_input.setAcceptRichText(False)
 
         self.tag_edit_layout.addWidget(self.new_tag_input)
 
@@ -188,7 +189,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u6807\u7b7e\u7ba1\u7406", None))
         self.actionOpen.setText(QCoreApplication.translate("MainWindow", u"Open", None))
         self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.actionUndo.setText(QCoreApplication.translate("MainWindow", u"Undo", None))
