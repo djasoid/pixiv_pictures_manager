@@ -22,6 +22,8 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHe
     QTextEdit, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
     QWidget)
 
+from Ui_Custom_Widget import MainTagTreeWidget
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -49,22 +51,25 @@ class Ui_MainWindow(object):
         self.verticalLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.tag_widget = QWidget(self.centralwidget)
         self.tag_widget.setObjectName(u"tag_widget")
-        self.horizontalLayout_2 = QHBoxLayout(self.tag_widget)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.tag_widget_layout = QHBoxLayout(self.tag_widget)
+        self.tag_widget_layout.setObjectName(u"tag_widget_layout")
+        self.tag_widget_layout.setContentsMargins(0, 0, 0, 0)
         self.view_tree = QTreeWidget(self.tag_widget)
         __qtreewidgetitem = QTreeWidgetItem()
         __qtreewidgetitem.setText(0, u"1");
         self.view_tree.setHeaderItem(__qtreewidgetitem)
         self.view_tree.setObjectName(u"view_tree")
         self.view_tree.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.view_tree.setProperty("showDropIndicator", False)
         self.view_tree.setDragEnabled(True)
         self.view_tree.setDragDropMode(QAbstractItemView.DragOnly)
         self.view_tree.setAnimated(True)
+        self.view_tree.setHeaderHidden(True)
+        self.view_tree.setColumnCount(1)
 
-        self.horizontalLayout_2.addWidget(self.view_tree)
+        self.tag_widget_layout.addWidget(self.view_tree)
 
-        self.main_tree = QTreeWidget(self.tag_widget)
+        self.main_tree = MainTagTreeWidget(self.tag_widget)
         __qtreewidgetitem1 = QTreeWidgetItem()
         __qtreewidgetitem1.setText(0, u"1");
         self.main_tree.setHeaderItem(__qtreewidgetitem1)
@@ -72,8 +77,10 @@ class Ui_MainWindow(object):
         self.main_tree.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.main_tree.setDragDropMode(QAbstractItemView.DropOnly)
         self.main_tree.setAnimated(True)
+        self.main_tree.setHeaderHidden(True)
+        self.main_tree.setColumnCount(1)
 
-        self.horizontalLayout_2.addWidget(self.main_tree)
+        self.tag_widget_layout.addWidget(self.main_tree)
 
         self.tag_edit_layout = QVBoxLayout()
         self.tag_edit_layout.setSpacing(0)
@@ -81,31 +88,32 @@ class Ui_MainWindow(object):
         self.new_tag_layout = QHBoxLayout()
         self.new_tag_layout.setSpacing(0)
         self.new_tag_layout.setObjectName(u"new_tag_layout")
-        self.new_tag_orignal_lst = QListWidget(self.tag_widget)
-        self.new_tag_orignal_lst.setObjectName(u"new_tag_orignal_lst")
+        self.new_tag_transl_lst = QListWidget(self.tag_widget)
+        self.new_tag_transl_lst.setObjectName(u"new_tag_transl_lst")
         sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.new_tag_orignal_lst.sizePolicy().hasHeightForWidth())
-        self.new_tag_orignal_lst.setSizePolicy(sizePolicy1)
-        self.new_tag_orignal_lst.setMaximumSize(QSize(150, 16777215))
-        self.new_tag_orignal_lst.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.new_tag_orignal_lst.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.new_tag_orignal_lst.setDragEnabled(True)
-        self.new_tag_orignal_lst.setDragDropMode(QAbstractItemView.DragOnly)
-        self.new_tag_orignal_lst.setDefaultDropAction(Qt.CopyAction)
-
-        self.new_tag_layout.addWidget(self.new_tag_orignal_lst)
-
-        self.new_tag_transl_lst = QListWidget(self.tag_widget)
-        self.new_tag_transl_lst.setObjectName(u"new_tag_transl_lst")
         sizePolicy1.setHeightForWidth(self.new_tag_transl_lst.sizePolicy().hasHeightForWidth())
         self.new_tag_transl_lst.setSizePolicy(sizePolicy1)
         self.new_tag_transl_lst.setMaximumSize(QSize(150, 16777215))
+        self.new_tag_transl_lst.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.new_tag_transl_lst.setEditTriggers(QAbstractItemView.SelectedClicked)
         self.new_tag_transl_lst.setDragEnabled(True)
         self.new_tag_transl_lst.setDragDropMode(QAbstractItemView.DragOnly)
+        self.new_tag_transl_lst.setDefaultDropAction(Qt.CopyAction)
 
         self.new_tag_layout.addWidget(self.new_tag_transl_lst)
+
+        self.new_tag_orignal_lst = QListWidget(self.tag_widget)
+        self.new_tag_orignal_lst.setObjectName(u"new_tag_orignal_lst")
+        sizePolicy1.setHeightForWidth(self.new_tag_orignal_lst.sizePolicy().hasHeightForWidth())
+        self.new_tag_orignal_lst.setSizePolicy(sizePolicy1)
+        self.new_tag_orignal_lst.setMaximumSize(QSize(150, 16777215))
+        self.new_tag_orignal_lst.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.new_tag_orignal_lst.setDragEnabled(True)
+        self.new_tag_orignal_lst.setDragDropMode(QAbstractItemView.DragOnly)
+
+        self.new_tag_layout.addWidget(self.new_tag_orignal_lst)
 
 
         self.tag_edit_layout.addLayout(self.new_tag_layout)
@@ -130,7 +138,7 @@ class Ui_MainWindow(object):
         self.tag_edit_layout.addWidget(self.new_tag_input)
 
 
-        self.horizontalLayout_2.addLayout(self.tag_edit_layout)
+        self.tag_widget_layout.addLayout(self.tag_edit_layout)
 
 
         self.verticalLayout.addWidget(self.tag_widget)

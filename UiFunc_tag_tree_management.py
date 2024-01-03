@@ -1,5 +1,5 @@
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtWidgets import QApplication, QMainWindow, QListWidgetItem, QTextEdit
+from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QAbstractItemView
 
 from Ui_tag_tree_management import Ui_MainWindow
 
@@ -14,8 +14,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.loadTagTree()
         self.loadNewTag()
 
-        self.new_tag_input.installEventFilter(self) # install event filter to new_tag_input
-
     def bind(self):
         # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
         self.new_tag_orignal_lst.verticalScrollBar().valueChanged.connect(
@@ -27,7 +25,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.view_tree.itemSelectionChanged.connect(self.showTagInfo)
         self.main_tree.itemSelectionChanged.connect(self.showTagInfo)
 
+        self.new_tag_input.installEventFilter(self) # install event filter to new_tag_input
+
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
+        # Filter for new_tag_input
         if (source == self.new_tag_input and event.type() == QEvent.KeyPress):
             if event.key() == Qt.Key_Tab:
                 text = self.new_tag_input.toPlainText()
@@ -41,14 +42,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.new_tag_store_lst.addItem(item)
                 self.new_tag_input.clear()
                 return True
+
         return super().eventFilter(source, event)
         
     def loadTagTree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
         self.tagTree = dataFn.loadTagTree() # load tag tree from tag_tree.json
-        # these widgets uses different widget item, so it needs synchronization after modified
+
         self.view_tree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
-        self.main_tree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
+
+        self.main_tree.setTagTree(self.tagTree)
+        self.main_tree.setViewTree(self.view_tree)
+        self.main_tree.setOutputBox(self.output_text)
 
     def loadNewTag(self):
         """load new tag file and show it in the new tag lst"""
@@ -61,24 +66,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """show the tag info of the selected tag in the tag tree widget"""
         # Get the currently selected item
         currentItem = self.sender().currentItem()
-
-        # If no item is selected, do nothing
         if currentItem is None:
             return
 
-        # Get the tag name of the currently selected item
         tagName = currentItem.text(0)
         tag = self.tagTree.tagDict[tagName]
-
-        # If the selected item is not a tag, clear the tag info text edit and return
         if not tag.isTag:
             self.tag_info.clear()
             return
         
         # Show the tag info in the tag info text edit
-        self.tag_info.setText(f"Tag name: {tag.name}\n"
-                              f"Parent tags: {', '.join(tag.parent)}\n"
-                              f"Sub tags: {', '.join(tag.subTags.keys())}\n"
+        self.tag_info.setText(f"Name: {tag.name}\n"
+                              f"Parent: {', '.join(tag.parent)}\n"
+                              f"Sub: {', '.join(tag.subTags.keys())}\n"
                               f"Synonyms: {', '.join(tag.synonyms)}\n")
 
 if __name__ == "__main__":
