@@ -35,7 +35,7 @@
     </property>
     <item>
      <widget class="QWidget" name="tag_widget" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="tag_widget_layout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -53,6 +53,9 @@
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
          <property name="dragEnabled">
           <bool>true</bool>
          </property>
@@ -62,6 +65,12 @@
          <property name="animated">
           <bool>true</bool>
          </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
+         <property name="columnCount">
+          <number>1</number>
+         </property>
          <column>
           <property name="text">
            <string notr="true">1</string>
@@ -70,7 +79,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeWidget" name="main_tree">
+        <widget class="MainTagTreeWidget" name="main_tree">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -79,6 +88,12 @@
          </property>
          <property name="animated">
           <bool>true</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
+         <property name="columnCount">
+          <number>1</number>
          </property>
          <column>
           <property name="text">
@@ -98,7 +113,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QListWidget" name="new_tag_orignal_lst">
+            <widget class="QListWidget" name="new_tag_transl_lst">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -115,7 +130,7 @@
               <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::SelectedClicked</set>
              </property>
              <property name="dragEnabled">
               <bool>true</bool>
@@ -129,7 +144,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="new_tag_transl_lst">
+            <widget class="QListWidget" name="new_tag_orignal_lst">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -141,6 +156,9 @@
                <width>150</width>
                <height>16777215</height>
               </size>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
              </property>
              <property name="dragEnabled">
               <bool>true</bool>
@@ -313,6 +331,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MainTagTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">Ui_Custom_Widget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
