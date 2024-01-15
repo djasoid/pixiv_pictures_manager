@@ -10,3 +10,8 @@ new_tag.json
 __pycache__/Ui_Custom_Widget.cpython-37.pyc
 __pycache__/UiCustom_tag_tree_management.cpython-37.pyc
 tag_group.json
+__pycache__/pic_data_functions.cpython-312.pyc
+__pycache__/program_objects.cpython-312.pyc
+__pycache__/Ui_Custom_Widget.cpython-312.pyc
+__pycache__/Ui_tag_tree_management.cpython-312.pyc
+backup/tag_tree.json

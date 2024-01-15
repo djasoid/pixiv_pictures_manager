@@ -190,7 +190,11 @@ class Tag:
     __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth"]
     def __init__(self, name: str, isTag: bool = True, parent: list = None, synonyms: list = None, subTags: dict = None, depth: int = -1):
         self.name = name
-        self.isTag = isTag
+        
+        if self.name.startswith("#"):
+            self.isTag = True
+        else:
+            self.isTag = False
 
         if parent is None:
             self.parent = []
