@@ -19,13 +19,13 @@ def parseCommand(command):
         
     elif command == "s": # save tag tree
         print("saving...")
-        dataFn.writeJson(Tree.toDict(), "", "tag_tree.json")
+        dataFn.writeJson(Tree.toDict(), "tag_tree.json")
         print("tag tree saved")
         return
 
     elif command == "exit": # exit the program
         print("exiting...")
-        dataFn.writeJson(Tree.toDict(), "", "tag_tree.json")
+        dataFn.writeJson(Tree.toDict(), "tag_tree.json")
         print("tag tree saved")
         return
 

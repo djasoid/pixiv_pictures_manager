@@ -1,6 +1,5 @@
 # This file contains all pic data functions
 
-import os
 import json
 import program_objects as progObjs
 
@@ -10,7 +9,7 @@ import program_objects as progObjs
 # 3. IllustratorIndex.json: contains all illustrators info
 # 4. NoMetadata.json: contains all pids without metadata
 
-def writeJson(data, output_directory: str, filename: str) -> None:
+def writeJson(data, outputFile: str) -> None:
     """
     Writes data to a JSON file.
 
@@ -21,10 +20,9 @@ def writeJson(data, output_directory: str, filename: str) -> None:
     output_directory (str): The directory to write the file to.
     filename (str): The name of the file to write.
     """
-    output_file = os.path.join(output_directory, filename)
-    with open(output_file, "w", encoding='utf-8') as file:
+    with open(outputFile, "w", encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print (f"\nthe {filename} is at {output_file}")
+    print (f"write to {outputFile} successfully")
 
 def loadJson(filePath: str):
     """

@@ -1,5 +1,6 @@
 from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QAbstractItemView
+from PySide6.QtGui import QKeySequence, QShortcut
 
 from Ui_tag_tree_management import Ui_MainWindow
 
@@ -11,8 +12,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.bind()
-        self.loadTagTree()
         self.loadNewTag()
+        self.loadTagTree()
 
     def bind(self):
         # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
@@ -26,6 +27,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.main_tree.itemSelectionChanged.connect(self.showTagInfo)
 
         self.new_tag_input.installEventFilter(self) # install event filter to new_tag_input
+
+        # Connect the save shortcut
+        self.saveShortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.saveShortcut.activated.connect(self.saveTree)
 
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for new_tag_input
@@ -52,13 +57,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.view_tree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
 
         self.main_tree.setTagTree(self.tagTree)
-        self.main_tree.setViewTree(self.view_tree)
         self.main_tree.setOutputBox(self.output_text)
+        self.main_tree.setNewTagLst(self.newTagLst)
+        self.main_tree.setListWidgets(self.new_tag_orignal_lst, self.new_tag_transl_lst, self.new_tag_store_lst)
+    
+    def reloadViewTree(self):
+        """reload the view tree"""
+        self.view_tree.clear()
+        self.view_tree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
 
     def loadNewTag(self):
         """load new tag file and show it in the new tag lst"""
         self.newTagLst = dataFn.loadJson("new_tag.json")
         for tagPair in self.newTagLst:
+            if len(tagPair) == 3: # if the tag has been added to the tag tree, pass it
+                continue
             self.new_tag_orignal_lst.addItem(tagPair[0])
             self.new_tag_transl_lst.addItem(tagPair[1])
 
@@ -81,6 +94,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                               f"Sub: {', '.join(tag.subTags.keys())}\n"
                               f"Synonyms: {', '.join(tag.synonyms)}\n")
 
+    def saveTree(self):
+        dataFn.writeJson(self.tagTree.toDict(), "tag_tree.json")
+        dataFn.writeJson(self.newTagLst, "new_tag.json")
+        self.output_text.append("tag tree saved")
+        return
+    
 if __name__ == "__main__":
     app = QApplication([])
     window = MainWindow()
