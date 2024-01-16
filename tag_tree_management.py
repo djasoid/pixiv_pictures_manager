@@ -12,8 +12,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.bind()
-        self.loadNewTag()
         self.loadTagTree()
+        self.loadNewTag()
+
 
     def bind(self):
         # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
@@ -58,7 +59,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.main_tree.setTagTree(self.tagTree)
         self.main_tree.setOutputBox(self.output_text)
-        self.main_tree.setNewTagLst(self.newTagLst)
         self.main_tree.setListWidgets(self.new_tag_orignal_lst, self.new_tag_transl_lst, self.new_tag_store_lst)
     
     def reloadViewTree(self):
@@ -69,11 +69,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def loadNewTag(self):
         """load new tag file and show it in the new tag lst"""
         self.newTagLst = dataFn.loadJson("new_tag.json")
+        newTagCount = 0
         for tagPair in self.newTagLst:
-            if len(tagPair) == 3: # if the tag has been added to the tag tree, pass it
+            if len(tagPair) > 2: # if the tag has been added to the tag tree, pass it
+                continue
+            if self.tagTree.isInTree(tagPair[1]): # if the tag is exist in tag tree, pass it
+                if len(tagPair) == 2:
+                    tagPair.append("added")
                 continue
             self.new_tag_orignal_lst.addItem(tagPair[0])
             self.new_tag_transl_lst.addItem(tagPair[1])
+            newTagCount += 1
+        
+        self.output_text.append(f"new tag loaded, {newTagCount} tags in total")
+        self.main_tree.setNewTagLst(self.newTagLst)
 
     def showTagInfo(self):
         """show the tag info of the selected tag in the tag tree widget"""

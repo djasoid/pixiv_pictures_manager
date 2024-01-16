@@ -464,3 +464,15 @@ class TagTree:
             TreeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
 
         return TreeWidgetItem
+    
+    def isInTree(self, tag: str) -> bool:
+        """Check if a tag is in the TagTree"""
+        if tag in self.tagDict:
+            print(f"{tag} is in the TagTree")
+            return True
+        else:
+            for tagObj in self.tagDict.values():
+                if tag in tagObj.synonyms:
+                    print(f"{tag} is in the synonyms of {tagObj.name}")
+                    return True
+        return False
