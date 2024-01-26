@@ -188,7 +188,7 @@ class PicData:
 
 class Tag:
     __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth"]
-    def __init__(self, name: str, isTag: bool = True, parent: list = None, synonyms: list = None, subTags: dict = None, depth: int = -1):
+    def __init__(self, name: str, isTag: bool = True, parent: list = None, synonyms: set = None, subTags: dict = None, depth: int = -1):
         self.name = name
         
         if self.name.startswith("#"):
@@ -202,7 +202,7 @@ class Tag:
             self.parent = parent
 
         if synonyms is None:
-            self.synonyms = []
+            self.synonyms = set()
         else:
             self.synonyms = synonyms
 
@@ -224,7 +224,7 @@ class Tag:
                 'name': self.name,
                 'isTag': self.isTag,
                 'parent': self.parent,
-                'synonyms': self.synonyms,
+                'synonyms': list(self.synonyms),
                 'subTags': subTagList
             }
         }
@@ -243,13 +243,14 @@ class Tag:
     def addSynonym(self, synonym: str) -> None:
         """Add a synonym to this tag"""
         if synonym not in self.synonyms:
-            self.synonyms.append(synonym)
+            self.synonyms.add(synonym)
     
 class TagTree:
     def __init__(self, tagTreeData: dict, root = "标签") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
         self.tagDict = {} #a dictionary of all tag objects
+        self.allTagSet = None #a set of all tags
         self.root = self.buildTree(tagTreeData[root]) #the root of the TagTree(is a Tag object)
         self.tagTreeData = None #clear memory
 
@@ -258,7 +259,7 @@ class TagTree:
         name = data['name']
         isTag = data['isTag']
         parent = data['parent']
-        synonyms = data['synonyms']
+        synonyms = set(data['synonyms'])
 
         #check if the tag is already in the tagDict
         if name in self.tagDict:
@@ -344,8 +345,7 @@ class TagTree:
 
             # Add the parent set to the parent_dict for each synonym
             if includeSynonyms:
-                synonyms = tag.synonyms
-                for synonym in synonyms:
+                for synonym in tag.synonyms:
                     if synonym in parent_dict:
                         parent_dict[synonym].update(parentSet.copy())
                     else:
@@ -467,12 +467,13 @@ class TagTree:
     
     def isInTree(self, tag: str) -> bool:
         """Check if a tag is in the TagTree"""
-        if tag in self.tagDict:
-            print(f"{tag} is in the TagTree")
+        if self.allTagSet is None:
+            self.allTagSet = set()
+            for tag in self.tagDict:
+                self.allTagSet.add(tag)
+                self.allTagSet.update(self.tagDict[tag].synonyms)
+        
+        if tag in self.allTagSet:
             return True
         else:
-            for tagObj in self.tagDict.values():
-                if tag in tagObj.synonyms:
-                    print(f"{tag} is in the synonyms of {tagObj.name}")
-                    return True
-        return False
+            return False

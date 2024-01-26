@@ -15,3 +15,7 @@ __pycache__/program_objects.cpython-312.pyc
 __pycache__/Ui_Custom_Widget.cpython-312.pyc
 __pycache__/Ui_tag_tree_management.cpython-312.pyc
 backup/tag_tree.json
+脚本.py
+__pycache__/tag_tree_management.cpython-312.pyc
+__pycache__/Ui_delete_tag_dialog.cpython-312.pyc
+__pycache__/Ui_synonym_edit_dialog.cpython-312.pyc
