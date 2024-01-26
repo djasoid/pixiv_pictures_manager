@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHe
     QTextEdit, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
     QWidget)
 
-from Ui_Custom_Widget import MainTagTreeWidget
+from custom_widget import MainTagTreeWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
