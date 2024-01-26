@@ -19,3 +19,4 @@ backup/tag_tree.json
 __pycache__/tag_tree_management.cpython-312.pyc
 __pycache__/Ui_delete_tag_dialog.cpython-312.pyc
 __pycache__/Ui_synonym_edit_dialog.cpython-312.pyc
+__pycache__/custom_widget.cpython-312.pyc
