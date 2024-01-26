@@ -335,7 +335,7 @@
   <customwidget>
    <class>MainTagTreeWidget</class>
    <extends>QTreeWidget</extends>
-   <header location="global">Ui_Custom_Widget</header>
+   <header location="global">custom_widget</header>
   </customwidget>
  </customwidgets>
  <resources/>
