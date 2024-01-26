@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'tag_tree_management.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -97,7 +97,7 @@ class Ui_MainWindow(object):
         self.new_tag_transl_lst.setSizePolicy(sizePolicy1)
         self.new_tag_transl_lst.setMaximumSize(QSize(150, 16777215))
         self.new_tag_transl_lst.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.new_tag_transl_lst.setEditTriggers(QAbstractItemView.SelectedClicked)
+        self.new_tag_transl_lst.setEditTriggers(QAbstractItemView.DoubleClicked)
         self.new_tag_transl_lst.setDragEnabled(True)
         self.new_tag_transl_lst.setDragDropMode(QAbstractItemView.DragOnly)
         self.new_tag_transl_lst.setDefaultDropAction(Qt.CopyAction)

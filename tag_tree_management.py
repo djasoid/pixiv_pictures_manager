@@ -1,5 +1,5 @@
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QAbstractItemView
+from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QAbstractItemView, QDialog
 from PySide6.QtGui import QKeySequence, QShortcut
 
 from Ui_tag_tree_management import Ui_MainWindow
@@ -14,7 +14,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bind()
         self.loadTagTree()
         self.loadNewTag()
-
 
     def bind(self):
         # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
@@ -32,6 +31,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Connect the save shortcut
         self.saveShortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         self.saveShortcut.activated.connect(self.saveTree)
+
+        # double click to edit item in new_tag_transl_lst
+        self.new_tag_transl_lst.itemDoubleClicked.connect(self.new_tag_transl_lst.editItem)
 
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for new_tag_input
@@ -73,16 +75,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for tagPair in self.newTagLst:
             if len(tagPair) > 2: # if the tag has been added to the tag tree, pass it
                 continue
-            if self.tagTree.isInTree(tagPair[1]): # if the tag is exist in tag tree, pass it
+            if self.tagTree.isInTree(tagPair[0]): # if the tag is exist in tag tree, pass it
                 if len(tagPair) == 2:
                     tagPair.append("added")
                 continue
             self.new_tag_orignal_lst.addItem(tagPair[0])
-            self.new_tag_transl_lst.addItem(tagPair[1])
+            new_trasl_item = QListWidgetItem(tagPair[1])
+            new_trasl_item.setFlags(new_trasl_item.flags() | Qt.ItemIsEditable) # make the item editable
+            self.new_tag_transl_lst.addItem(new_trasl_item)
             newTagCount += 1
         
         self.output_text.append(f"new tag loaded, {newTagCount} tags in total")
-        self.main_tree.setNewTagLst(self.newTagLst)
+        self.main_tree.setNewTagLst(self.newTagLst) # pass newTagLst to main_tree to record which tags are added
 
     def showTagInfo(self):
         """show the tag info of the selected tag in the tag tree widget"""
@@ -108,7 +112,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dataFn.writeJson(self.newTagLst, "new_tag.json")
         self.output_text.append("tag tree saved")
         return
-    
+
 if __name__ == "__main__":
     app = QApplication([])
     window = MainWindow()

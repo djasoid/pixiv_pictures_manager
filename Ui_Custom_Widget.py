@@ -1,9 +1,45 @@
-from PySide6.QtWidgets import QTextEdit, QTreeWidget, QTreeWidgetItem, QListWidget, QMenu
+from PySide6.QtWidgets import QTextEdit, QTreeWidget, QTreeWidgetItem, QListWidget, QMenu, QDialog
 from PySide6.QtGui import QContextMenuEvent, QFont, QAction
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QByteArray, Qt
+
+from Ui_delete_tag_dialog import Ui_delete_tag_dialog
+from Ui_synonym_edit_dialog import Ui_synonym_edit_dialog
 
 import program_objects as progObjs
 import pic_data_functions as dataFn
+
+class deleteDialog(QDialog, Ui_delete_tag_dialog):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+    
+    def setContent(self, tagName, parentTagName):
+        self.delete_info_label.setText(f"确认从 {parentTagName} 删除 {tagName} ？")
+    
+    def accept(self):
+        super().accept()
+    
+    def reject(self):
+        super().reject()
+
+class synonymEditDialog(QDialog, Ui_synonym_edit_dialog):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setupUi(self)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+    def setContent(self, tagName, synonyms):
+        self.setWindowTitle(f"编辑同义标签：{tagName}")
+        self.synonym_text_edit.setPlainText("\n".join(synonyms))
+
+    def accept(self):
+        super().accept()
+    
+    def reject(self):
+        super().reject()
 
 # Customized QTreeWidget for tag tree
 class MainTagTreeWidget(QTreeWidget):
@@ -11,6 +47,8 @@ class MainTagTreeWidget(QTreeWidget):
         super().__init__(parent)
         self.history = []
         self.addedFont = QFont()
+        self.delete_tag_dialog = deleteDialog(self)
+        self.synonym_edit_dialog = synonymEditDialog(self)
 
     def setTagTree(self, tagTree: progObjs.TagTree):
         self.tagTree = tagTree
@@ -69,23 +107,23 @@ class MainTagTreeWidget(QTreeWidget):
 
         if operation == "add_new": # add new tag
             self.tagTree.addNewTag(sub, parent)
-            self.output_Box.append(f"new tag {sub} added to {parent}")
+            self.output_Box.append(f"添加新标签 {sub} 到 {parent}")
             return
 
         elif operation == "add_parent": # add parent tag
             self.tagTree.addParentTag(sub, parent)
-            self.output_Box.append(f"tag {sub} added to {parent}")
+            self.output_Box.append(f"标签 {sub} 添加至 {parent}")
             return
 
         elif operation == "add_synonym": # add synonym
             self.tagTree.tagDict[parent].addSynonym(sub)
-            self.output_Box.append(f"synonym {sub} added to {parent}")
+            self.output_Box.append(f"同义标签 {sub} 添加至 {parent}")
             return
 
         elif operation == "del": # delete tag
             self.tagTree.deleteTag(sub, parent)
             parentItem.removeChild(subItem)
-            self.output_Box.append(f"tag {sub} deleted from {parent}")
+            self.output_Box.append(f"标签 {sub} 从 {parent} 删除")
             return
         else:
             return
@@ -115,9 +153,11 @@ class MainTagTreeWidget(QTreeWidget):
             orignalItem.setForeground(Qt.gray)
             translItem.setForeground(Qt.gray)
 
+            orignalTag = orignalItem.text()
+
             # mark the tag in the new tag list as added
             for tagPair in self.newTagLst:
-                if tagPair[1] == tag:
+                if tagPair[0] == orignalTag:
                     tagPair.append("added")
                     return
     
@@ -132,8 +172,27 @@ class MainTagTreeWidget(QTreeWidget):
         # get the tag name of the parent item
         parentTagName = parentItem.text(0)
         contextMenu = QMenu(self)
-        contextMenu.addAction(QAction("delete", self, triggered=lambda: self.editTree("del", tagName, parentTagName, currentItem, parentItem)))
+        contextMenu.addAction(QAction("编辑同义标签", self, triggered=lambda: self.synonymEdit(tagName)))
+        contextMenu.addAction(QAction("删除标签", self, triggered=lambda: self.confirmDelete(tagName, parentTagName, currentItem, parentItem)))
         contextMenu.exec_(event.globalPos())
+
+    def confirmDelete(self, tagName, parentTagName, currentItem, parentItem):
+        """show the delete tag dialog"""
+        self.delete_tag_dialog.setContent(tagName, parentTagName)
+        result = self.delete_tag_dialog.exec_()
+        if result == QDialog.Accepted:
+            self.editTree("del", tagName, parentTagName, currentItem, parentItem)
+
+    def synonymEdit(self, tagName):
+        """show the synonym edit dialog"""
+        synonyms = self.tagTree.tagDict[tagName].synonyms
+        self.synonym_edit_dialog.setContent(tagName, synonyms)
+        result = self.synonym_edit_dialog.exec_()
+        if result == QDialog.Accepted:
+            input = set(self.synonym_edit_dialog.synonym_text_edit.toPlainText().split("\n"))
+            edited = {i for i in input if i.startswith("#")}
+            self.tagTree.tagDict[tagName].synonyms = edited
+
 
     def undoOperation(self):
         if len(self.history) > 1:

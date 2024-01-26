@@ -44,6 +44,7 @@ class core:
         self.noMetadata = noMetadata
         self.allParentTagDict = None
         self.unknowTag = set()
+        self.tagCount = {}
     
     def genVarForInit(self) -> None:
         """
@@ -68,12 +69,20 @@ class core:
                 tags = data["tags"]
                 newTags = set()
                 for tag in tags:
+                    newTags.add(tag)
                     if tag in self.allParentTagDict:
-                        newTags.add(tag)
                         newTags.update(self.allParentTagDict[tag])
                     else:
                         self.unknowTag.add(tag)
-                        newTags.add(tag)
+                    
+                    if tag.endswith("users入り"): # not count users入り tag
+                        continue
+                    
+                    if tag in self.tagCount:
+                        self.tagCount[tag] += 1
+                    else:
+                        self.tagCount[tag] = 1
+                        
                 self.metadataDict[pid]["tags"] = list(newTags)
 
     def initTagIndex(self) -> dict:
@@ -105,7 +114,7 @@ class core:
                     if tag in self.allParentTagDict:
                         tagInTree.add(tag)
                 
-                # remove all parent tags from the tag set
+                # remove all parent tags from the tag set to remove excessive tags
                 tagSet = tagInTree.copy()
                 for tag in tagInTree:
                     if tag in tagSet:
@@ -133,13 +142,20 @@ class core:
         Returns:
         set: A set of pids that contain the tags.
         """
+        # check if tagIndex is initialized
+        if self.tagIndex is None:
+            print("ERROR: tagIndex not exist")
+            return None
+
         # check if the tag is in the tag tree
         for tag in includeTag:
-            if tag not in self.allParentTagDict:
-                raise ValueError(f"tag {tag} not in tag tree")
+            if not self.tagTree.isInTree(tag):
+                print(f"ERROR: tag {tag} not in tag tree")
+                return None
         for tag in excludeTag:
-            if tag not in self.allParentTagDict:
-                raise ValueError(f"tag {tag} not in tag tree")
+            if not self.tagTree.isInTree(tag):
+                print(f"ERROR: tag {tag} not in tag tree")
+                return None
         
         allExcludeTag = []
         allIncludeTag = includeTag.copy()
@@ -291,3 +307,6 @@ class core:
         This function returns a list of unknown tags.
         """
         return list(self.unknowTag)
+    
+if __name__ == "__main__":
+    pass
