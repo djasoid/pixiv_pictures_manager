@@ -1,5 +1,3 @@
-# This file contains all pic data functions
-
 import json
 import program_objects as progObjs
 

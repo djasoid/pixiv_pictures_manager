@@ -15,11 +15,39 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QPlainTextEdit" name="synonym_text_edit">
-     <property name="plainText">
-      <string notr="true"/>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="synonyms_label">
+       <property name="text">
+        <string>Synonyms</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="synonym_text_edit">
+       <property name="plainText">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="english_name_label">
+       <property name="text">
+        <string>English Name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="english_name_edit">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

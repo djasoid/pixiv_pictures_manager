@@ -31,9 +31,10 @@ class synonymEditDialog(QDialog, Ui_synonym_edit_dialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
 
-    def setContent(self, tagName, synonyms):
+    def setContent(self, tagName: str, synonyms: set, enName: str):
         self.setWindowTitle(f"编辑同义标签：{tagName}")
         self.synonym_text_edit.setPlainText("\n".join(synonyms))
+        self.english_name_edit.setPlainText(enName)
 
     def accept(self):
         super().accept()
@@ -186,11 +187,19 @@ class MainTagTreeWidget(QTreeWidget):
     def synonymEdit(self, tagName):
         """show the synonym edit dialog"""
         synonyms = self.tagTree.tagDict[tagName].synonyms
-        self.synonym_edit_dialog.setContent(tagName, synonyms)
+        enName = self.tagTree.tagDict[tagName].enName
+        self.synonym_edit_dialog.setContent(tagName, synonyms, enName)
         result = self.synonym_edit_dialog.exec_()
         if result == QDialog.Accepted:
-            input = set(self.synonym_edit_dialog.synonym_text_edit.toPlainText().split("\n"))
-            edited = {i for i in input if i.startswith("#")}
+            synonymsInput = set(self.synonym_edit_dialog.synonym_text_edit.toPlainText().split("\n"))
+            enNameInput = self.synonym_edit_dialog.english_name_edit.toPlainText()
+
+            if enNameInput.isascii():
+                self.tagTree.tagDict[tagName].setEnName(enNameInput)
+            else:
+                self.output_Box.append("英文名只能包含ASCII字符")
+            
+            edited = {i for i in synonymsInput if i.startswith("#")}
             self.tagTree.tagDict[tagName].synonyms = edited
 
 

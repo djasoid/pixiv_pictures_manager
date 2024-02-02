@@ -26,7 +26,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.view_tree.itemSelectionChanged.connect(self.showTagInfo)
         self.main_tree.itemSelectionChanged.connect(self.showTagInfo)
 
-        self.new_tag_input.installEventFilter(self) # install event filter to new_tag_input
+        # install event filter for new_tag_input and new_tag_orignal_lst
+        self.new_tag_input.installEventFilter(self)
+        self.new_tag_orignal_lst.installEventFilter(self)
 
         # Connect the save shortcut
         self.saveShortcut = QShortcut(QKeySequence("Ctrl+S"), self)
@@ -36,7 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.new_tag_transl_lst.itemDoubleClicked.connect(self.new_tag_transl_lst.editItem)
 
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
-        # Filter for new_tag_input
+        # Filter for new_tag_input, implement tab to add '#' and enter to add tag
         if (source == self.new_tag_input and event.type() == QEvent.KeyPress):
             if event.key() == Qt.Key_Tab:
                 text = self.new_tag_input.toPlainText()
@@ -49,6 +51,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 item = QListWidgetItem(self.new_tag_input.toPlainText())
                 self.new_tag_store_lst.addItem(item)
                 self.new_tag_input.clear()
+                return True
+        # Filter for new_tag_orignal_lst, implement copy without '#' at the beginning
+        elif (source == self.new_tag_orignal_lst and event.type() == QEvent.KeyPress):
+            if event.matches(QKeySequence.Copy):
+                text = self.new_tag_orignal_lst.currentItem().text()
+                QApplication.clipboard().setText(text[1:])
                 return True
 
         return super().eventFilter(source, event)
@@ -102,15 +110,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
         
         # Show the tag info in the tag info text edit
-        self.tag_info.setText(f"Name: {tag.name}\n"
-                              f"Parent: {', '.join(tag.parent)}\n"
-                              f"Sub: {', '.join(tag.subTags.keys())}\n"
-                              f"Synonyms: {', '.join(tag.synonyms)}\n")
+        self.tag_info.setText(f"标签名: {tag.name}\n"
+                              f"同义标签:\n{', '.join(tag.synonyms)}\n"
+                              f"父标签:\n{', '.join(tag.parent)}\n"
+                              f"子标签:\n{', '.join(tag.subTags.keys())}\n")
 
     def saveTree(self):
         dataFn.writeJson(self.tagTree.toDict(), "tag_tree.json")
         dataFn.writeJson(self.newTagLst, "new_tag.json")
-        self.output_text.append("tag tree saved")
+        self.output_text.append("标签树已保存")
         return
 
 if __name__ == "__main__":

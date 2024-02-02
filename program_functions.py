@@ -1,5 +1,3 @@
-# core functions of the program
-
 import program_objects as progObjs
 
 """
@@ -36,7 +34,13 @@ initialize complete
 """
 
 class core:
-    def __init__(self, metadataDict: dict, tagTree: progObjs.TagTree, tagIndex: dict = None, illustratorInfo: dict = None, noMetadata: dict = None):
+    def __init__(self, 
+                 metadataDict: dict[str, any], 
+                 tagTree: progObjs.TagTree, 
+                 tagIndex: dict[str, list[str]] = None, 
+                 illustratorInfo: dict = None, 
+                 noMetadata: dict = None
+                 ):
         self.metadataDict = metadataDict
         self.tagTree = tagTree
         self.tagIndex = tagIndex

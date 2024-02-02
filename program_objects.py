@@ -1,6 +1,3 @@
-# This file contains objects in the program
-# modified the tag_tree.json file structure
-
 from PySide6.QtWidgets import QTreeWidgetItem
 
 class PicData:
@@ -66,9 +63,6 @@ class PicData:
                 data["fileName"].update(self.fileName)
                 return data
 
-    
-    #Adders
-
     def setSource(self, source: str):
         """Set the source of the PicData object"""
         if source not in ["dict", "metadata", "picture"]:
@@ -119,50 +113,6 @@ class PicData:
     def addDescription(self, description):
         self.description = description
     
-    #Getters
-
-    def getPid(self):
-        return self.pid
-    
-    def getCount(self):
-        return self.count
-        
-    def getResolution(self):
-        return self.resolution
-    
-    def getSize(self):
-        return self.size
-    
-    def getFileName(self):
-        return self.fileName
-
-    def getDirectory(self):
-        return self.directory
-
-    def getLiked(self):
-        return self.liked
-    
-    def isMetadataExist(self):
-        return self.metadata
-    
-    def getTitle(self):
-        return self.title
-    
-    def getUser(self):
-        return self.user
-    
-    def getUserId(self):
-        return self.userId
-    
-    def getTags(self):
-        return self.tags
-    
-    def getDate(self):
-        return self.date
-    
-    def getDescription(self):
-        return self.description
-    
     def getUrl(self):
         return "https://www.pixiv.net/i/" + self.pid
     
@@ -187,9 +137,17 @@ class PicData:
         }
 
 class Tag:
-    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth"]
-    def __init__(self, name: str, isTag: bool = True, parent: list = None, synonyms: set = None, subTags: dict = None, depth: int = -1):
+    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth", "enName"]
+    def __init__(self, 
+                 name: str, 
+                 parent: list = None, 
+                 synonyms: set = None, 
+                 subTags: dict = None, 
+                 enName: str = "", 
+                 depth: int = -1
+                 ):
         self.name = name
+        self.enName = enName
         
         if self.name.startswith("#"):
             self.isTag = True
@@ -222,7 +180,7 @@ class Tag:
             self.name: 
             {
                 'name': self.name,
-                'isTag': self.isTag,
+                'enName': self.enName,
                 'parent': self.parent,
                 'synonyms': list(self.synonyms),
                 'subTags': subTagList
@@ -245,7 +203,16 @@ class Tag:
         if synonym not in self.synonyms:
             self.synonyms.add(synonym)
     
+    def setEnName(self, enName: str) -> None:
+        """Set the enName of this tag"""
+        self.enName = enName
+    
 class TagTree:
+    tagDict: dict[str, Tag] #a dictionary of all tag objects
+
+
+
+
     def __init__(self, tagTreeData: dict, root = "标签") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
@@ -257,7 +224,7 @@ class TagTree:
     def buildTree(self, data: dict, parent=None, depth: int = 0) -> Tag:
         """Build a Tag object from the data dictionary"""
         name = data['name']
-        isTag = data['isTag']
+        enName = data['enName']
         parent = data['parent']
         synonyms = set(data['synonyms'])
 
@@ -279,7 +246,7 @@ class TagTree:
             subTags[subTagName] = subTag
         
         #create a new Tag and add it to the tagDict
-        newTag = Tag(name, isTag, parent, synonyms, subTags, depth)
+        newTag = Tag(name, parent, synonyms, subTags, enName, depth)
         self.tagDict[name] = newTag
 
         return newTag
@@ -347,7 +314,7 @@ class TagTree:
             if includeSynonyms:
                 for synonym in tag.synonyms:
                     if synonym in parent_dict:
-                        parent_dict[synonym].update(parentSet.copy())
+                        parent_dict[synonym].update(parentSet)
                     else:
                         parent_dict[synonym] = parentSet.copy()
 

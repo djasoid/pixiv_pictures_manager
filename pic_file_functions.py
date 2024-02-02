@@ -1,5 +1,3 @@
-# contains functions for processing picture files and metadata files.
-
 import os
 from shutil import copy2
 import program_objects as progObjs
@@ -115,7 +113,7 @@ def getAllData(directory: str) -> dict:
             # process metadata file
             if file.endswith(".txt"):
                 PicMetadata = parseMetadata(filePath)
-                pid = PicMetadata.getPid()
+                pid = PicMetadata.pid
                 # check metadata is already in data or not
                 if pid in data:
                     # pid exist
@@ -123,11 +121,14 @@ def getAllData(directory: str) -> dict:
                 else:
                     # pid not exist
                     data.update(PicMetadata.toDict())
+            
+            elif file.endswith(".webp"): # ignore webp files because they cannot be processed
+                continue
 
             # process pictures
             else:
                 PicMetadata = parsePicture(filePath)
-                pid = PicMetadata.getPid()
+                pid = PicMetadata.pid
                 if pid in data:# pid exist
                     data[pid] = PicMetadata.updateToDict(data[pid])
                 else:# pid not exist
