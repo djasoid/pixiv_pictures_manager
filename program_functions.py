@@ -33,7 +33,7 @@ initialize complete
     <<write config file
 """
 
-class core:
+class Core:
     def __init__(self, 
                  metadataDict: dict[str, any], 
                  tagTree: progObjs.TagTree, 
@@ -89,7 +89,7 @@ class core:
                         
                 self.metadataDict[pid]["tags"] = list(newTags)
 
-    def initTagIndex(self) -> dict:
+    def initTagIndex(self) -> dict[str, list[str]]:
         """
         Initializes a tag index from a metadata dictionary and a parent tag dictionary.
         
@@ -104,7 +104,7 @@ class core:
         if self.allParentTagDict is None:
             self.genVarForInit()
 
-        tagIndex = {}
+        tagIndex: dict[str, list[str]] = {}
 
         # interate every picture info
         for pid in self.metadataDict:
@@ -291,8 +291,8 @@ class core:
         Returns:
         tuple: A sorted tuple where each element is a dictionary of a tag and its count.
         """
-        sorted_tags = sorted(tags.items(), key=lambda x: x[1], reverse=True)
-        return sorted_tags
+        sortedTags = sorted(tags.items(), key=lambda x: x[1], reverse=True)
+        return sortedTags
     
     def updateMetadata(self, newData) -> None:
         """

@@ -210,9 +210,6 @@ class Tag:
 class TagTree:
     tagDict: dict[str, Tag] #a dictionary of all tag objects
 
-
-
-
     def __init__(self, tagTreeData: dict, root = "标签") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
@@ -279,7 +276,7 @@ class TagTree:
             subTags[tag] = self.getSubTags(tag)
         return subTags
     
-    def getAllParentTag(self, tag: Tag = None, parent: set = None, parent_dict: dict = None, includeSynonyms: bool = False) -> dict:
+    def getAllParentTag(self, tag: Tag = None, parent: set = None, parentDict: dict[str, set] = None, includeSynonyms: bool = False) -> dict:
         """
         Get all parent tags of tags in the TagTree
 
@@ -287,10 +284,10 @@ class TagTree:
             key: (str) tag name
             value: (set) set of parent tags
         """
-        if parent_dict is None:
-            parent_dict = {}
+        if parentDict is None:
+            parentDict = {}
         else:
-            parent_dict = parent_dict.copy()
+            parentDict = parentDict.copy()
         
         if parent is None:
             parent = set()
@@ -305,27 +302,27 @@ class TagTree:
             parentSet = parent.copy()
 
             # Add the parent set to the parent_dict
-            if tag.name in parent_dict:
-                parent_dict[tag.name].update(parentSet)
+            if tag.name in parentDict:
+                parentDict[tag.name].update(parentSet)
             else:
-                parent_dict[tag.name] = parentSet.copy()
+                parentDict[tag.name] = parentSet.copy()
 
             # Add the parent set to the parent_dict for each synonym
             if includeSynonyms:
                 for synonym in tag.synonyms:
-                    if synonym in parent_dict:
-                        parent_dict[synonym].update(parentSet)
+                    if synonym in parentDict:
+                        parentDict[synonym].update(parentSet)
                     else:
-                        parent_dict[synonym] = parentSet.copy()
+                        parentDict[synonym] = parentSet.copy()
 
             parentSet.add(tag.name)
         else:
             parentSet = parent
 
         for subTag in tag.subTags.values():
-            parent_dict.update(self.getAllParentTag(subTag, parentSet, parent_dict, includeSynonyms))
+            parentDict.update(self.getAllParentTag(subTag, parentSet, parentDict, includeSynonyms))
 
-        return parent_dict
+        return parentDict
 
     def addNewTag(self, newTag: str, parentTag: str):
         """

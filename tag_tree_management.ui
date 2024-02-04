@@ -34,15 +34,18 @@
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <item>
-     <widget class="QWidget" name="tag_widget" native="true">
+     <widget class="QWidget" name="tagWidget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <layout class="QVBoxLayout" name="view_tree_layout">
+        <layout class="QVBoxLayout" name="viewTreeLayout">
          <property name="spacing">
           <number>0</number>
          </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
          <item>
-          <widget class="QTreeWidget" name="view_tree">
+          <widget class="QTreeWidget" name="viewTree">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -72,27 +75,73 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="view_tree_search_edit">
+          <widget class="QWidget" name="viewTreeSearchWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
              <height>30</height>
             </size>
            </property>
-           <property name="acceptRichText">
-            <bool>false</bool>
-           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QTextEdit" name="viewTreeSearchEdit">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="acceptRichText">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="tagMovingCheckBox">
+              <property name="text">
+               <string>移动标签</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="main_tree_layout">
+        <layout class="QVBoxLayout" name="mainTreeLayout">
          <property name="spacing">
           <number>0</number>
          </property>
          <item>
-          <widget class="MainTagTreeWidget" name="main_tree">
+          <widget class="MainTagTreeWidget" name="mainTree">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -116,7 +165,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="main_tree_search_edit">
+          <widget class="QTextEdit" name="mainTreeSearchEdit">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -131,17 +180,17 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="tag_edit_layout">
+        <layout class="QVBoxLayout" name="tagEditLayout">
          <property name="spacing">
           <number>0</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" name="new_tag_layout">
+          <layout class="QHBoxLayout" name="newTagLayout">
            <property name="spacing">
             <number>0</number>
            </property>
            <item>
-            <widget class="QListWidget" name="new_tag_transl_lst">
+            <widget class="QListWidget" name="newTagTranslList">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -172,7 +221,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="new_tag_orignal_lst">
+            <widget class="QListWidget" name="newTagOrignalList">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -199,7 +248,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QListWidget" name="new_tag_store_lst">
+          <widget class="QListWidget" name="newTagStoreList">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -221,7 +270,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="new_tag_input">
+          <widget class="QTextEdit" name="newTagInput">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -245,7 +294,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="info_widget" native="true">
+     <widget class="QWidget" name="infoWidget" native="true">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -272,7 +321,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="tag_info">
+        <widget class="QTextEdit" name="tagInfo">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -288,7 +337,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="output_text">
+        <widget class="QTextEdit" name="outputTextEdit">
          <property name="maximumSize">
           <size>
            <width>16777215</width>

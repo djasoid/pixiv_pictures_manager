@@ -97,15 +97,15 @@ def getAllData(directory: str) -> dict:
     """
 
     data = {}
-    processed_files = 0
+    processedFiles = 0
     
     # iterate every file in the directory
     for root, dirs, files in os.walk(directory):
         for file in files:
 
             # print progress
-            processed_files += 1
-            print(f'Processed {processed_files} files', end='\r')
+            processedFiles += 1
+            print(f'Processed {processedFiles} files', end='\r')
 
             # get file path
             filePath = os.path.join(root, file)
