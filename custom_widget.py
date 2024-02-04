@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QTextEdit, QTreeWidget, QTreeWidgetItem, QListWidget, QMenu, QDialog
+from PySide6.QtWidgets import QTextEdit, QTreeWidget, QTreeWidgetItem, QListWidget, QMenu, QDialog, QCheckBox
 from PySide6.QtGui import QContextMenuEvent, QFont, QAction
 from PySide6.QtCore import QByteArray, Qt
 
@@ -66,6 +66,9 @@ class MainTagTreeWidget(QTreeWidget):
         self.new_tag_transl_list = new_tag_transl_list
         self.new_tag_store_list = new_tag_store_list
 
+    def setCheckBox(self, tagMovingCheckBox: QCheckBox):
+        self.tagMovingCheckBox = tagMovingCheckBox
+
     def dropEvent(self, event):
         """handle drop event and make changes to the tag tree"""
         targetItem = self.itemAt(event.position().toPoint()) # get the item at the drop position
@@ -76,34 +79,44 @@ class MainTagTreeWidget(QTreeWidget):
         
         source = event.source().objectName()
 
-        if source == "view_tree": # get the tag name from the source
-            dragTag = event.source().currentItem().text(0)
+        if source == "viewTree": # get the tag name from the source
+            dragTagItem = event.source().currentItem()
+            dragTagSourceItem = dragTagItem.parent()
+            dragTagSource = dragTagSourceItem.text(0)
+            dragTag = dragTagItem.text(0)
         else:
             dragTag = event.source().currentItem().text()
 
         self.history.append(({source}, {dragTag}, {targetTag})) # record the operation
 
-        if source == "view_tree":
-            self.editTree("add_parent", dragTag, targetTag)
-            targetItem.addChild(QTreeWidgetItem([dragTag]))
+        if source == "viewTree":
+            if dragTag == targetTag:
+                self.output_Box.append("不能将标签移动到自身")
+            else:
+                if self.tagMovingCheckBox.isChecked(): #TODO: update the Tree widget in real time
+                        self.editTree("move", dragTag, targetTag, source = dragTagSource)
+                        targetItem.addChild(QTreeWidgetItem([dragTag]))
+                else:
+                    self.editTree("add_parent", dragTag, targetTag)
+                    targetItem.addChild(QTreeWidgetItem([dragTag]))
 
-        elif source == "new_tag_store_lst":
+        elif source == "newTagStoreList":
             self.editTree("add_new", dragTag, targetTag)
             targetItem.addChild(QTreeWidgetItem([dragTag]))
             self.markAdded(dragTag, True)
 
-        elif source == "new_tag_orignal_lst":
+        elif source == "newTagOrignalList":
             self.editTree("add_synonym", dragTag, targetTag)
             self.markAdded(dragTag, True)
 
-        elif source == "new_tag_transl_lst":
+        elif source == "newTagTranslList":
             self.editTree("add_new", dragTag, targetTag)
             targetItem.addChild(QTreeWidgetItem([dragTag]))
             originalTag = self.new_tag_orignal_list.item(self.new_tag_transl_list.row(event.source().currentItem())).text()
             self.editTree("add_synonym", originalTag, dragTag)
             self.markAdded(dragTag, False)
         
-    def editTree(self, operation, sub, parent, subItem: QTreeWidgetItem = None, parentItem: QTreeWidgetItem = None):
+    def editTree(self, operation, sub, parent, subItem: QTreeWidgetItem = None, parentItem: QTreeWidgetItem = None, source: str = None):
         """edit the tag tree with the given operation"""
 
         if operation == "add_new": # add new tag
@@ -126,6 +139,11 @@ class MainTagTreeWidget(QTreeWidget):
             parentItem.removeChild(subItem)
             self.output_Box.append(f"标签 {sub} 从 {parent} 删除")
             return
+        
+        elif operation == "move":
+            self.tagTree.addParentTag(sub, parent)
+            self.tagTree.deleteTag(sub, source)
+            self.output_Box.append(f"标签 {sub} 从 {source} 移动至 {parent}")
         else:
             return
 
