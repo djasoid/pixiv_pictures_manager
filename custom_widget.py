@@ -54,6 +54,9 @@ class MainTagTreeWidget(QTreeWidget):
     def setTagTree(self, tagTree: progObjs.TagTree):
         self.tagTree = tagTree
         self.addTopLevelItem(tagTree.toTreeWidgetItem())
+        
+    def setViewTree(self, viewTree: QTreeWidget):
+        self.viewTree = viewTree
 
     def setOutputBox(self, outputBox: QTextEdit): # pass output_box to show output
         self.outputBox = outputBox
@@ -93,16 +96,20 @@ class MainTagTreeWidget(QTreeWidget):
             if dragTag == targetTag:
                 self.outputBox.append("不能将标签移动到自身")
             else:
-                if self.tagMovingCheckBox.isChecked(): #TODO: update the Tree widget in real time
-                        self.editTree("move", dragTag, targetTag, source = dragTagSource)
-                        targetItem.addChild(QTreeWidgetItem([dragTag]))
+                if self.tagMovingCheckBox.isChecked():
+                        self.editTree("move",
+                                      dragTag,
+                                      targetTag,
+                                      source = dragTagSource,
+                                      sourceItem=dragTagSourceItem,
+                                      parentItem=targetItem,
+                                      subItem=dragTagItem)
                 else:
-                    self.editTree("add_parent", dragTag, targetTag)
-                    targetItem.addChild(QTreeWidgetItem([dragTag]))
+                    self.editTree("add_parent", dragTag, targetTag, parentItem=targetItem)
+
 
         elif source == "newTagStoreList": # add operation
-            self.editTree("add_new", dragTag, targetTag)
-            targetItem.addChild(QTreeWidgetItem([dragTag]))
+            self.editTree("add_new", dragTag, targetTag, parentItem=targetItem)
             self.markAdded(dragTag, True)
 
         elif source == "newTagOrignalList":
@@ -110,23 +117,63 @@ class MainTagTreeWidget(QTreeWidget):
             self.markAdded(dragTag, True)
 
         elif source == "newTagTranslList": # add operation
-            self.editTree("add_new", dragTag, targetTag)
-            targetItem.addChild(QTreeWidgetItem([dragTag]))
+            self.editTree("add_new", dragTag, targetTag, parentItem=targetItem)
             originalTag = self.newTagOrignalList.item(self.newTagTranslList.row(event.source().currentItem())).text()
             self.editTree("add_synonym", originalTag, dragTag)
             self.markAdded(dragTag, False)
         
-    def editTree(self, operation, sub, parent, subItem: QTreeWidgetItem = None, parentItem: QTreeWidgetItem = None, source: str = None):
-        """edit the tag tree with the given operation"""
+    def editTree(self, operation, 
+                 sub: str, parent: str, 
+                 subItem: QTreeWidgetItem = None, 
+                 parentItem: QTreeWidgetItem = None, 
+                 sourceItem: QTreeWidgetItem = None,
+                 source: str = None):
+        """edit the tag tree with the given operation, sync the view tree and the tag tree, and show the operation in the output box"""
+        
+        def getCorrespondingTreeItem(sourceItem: QTreeWidgetItem, targetTree: QTreeWidget) -> QTreeWidgetItem:
+            """
+            Retrieves the corresponding tree item in the target tree for a given source tree item.
+
+            Args:
+                sourceItem (QTreeWidgetItem): The source tree item for which to find the corresponding target tree item.
+                sourceTree (QTreeWidget): The tree widget of the source item.
+                targetTree (QTreeWidget): The target tree widget where the corresponding item is to be found.
+
+            Returns:
+                QTreeWidgetItem: The corresponding tree item in the target tree.
+            """
+            index = []
+            pItem = sourceItem.parent()
+            while pItem:
+                index.append(pItem.indexOfChild(sourceItem))
+                sourceItem = pItem
+                pItem = sourceItem.parent()
+            index.reverse()
+            targetItem = targetTree.topLevelItem(0)
+            for i in index:
+                    targetItem = targetItem.child(i)
+            return targetItem
 
         if operation == "add_new": # add new tag
+            # add the new tag to the tag tree
             self.tagTree.addNewTag(sub, parent)
+            # sync the view tree and main tree
+            parentItem.addChild(QTreeWidgetItem([sub]))
+            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem.addChild(QTreeWidgetItem([sub]))
+            # show the operation in the output box
             self.outputBox.append(f"添加新标签 {sub} 到 {parent}")
             return
 
         elif operation == "add_parent": # add parent tag
+            # add the parent tag to the tag
             self.tagTree.addParentTag(sub, parent)
-            self.outputBox.append(f"标签 {sub} 添加至 {parent}")
+            # sync the view tree and main tree
+            parentItem.addChild(QTreeWidgetItem([sub]))
+            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem.addChild(QTreeWidgetItem([sub]))
+            # show the operation in the output box
+            self.outputBox.append(f"标签 {sub} 添加至 {parent}下")
             return
 
         elif operation == "add_synonym": # add synonym
@@ -137,13 +184,25 @@ class MainTagTreeWidget(QTreeWidget):
         elif operation == "del": # delete tag
             self.tagTree.deleteTag(sub, parent)
             parentItem.removeChild(subItem)
+            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem.removeChild(getCorrespondingTreeItem(subItem, self.viewTree))
             self.outputBox.append(f"标签 {sub} 从 {parent} 删除")
             return
         
         elif operation == "move":
             self.tagTree.addParentTag(sub, parent)
             self.tagTree.deleteTag(sub, source)
+            # move the tag in the main tree
+            mainTreeSourceItem = getCorrespondingTreeItem(sourceItem, self)
+            mainTreeSubItem = getCorrespondingTreeItem(subItem, self)
+            parentItem.addChild(mainTreeSubItem.clone()) # parentItem is from the main tree
+            mainTreeSourceItem.removeChild(mainTreeSubItem)
+            # move the tag in the view tree
+            viewTreeParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewTreeParentItem.addChild(subItem.clone())
+            sourceItem.removeChild(subItem) # sourceItem and subItem is from the view tree
             self.outputBox.append(f"标签 {sub} 从 {source} 移动至 {parent}")
+            return
         else:
             return
 
@@ -200,7 +259,7 @@ class MainTagTreeWidget(QTreeWidget):
         self.deleteTagDialog.setContent(tagName, parentTagName)
         result = self.deleteTagDialog.exec_()
         if result == QDialog.Accepted:
-            self.editTree("del", tagName, parentTagName, currentItem, parentItem)
+            self.editTree("del", tagName, parentTagName, subItem=currentItem, parentItem=parentItem)
 
     def synonymEdit(self, tagName):
         """show the synonym edit dialog"""
