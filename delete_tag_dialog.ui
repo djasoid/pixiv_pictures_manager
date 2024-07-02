@@ -29,7 +29,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLabel" name="delete_info_label">
+  <widget class="QLabel" name="deleteInfoLabel">
    <property name="geometry">
     <rect>
      <x>30</x>

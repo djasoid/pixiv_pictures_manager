@@ -248,7 +248,7 @@ class TagTree:
 
         return newTag
 
-    def getSubTags(self, tag: str) -> list:
+    def getSubTags(self, tag: str, includeSynonyoms = False) -> list:
         """
         Get a list of all subTags of a Tag recursively
         """
@@ -258,23 +258,13 @@ class TagTree:
 
         subTags = list(self.tagDict[tag].subTags.keys())
         allSubTags = subTags.copy()
+
+        if includeSynonyoms:
+            allSubTags.extend(self.tagDict[tag].synonyms)
         for subTag in subTags:
-            allSubTags.extend(self.getSubTags(subTag))
+            allSubTags.extend(self.getSubTags(subTag, includeSynonyoms))
 
         return allSubTags
-
-    def getAllSubTags(self) -> dict:
-        """USELESS
-        Get all subtag of tags in the TagTree
-
-        Return a dictionary of all subtags of tags in the TagTree
-
-        use before creating tag index
-        """
-        subTags = {}
-        for tag in self.tagDict:
-            subTags[tag] = self.getSubTags(tag)
-        return subTags
     
     def getAllParentTag(self, tag: Tag = None, parent: set = None, parentDict: dict[str, set] = None, includeSynonyms: bool = False) -> dict:
         """
@@ -420,14 +410,14 @@ class TagTree:
             tag = self.root
 
         # Create a new QTreeWidgetItem
-        TreeWidgetItem = QTreeWidgetItem()
-        TreeWidgetItem.setText(0, tag.name)
+        treeWidgetItem = QTreeWidgetItem()
+        treeWidgetItem.setText(0, tag.name)
 
         # Add the sub tags to the QTreeWidgetItem
         for subTag in tag.subTags.values():
-            TreeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
+            treeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
 
-        return TreeWidgetItem
+        return treeWidgetItem
     
     def isInTree(self, tag: str) -> bool:
         """Check if a tag is in the TagTree"""

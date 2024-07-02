@@ -17,6 +17,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.loadNewTag()
 
     def bind(self):
+        """
+        Binds various event handlers and connects signals to slots.
+
+        This method is responsible for setting up the connections between different UI elements and their corresponding
+        event handlers or slots. It also installs event filters and sets up keyboard shortcuts.
+
+        Returns:
+            None
+        """
         # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
         self.newTagOrignalList.verticalScrollBar().valueChanged.connect(
             self.newTagTranslList.verticalScrollBar().setValue)
@@ -43,7 +52,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for new_tag_input, implement tab to add '#' and enter to add tag
         if (source == self.newTagInput and event.type() == QEvent.Type.KeyPress):
-            if event.key() == Qt.Key_Tab:
+            if event.key() == Qt.Key.Key_Tab:
                 text = self.newTagInput.toPlainText()
                 if text.startswith('#'):
                     self.newTagInput.setPlainText(text[1:])
@@ -66,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Filter for view_tree_search_edit, implement search function
         elif (source == self.viewTreeSearchEdit and event.type() == QEvent.Type.KeyPress):
             if event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
-                 self.viewTreeLastSearch, self.viewTreeSearchIndex, self.viewTreeSearchList = \
+                self.viewTreeLastSearch, self.viewTreeSearchIndex, self.viewTreeSearchList = \
                     self.searchTree(
                         self.viewTree, 
                         self.viewTreeSearchEdit, 
@@ -74,7 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.viewTreeSearchIndex, 
                         self.viewTreeSearchList
                     )
-            return True
+                return True
 
         # Filter for main_tree_search_edit, implement search function
         elif (source == self.mainTreeSearchEdit and event.type() == QEvent.Type.KeyPress):
@@ -168,14 +177,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         tagName = currentItem.text(0)
         tag = self.tagTree.tagDict[tagName]
         if not tag.isTag:
-            self.tagInfo.clear()
+            self.tagInfo.setText(f"类: {tag.name}\n"
+                                 f"子标签:\n{', '.join(tag.subTags.keys())}\n"
+                                )
             return
         
         # Show the tag info in the tag info text edit
         self.tagInfo.setText(f"标签名: {tag.name}\n"
-                              f"同义标签:\n{', '.join(tag.synonyms)}\n"
-                              f"父标签:\n{', '.join(tag.parent)}\n"
-                              f"子标签:\n{', '.join(tag.subTags.keys())}\n")
+                             f"同义标签:\n{', '.join(tag.synonyms)}\n"
+                             f"父标签:\n{', '.join(tag.parent)}\n"
+                             f"子标签:\n{', '.join(tag.subTags.keys())}\n"
+                            )
 
     def saveTree(self):
         dataFn.writeJson(self.tagTree.toDict(), "tag_tree.json")
