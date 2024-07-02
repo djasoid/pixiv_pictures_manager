@@ -141,6 +141,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mainTree.setOutputBox(self.outputTextEdit)
         self.mainTree.setListWidgets(self.newTagOrignalList, self.newTagTranslList, self.newTagStoreList)
         self.mainTree.setCheckBox(self.tagMovingCheckBox)
+        self.mainTree.setViewTree(self.viewTree)
     
     def reloadViewTree(self):
         """reload the view tree"""
