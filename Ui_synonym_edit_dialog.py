@@ -33,22 +33,22 @@ class Ui_synonym_edit_dialog(object):
 
         self.verticalLayout.addWidget(self.synonyms_label)
 
-        self.synonym_text_edit = QPlainTextEdit(synonym_edit_dialog)
-        self.synonym_text_edit.setObjectName(u"synonym_text_edit")
-        self.synonym_text_edit.setPlainText(u"")
+        self.synonymTextEdit = QPlainTextEdit(synonym_edit_dialog)
+        self.synonymTextEdit.setObjectName(u"synonymTextEdit")
+        self.synonymTextEdit.setPlainText(u"")
 
-        self.verticalLayout.addWidget(self.synonym_text_edit)
+        self.verticalLayout.addWidget(self.synonymTextEdit)
 
         self.english_name_label = QLabel(synonym_edit_dialog)
         self.english_name_label.setObjectName(u"english_name_label")
 
         self.verticalLayout.addWidget(self.english_name_label)
 
-        self.english_name_edit = QPlainTextEdit(synonym_edit_dialog)
-        self.english_name_edit.setObjectName(u"english_name_edit")
-        self.english_name_edit.setMaximumSize(QSize(16777215, 30))
+        self.englishNameEdit = QPlainTextEdit(synonym_edit_dialog)
+        self.englishNameEdit.setObjectName(u"englishNameEdit")
+        self.englishNameEdit.setMaximumSize(QSize(16777215, 30))
 
-        self.verticalLayout.addWidget(self.english_name_edit)
+        self.verticalLayout.addWidget(self.englishNameEdit)
 
 
         self.horizontalLayout.addLayout(self.verticalLayout)

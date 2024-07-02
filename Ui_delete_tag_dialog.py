@@ -28,9 +28,9 @@ class Ui_delete_tag_dialog(object):
         self.buttonBox.setGeometry(QRect(0, 110, 341, 31))
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-        self.delete_info_label = QLabel(delete_tag_dialog)
-        self.delete_info_label.setObjectName(u"delete_info_label")
-        self.delete_info_label.setGeometry(QRect(30, 50, 291, 31))
+        self.deleteInfoLabel = QLabel(delete_tag_dialog)
+        self.deleteInfoLabel.setObjectName(u"deleteInfoLabel")
+        self.deleteInfoLabel.setGeometry(QRect(30, 50, 291, 31))
 
         self.retranslateUi(delete_tag_dialog)
         self.buttonBox.accepted.connect(delete_tag_dialog.accept)
@@ -41,6 +41,6 @@ class Ui_delete_tag_dialog(object):
 
     def retranslateUi(self, delete_tag_dialog):
         delete_tag_dialog.setWindowTitle(QCoreApplication.translate("delete_tag_dialog", u"Delete Tag?", None))
-        self.delete_info_label.setText(QCoreApplication.translate("delete_tag_dialog", u"TextLabel", None))
+        self.deleteInfoLabel.setText(QCoreApplication.translate("delete_tag_dialog", u"TextLabel", None))
     # retranslateUi
 

@@ -35,9 +35,9 @@ initialize complete
 
 class Core:
     def __init__(self, 
-                 metadataDict: dict[str, any], 
+                 metadataDict: "dict[str, any]", 
                  tagTree: progObjs.TagTree, 
-                 tagIndex: dict[str, list[str]] = None, 
+                 tagIndex: "dict[str, list[str]]" = None, 
                  illustratorInfo: dict = None, 
                  noMetadata: dict = None
                  ):
@@ -89,7 +89,7 @@ class Core:
                         
                 self.metadataDict[pid]["tags"] = list(newTags)
 
-    def initTagIndex(self) -> dict[str, list[str]]:
+    def initTagIndex(self) -> "dict[str, list[str]]":
         """
         Initializes a tag index from a metadata dictionary and a parent tag dictionary.
         
