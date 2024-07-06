@@ -249,7 +249,10 @@ class Ui_MainWindow(object):
         self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.actionUndo.setText(QCoreApplication.translate("MainWindow", u"Undo", None))
         self.actionRedo.setText(QCoreApplication.translate("MainWindow", u"Redo", None))
+        self.viewTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search Above", None))
         self.tagMovingCheckBox.setText(QCoreApplication.translate("MainWindow", u"\u79fb\u52a8\u6807\u7b7e", None))
+        self.mainTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search Above", None))
+        self.newTagInput.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Enter new tags", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
     # retranslateUi
