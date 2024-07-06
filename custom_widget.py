@@ -183,23 +183,22 @@ class MainTagTreeWidget(QTreeWidget):
 
         elif operation == "del": # delete tag
             self.tagTree.deleteTag(sub, parent)
-            parentItem.removeChild(subItem)
             viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
             viewParentItem.removeChild(getCorrespondingTreeItem(subItem, self.viewTree))
+            parentItem.removeChild(subItem)
             self.outputBox.append(f"标签 {sub} 从 {parent} 删除")
             return
         
         elif operation == "move":
             self.tagTree.addParentTag(sub, parent)
             self.tagTree.deleteTag(sub, source)
-            # move the tag in the main tree
+
             mainTreeSourceItem = getCorrespondingTreeItem(sourceItem, self)
             mainTreeSubItem = getCorrespondingTreeItem(subItem, self)
-            parentItem.addChild(mainTreeSubItem.clone()) # parentItem is from the main tree
-            mainTreeSourceItem.removeChild(mainTreeSubItem)
-            # move the tag in the view tree
             viewTreeParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            parentItem.addChild(mainTreeSubItem.clone()) # parentItem is from the main tree  
             viewTreeParentItem.addChild(subItem.clone())
+            mainTreeSourceItem.removeChild(mainTreeSubItem)
             sourceItem.removeChild(subItem) # sourceItem and subItem is from the view tree
             self.outputBox.append(f"标签 {sub} 从 {source} 移动至 {parent}")
             return

@@ -121,6 +121,9 @@
               <property name="acceptRichText">
                <bool>false</bool>
               </property>
+              <property name="placeholderText">
+               <string>Search Above</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -174,6 +177,9 @@
            </property>
            <property name="acceptRichText">
             <bool>false</bool>
+           </property>
+           <property name="placeholderText">
+            <string>Search Above</string>
            </property>
           </widget>
          </item>
@@ -285,6 +291,9 @@
            </property>
            <property name="acceptRichText">
             <bool>false</bool>
+           </property>
+           <property name="placeholderText">
+            <string>Enter new tags</string>
            </property>
           </widget>
          </item>

@@ -15,7 +15,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bind()
         self.loadTagTree()
         self.loadNewTag()
-
+        
+    def initVariables(self):
+        self.viewTreeLastSearch = ""
+        self.viewTreeSearchIndex = 0
+        self.viewTreeSearchList = []
+        self.mainTreeLastSearch = ""
+        self.mainTreeSearchIndex = 0
+        self.mainTreeSearchList = []
+        
     def bind(self):
         """
         Binds various event handlers and connects signals to slots.
@@ -123,14 +131,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 searchIndex += 1
         return lastSearch, searchIndex, searchList
     
-    def initVariables(self):
-        self.viewTreeLastSearch = ""
-        self.viewTreeSearchIndex = 0
-        self.viewTreeSearchList = []
-        self.mainTreeLastSearch = ""
-        self.mainTreeSearchIndex = 0
-        self.mainTreeSearchList = []
-        
     def loadTagTree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
         self.tagTree = dataFn.loadTagTree() # load tag tree from tag_tree.json
@@ -142,6 +142,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mainTree.setListWidgets(self.newTagOrignalList, self.newTagTranslList, self.newTagStoreList)
         self.mainTree.setCheckBox(self.tagMovingCheckBox)
         self.mainTree.setViewTree(self.viewTree)
+        
+        # expand the tree widget
+        self.viewTree.expandItem(self.viewTree.topLevelItem(0))
+        for i in range(self.viewTree.topLevelItem(0).childCount()):
+            self.viewTree.expandItem(self.viewTree.topLevelItem(0).child(i))
+        self.mainTree.expandItem(self.mainTree.topLevelItem(0))
+        for i in range(self.mainTree.topLevelItem(0).childCount()):
+            self.mainTree.expandItem(self.mainTree.topLevelItem(0).child(i))
     
     def reloadViewTree(self):
         """reload the view tree"""
