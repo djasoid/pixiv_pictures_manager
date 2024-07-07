@@ -126,8 +126,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             searchIndex = 0
             lastSearch = searchText
             if searchList:
+                tree.setFocus()
                 tree.setCurrentItem(searchList[searchIndex])
                 tree.scrollToItem(searchList[searchIndex])
+                searchEdit.setFocus()
                 searchIndex += 1
         return lastSearch, searchIndex, searchList
     
