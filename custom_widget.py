@@ -129,37 +129,13 @@ class MainTagTreeWidget(QTreeWidget):
                  sourceItem: QTreeWidgetItem = None,
                  source: str = None):
         """edit the tag tree with the given operation, sync the view tree and the tag tree, and show the operation in the output box"""
-        
-        def getCorrespondingTreeItem(sourceItem: QTreeWidgetItem, targetTree: QTreeWidget) -> QTreeWidgetItem:
-            """
-            Retrieves the corresponding tree item in the target tree for a given source tree item.
-
-            Args:
-                sourceItem (QTreeWidgetItem): The source tree item for which to find the corresponding target tree item.
-                sourceTree (QTreeWidget): The tree widget of the source item.
-                targetTree (QTreeWidget): The target tree widget where the corresponding item is to be found.
-
-            Returns:
-                QTreeWidgetItem: The corresponding tree item in the target tree.
-            """
-            index = []
-            pItem = sourceItem.parent()
-            while pItem:
-                index.append(pItem.indexOfChild(sourceItem))
-                sourceItem = pItem
-                pItem = sourceItem.parent()
-            index.reverse()
-            targetItem = targetTree.topLevelItem(0)
-            for i in index:
-                    targetItem = targetItem.child(i)
-            return targetItem
 
         if operation == "add_new": # add new tag
             # add the new tag to the tag tree
             self.tagTree.addNewTag(sub, parent)
             # sync the view tree and main tree
             parentItem.addChild(QTreeWidgetItem([sub]))
-            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
             viewParentItem.addChild(QTreeWidgetItem([sub]))
             # show the operation in the output box
             self.outputBox.append(f"添加新标签 {sub} 到 {parent}")
@@ -170,7 +146,7 @@ class MainTagTreeWidget(QTreeWidget):
             self.tagTree.addParentTag(sub, parent)
             # sync the view tree and main tree
             parentItem.addChild(QTreeWidgetItem([sub]))
-            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
             viewParentItem.addChild(QTreeWidgetItem([sub]))
             # show the operation in the output box
             self.outputBox.append(f"标签 {sub} 添加至 {parent}下")
@@ -183,8 +159,8 @@ class MainTagTreeWidget(QTreeWidget):
 
         elif operation == "del": # delete tag
             self.tagTree.deleteTag(sub, parent)
-            viewParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
-            viewParentItem.removeChild(getCorrespondingTreeItem(subItem, self.viewTree))
+            viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
+            viewParentItem.removeChild(self.getCorrespondingTreeItem(subItem, self.viewTree))
             parentItem.removeChild(subItem)
             self.outputBox.append(f"标签 {sub} 从 {parent} 删除")
             return
@@ -193,9 +169,9 @@ class MainTagTreeWidget(QTreeWidget):
             self.tagTree.addParentTag(sub, parent)
             self.tagTree.deleteTag(sub, source)
 
-            mainTreeSourceItem = getCorrespondingTreeItem(sourceItem, self)
-            mainTreeSubItem = getCorrespondingTreeItem(subItem, self)
-            viewTreeParentItem = getCorrespondingTreeItem(parentItem, self.viewTree)
+            mainTreeSourceItem = self.getCorrespondingTreeItem(sourceItem, self)
+            mainTreeSubItem = self.getCorrespondingTreeItem(subItem, self)
+            viewTreeParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
             parentItem.addChild(mainTreeSubItem.clone()) # parentItem is from the main tree  
             viewTreeParentItem.addChild(subItem.clone())
             mainTreeSourceItem.removeChild(mainTreeSubItem)
@@ -204,6 +180,30 @@ class MainTagTreeWidget(QTreeWidget):
             return
         else:
             return
+
+    def getCorrespondingTreeItem(self, sourceItem: QTreeWidgetItem, targetTree: QTreeWidget) -> QTreeWidgetItem:
+        """
+        Retrieves the corresponding tree item in the target tree for a given source tree item.
+
+        Args:
+            sourceItem (QTreeWidgetItem): The source tree item for which to find the corresponding target tree item.
+            sourceTree (QTreeWidget): The tree widget of the source item.
+            targetTree (QTreeWidget): The target tree widget where the corresponding item is to be found.
+
+        Returns:
+            QTreeWidgetItem: The corresponding tree item in the target tree.
+        """
+        index = []
+        pItem = sourceItem.parent()
+        while pItem:
+            index.append(pItem.indexOfChild(sourceItem))
+            sourceItem = pItem
+            pItem = sourceItem.parent()
+        index.reverse()
+        targetItem = targetTree.topLevelItem(0)
+        for i in index:
+                targetItem = targetItem.child(i)
+        return targetItem
 
     def markAdded(self, tag: str, orignal: bool):
         """mark the tag as added to the tag tree"""
@@ -249,9 +249,16 @@ class MainTagTreeWidget(QTreeWidget):
         # get the tag name of the parent item
         parentTagName = parentItem.text(0)
         contextMenu = QMenu(self)
+        contextMenu.addAction(QAction("在view tree中展开", self, triggered=lambda: self.showInViewTree()))
         contextMenu.addAction(QAction("编辑同义标签", self, triggered=lambda: self.synonymEdit(tagName)))
         contextMenu.addAction(QAction("删除标签", self, triggered=lambda: self.confirmDelete(tagName, parentTagName, currentItem, parentItem)))
         contextMenu.exec_(event.globalPos())
+
+    def showInViewTree(self):
+        resultItem = self.getCorrespondingTreeItem(self.currentItem(), self.viewTree)
+        self.viewTree.setFocus()
+        self.viewTree.setCurrentItem(resultItem)
+        self.viewTree.scrollToItem(resultItem)
 
     def confirmDelete(self, tagName, parentTagName, currentItem, parentItem):
         """show the delete tag dialog"""
