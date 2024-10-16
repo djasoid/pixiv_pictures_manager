@@ -97,13 +97,13 @@ class MainTagTreeWidget(QTreeWidget):
                 self.outputBox.append("不能将标签移动到自身")
             else:
                 if self.tagMovingCheckBox.isChecked():
-                        self.editTree("move",
-                                      dragTag,
-                                      targetTag,
-                                      source = dragTagSource,
-                                      sourceItem=dragTagSourceItem,
-                                      parentItem=targetItem,
-                                      subItem=dragTagItem)
+                    self.editTree("move",
+                                    dragTag,
+                                    targetTag,
+                                    source = dragTagSource,
+                                    sourceItem=dragTagSourceItem,
+                                    parentItem=targetItem,
+                                    subItem=dragTagItem)
                 else:
                     self.editTree("add_parent", dragTag, targetTag, parentItem=targetItem)
 

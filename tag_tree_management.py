@@ -1,5 +1,5 @@
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QAbstractItemView, QDialog
+from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QAbstractItemView
 from PySide6.QtGui import QKeySequence, QShortcut
 
 from Ui_tag_tree_management import Ui_MainWindow
@@ -108,28 +108,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         return super().eventFilter(source, event)
     
-    def searchTree(self, tree: QTreeWidget, searchEdit: QTextEdit, lastSearch: str, searchIndex: int, searchList: list):
+    def searchTree(self, tree: QTreeWidget, searchEdit: QTextEdit, lastSearch: str, searchIndex: int, searchList: list[QTreeWidgetItem] ):
         """search the tree widget"""
+        def expandAndScrollToItem(item: QTreeWidgetItem):
+            """expand the tree widget and scroll to the item"""
+            parent = item.parent()
+            while parent:
+                parent.setExpanded(True)
+                parent = parent.parent()
+            tree.scrollToItem(item, QAbstractItemView.ScrollHint.PositionAtCenter)
+            tree.setCurrentItem(item)
+            
         searchText = searchEdit.toPlainText()
         if searchText == lastSearch:
             if searchList:
                 if searchIndex < len(searchList):
-                    tree.setCurrentItem(searchList[searchIndex])
-                    tree.scrollToItem(searchList[searchIndex])
+                    expandAndScrollToItem(searchList[searchIndex])
                     searchIndex += 1
                 else:
                     searchIndex = 0
-                    tree.setCurrentItem(searchList[searchIndex])
-                    tree.scrollToItem(searchList[searchIndex])
+                    expandAndScrollToItem(searchList[searchIndex])
         else:
             searchList = tree.findItems(searchText, Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive)
             searchIndex = 0
             lastSearch = searchText
             if searchList:
-                tree.setFocus()
-                tree.setCurrentItem(searchList[searchIndex])
-                tree.scrollToItem(searchList[searchIndex])
-                searchEdit.setFocus()
+                expandAndScrollToItem(searchList[searchIndex])
                 searchIndex += 1
         return lastSearch, searchIndex, searchList
     
