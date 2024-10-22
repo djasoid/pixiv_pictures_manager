@@ -1,4 +1,5 @@
 import program_objects as progObjs
+import pic_data_functions as dataFn
 
 """
 Notes, ignore this
@@ -20,7 +21,7 @@ load tagtree
 
 complete tag
     >>input metadataDict, allParentTagDict
-    metadataDict = completeTag(metadataDict, allParentTagDict) #not implemented yet
+    metadataDict = completeTag(metadataDict, allParentTagDict)
     <<output metadataDict
 
 get tag index
@@ -34,14 +35,13 @@ initialize complete
 """
 
 class Core:
-    def __init__(self, 
-                 metadataDict: "dict[str, any]", 
+    def __init__(self,  
                  tagTree: progObjs.TagTree, 
                  tagIndex: "dict[str, list[str]]" = None, 
                  illustratorInfo: dict = None, 
                  noMetadata: dict = None
                  ):
-        self.metadataDict = metadataDict
+        self.picDatabase = dataFn.PicDatabase()
         self.tagTree = tagTree
         self.tagIndex = tagIndex
         self.illustratorInfo = illustratorInfo
@@ -49,14 +49,6 @@ class Core:
         self.allParentTagDict = None
         self.unknowTag = set()
         self.tagCount = {}
-    
-    def genVarForInit(self) -> None:
-        """
-        Generates variables for initializing the program.
-
-        specificly, it generates allParentTagDict, which will be used in completeTag() and initTagIndex()
-        """
-        self.allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=True)
 
     def completeTag(self) -> None:
         """
@@ -65,7 +57,7 @@ class Core:
         This function takes a metadata dictionary and completes the tags in the dictionary.
         """
         if self.allParentTagDict is None:
-            self.genVarForInit()
+            self.allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=True)
 
         for pid in self.metadataDict:
             data = self.metadataDict[pid]
@@ -102,7 +94,7 @@ class Core:
         dict: A tag index dictionary.
         """
         if self.allParentTagDict is None:
-            self.genVarForInit()
+            self.allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=True)
 
         tagIndex: dict[str, list[str]] = {}
 

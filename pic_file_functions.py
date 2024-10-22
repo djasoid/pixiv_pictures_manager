@@ -1,10 +1,11 @@
 import os
 from shutil import copy2
-import program_objects as progObjs
 from linecache import getline
 from PIL import Image
+from pic_data_functions import PicDatabase
+import json
 
-def parsePicture(filePath: str) -> progObjs.PicData:
+def parsePicture(filePath: str) -> tuple:
     """
     Extracts and returns information about a picture.
 
@@ -14,31 +15,29 @@ def parsePicture(filePath: str) -> progObjs.PicData:
     filePath (str): The path to the picture file.
 
     Returns:
-    picData (proObj.PicData): A PicData object containing the extracted information.
+    a tuple: A tuple containing the picture information.
     """
     with Image.open(filePath) as img:# get resolution
         resolution = img.size
-    del img # clear memory
 
     fileName = os.path.basename(filePath)
     name = fileName.split(".")# seprate the file name and file extention
-    name.pop()
+    fileType = name.pop()
     name = str(name[0])
     parts = name.split("_p")# apart id and ordinal number
-    pid = parts[0]
-    ordNum = 1
-    if len(parts) > 1:
-        ordNum += int(parts[1])
-    # create a PicData object then store the information
-    Data = progObjs.PicData(pid, ordNum)
-    Data.setSource("picture")
-    Data.addResolution({ordNum:resolution})
-    Data.addSize({ordNum:os.path.getsize(filePath)})
-    Data.addFileName({ordNum:fileName})
-    Data.addDirectory(os.path.dirname(filePath))
-    return Data
+    pid = int(parts[0])
+    if len(parts) == 1:
+        num = 0
+    else:
+        num = int(parts[1])
+    width = resolution[0]
+    height = resolution[1]
+    size = os.path.getsize(filePath)
+    directory = os.path.dirname(filePath)
 
-def parseMetadata(filePath: str) -> progObjs.PicData:
+    return pid, num, directory, fileName, fileType, width, height, size
+
+def parseMetadata(filePath: str) -> tuple:
     """
     Parses a metadata file and returns a PicData object.
 
@@ -48,42 +47,36 @@ def parseMetadata(filePath: str) -> progObjs.PicData:
     path (str): The path to the metadata file.
 
     Returns:
-    proObj.PicData: A PicData object containing the metadata from the file.
+    tuple: A tuple containing the metadata information.
     """
     tags = []
-    Data = progObjs.PicData(getline(filePath, 2).strip())
-    Data.setSource("metadata")
-    Data.addDirectory(os.path.dirname(filePath))
-    Data.addMetadata()
-    Data.addTitle(getline(filePath, 5).strip())
-    Data.addUser(getline(filePath, 8).strip())
-    Data.addUserId(getline(filePath, 11).strip())
+    pid = getline(filePath, 2).strip()
+    title = getline(filePath, 5).strip()
+    user = getline(filePath, 8).strip()
+    userId = getline(filePath, 11).strip()
 
     lineNum = 17
-    while True:
+    while True: # read tags
         if getline(filePath, lineNum) != "\n":
-            # read and store tags
-            tags.append(getline(filePath, lineNum).strip())
+            tags.append({getline(filePath, lineNum).strip(): "metadata"})
         else:
-            # all tags read, store them in picData
-            Data.addTags(tags)
-            # read and store description
-            Data.addDate(getline(filePath, lineNum + 2).strip())
-            lines = []
+            tags = json.dumps(tags, ensure_ascii=False) # convert tags to json string
+            date = getline(filePath, lineNum + 2).strip()
+            descriptionLines = []
             lineNum += 6
-            while True:
-                line = getline(filePath, lineNum)
-                if line:
-                    # read and store description line by line
-                    lines.append(line)
-                else:
-                    # all description read, store them in picData
-                    Data.addDescription(''.join(lines))
-                    return Data
-                lineNum += 1
+            break
+        lineNum += 1
+    while True: # read description
+        line = getline(filePath, lineNum)
+        if line:
+            descriptionLines.append(line)
+        else:
+            description = ''.join(descriptionLines)
+            return pid, title, tags, description, user, userId, date
         lineNum += 1
 
-def getAllData(directory: str) -> dict:
+
+def getAllData(directory: str) -> None:
     """
     Collects all metadata and picture information from a given directory.
 
@@ -96,45 +89,27 @@ def getAllData(directory: str) -> dict:
     dict: A dictionary containing all collected data.
     """
 
-    data = {}
     processedFiles = 0
+    database = PicDatabase()
     
-    # iterate every file in the directory
     for root, dirs, files in os.walk(directory):
         for file in files:
-
-            # print progress
             processedFiles += 1
             print(f'Processed {processedFiles} files', end='\r')
 
-            # get file path
             filePath = os.path.join(root, file)
-
-            # process metadata file
             if file.endswith(".txt"):
-                PicMetadata = parseMetadata(filePath)
-                pid = PicMetadata.pid
-                # check metadata is already in data or not
-                if pid in data:
-                    # pid exist
-                    data[pid] = PicMetadata.updateToDict(data[pid])
-                else:
-                    # pid not exist
-                    data.update(PicMetadata.toDict())
+                metadata = parseMetadata(filePath)
+                database.insertMetadata(*metadata)
             
             elif file.endswith(".webp"): # ignore webp files because they cannot be processed
                 continue
 
-            # process pictures
             else:
-                PicMetadata = parsePicture(filePath)
-                pid = PicMetadata.pid
-                if pid in data:# pid exist
-                    data[pid] = PicMetadata.updateToDict(data[pid])
-                else:# pid not exist
-                    data.update(PicMetadata.toDict())
+                imageData = parsePicture(filePath)
+                database.insertImageData(*imageData)
     print("\n")
-    return data
+    database.closeDatabase()
 
 def mergeDirs(src: str, dst: str) -> None:
     """
@@ -157,3 +132,7 @@ def mergeDirs(src: str, dst: str) -> None:
             if os.path.exists(dst_file):
                 continue
             copy2(src_file, dst_dir)
+
+if __name__ == "__main__":
+    getAllData("C:\\Users\\Exusiai\\Downloads\\pixiv")
+    print("All files processed successfully.")
