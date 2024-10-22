@@ -140,9 +140,9 @@ class Tag:
     __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth", "enName"]
     def __init__(self, 
                  name: str, 
-                 parent: list = None, 
-                 synonyms: set = None, 
-                 subTags: dict = None, 
+                 parent: list[str] = None, 
+                 synonyms: set[str] = None, 
+                 subTags: dict[str, 'Tag'] = None, 
                  enName: str = "", 
                  depth: int = -1
                  ):
@@ -171,7 +171,7 @@ class Tag:
         self.depth = depth # Note: A tag may exist in multiple locations within the tree. Therefore, depth is only meaningful for tags that don't exist in multiple locations.
 
     def toDict(self) -> dict:
-        """Convert the Tag object to a dictionary"""
+        """Convert the Tag object to a json serializable dictionary"""
         subTagList = []
         for k in self.subTags.keys():
             subTagList.append(k)
@@ -302,8 +302,10 @@ class TagTree:
                 for synonym in tag.synonyms:
                     if synonym in parentDict:
                         parentDict[synonym].update(parentSet)
+                        parentDict[synonym].add(tag.name) # Synonyms are regarded as sub tags of the tag
                     else:
                         parentDict[synonym] = parentSet.copy()
+                        parentDict[synonym].add(tag.name)
 
             parentSet.add(tag.name)
         else:
@@ -397,7 +399,7 @@ class TagTree:
         return False
     
     def toDict(self) -> dict:
-        """Convert the TagTree object to a dictionary"""
+        """Convert the TagTree object to a json serializable dictionary"""
         outputDict = {}
         for tag in self.tagDict:
             outputDict.update(self.tagDict[tag].toDict())

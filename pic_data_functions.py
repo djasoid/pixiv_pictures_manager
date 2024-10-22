@@ -1,4 +1,6 @@
 import json
+import sqlite3
+import os
 import program_objects as progObjs
 
 # the program will generate four json files to store pic data
@@ -50,5 +52,96 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> progObjs.TagTree:
     with open(tagTreeFile, "r", encoding='utf-8') as file:
         tagTreeDict = json.load(file)
     Tree = progObjs.TagTree(tagTreeDict)
-    del tagTreeDict # clear memory
     return Tree
+
+class PicDatabase:
+    def __init__(self):
+        self.database = None
+        self.cursor = None
+        self.loadDatabase()
+        
+    def loadDatabase(self):
+        """
+        Load the database.
+        """
+        if os.path.exists("pic_data.db"):
+            self.database = sqlite3.connect("pic_data.db")
+            self.cursor = self.database.cursor()
+        else:
+            self.database = sqlite3.connect("pic_data.db")
+            self.cursor = self.database.cursor()
+            self.cursor.execute('''CREATE TABLE imageData (
+                                pid INT, 
+                                num INT, 
+                                directory TEXT, 
+                                fileName TEXT, 
+                                fileType TEXT,
+                                width INT, 
+                                height INT, 
+                                size INT, 
+                                PRIMARY KEY (pid, num)
+                                )'''
+                                )
+            self.cursor.execute('''CREATE TABLE metadata (
+                                pid TEXT, 
+                                title TEXT, 
+                                tags TEXT,
+                                description TEXT,
+                                user TEXT,
+                                userId INT,
+                                date TEXT,
+                                bookmarkCount INT,
+                                likeCount INT,
+                                viewCount INT,
+                                commentCount INT,
+                                xRestrict TEXT,
+                                PRIMARY KEY (pid)
+                                )'''
+                                )
+    
+    def insertImageData(self, pid, num, directory, fileName, fileType, width, height, size):
+        """
+        Insert image data into the database.
+        """
+        self.cursor.execute("INSERT OR IGNORE INTO imageData VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                            (pid, num, directory, fileName, fileType, width, height, size)
+                            )
+        self.database.commit()
+        
+    def insertMetadata(self, 
+                       pid, 
+                       title, 
+                       tags, 
+                       description, 
+                       user, 
+                       userId, 
+                       date, 
+                       bookmarkCount = None, 
+                       likeCount = None, 
+                       viewCount = None, 
+                       commentCount = None, 
+                       xRestrict = None):
+        """
+        Insert metadata into the database.
+        """
+        self.cursor.execute("INSERT OR IGNORE INTO metadata VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                            (pid, 
+                             title, 
+                             tags, 
+                             description, 
+                             user, 
+                             userId, 
+                             date, 
+                             bookmarkCount, 
+                             likeCount, 
+                             viewCount, 
+                             commentCount, 
+                             xRestrict)
+                            )
+        self.database.commit()
+    
+    def closeDatabase(self):
+        """
+        Close the database.
+        """
+        self.database.close()
