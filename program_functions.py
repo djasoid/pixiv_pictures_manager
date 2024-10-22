@@ -1,5 +1,5 @@
-import program_objects as progObjs
-import pic_data_functions as dataFn
+import tag_tree as tree
+import data as dataFn
 
 """
 Notes, ignore this
@@ -36,7 +36,7 @@ initialize complete
 
 class Core:
     def __init__(self,  
-                 tagTree: progObjs.TagTree, 
+                 tagTree: tree.TagTree, 
                  tagIndex: "dict[str, list[str]]" = None, 
                  illustratorInfo: dict = None, 
                  noMetadata: dict = None

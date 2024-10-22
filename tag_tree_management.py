@@ -4,8 +4,7 @@ from PySide6.QtGui import QKeySequence, QShortcut
 
 from Ui_tag_tree_management import Ui_MainWindow
 
-import program_objects as progObjs
-import pic_data_functions as dataFn
+import data as dataFn
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
