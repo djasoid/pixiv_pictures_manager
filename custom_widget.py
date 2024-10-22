@@ -5,8 +5,8 @@ from PySide6.QtCore import QByteArray, Qt
 from Ui_delete_tag_dialog import Ui_delete_tag_dialog
 from Ui_synonym_edit_dialog import Ui_synonym_edit_dialog
 
-import program_objects as progObjs
-import pic_data_functions as dataFn
+import tag_tree as tree
+import data as dataFn
 
 class DeleteDialog(QDialog, Ui_delete_tag_dialog):
     def __init__(self, parent):
@@ -51,7 +51,7 @@ class MainTagTreeWidget(QTreeWidget):
         self.deleteTagDialog = DeleteDialog(self)
         self.synonymEditDialog = SynonymEditDialog(self)
 
-    def setTagTree(self, tagTree: progObjs.TagTree):
+    def setTagTree(self, tagTree: tree.TagTree):
         self.tagTree = tagTree
         self.addTopLevelItem(tagTree.toTreeWidgetItem())
         
