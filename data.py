@@ -2,7 +2,6 @@ import json
 import sqlite3
 import os
 import tag_tree as tree
-import os
 from shutil import copy2
 from linecache import getline
 from PIL import Image
@@ -82,21 +81,30 @@ class PicDatabase:
                                 )'''
                                 )
             self.cursor.execute('''CREATE TABLE metadata (
-                                pid TEXT, 
+                                pid INT, 
                                 title TEXT, 
                                 tags TEXT,
                                 description TEXT,
                                 user TEXT,
                                 userId INT,
                                 date TEXT,
+                                xRestrict TEXT,
                                 bookmarkCount INT,
                                 likeCount INT,
                                 viewCount INT,
                                 commentCount INT,
-                                xRestrict TEXT,
                                 PRIMARY KEY (pid)
                                 )'''
                                 )
+            self.cursor.execute('''CREATE TABLE tagIndex (
+                                tag TEXT,
+                                pids TEXT,
+                                PRIMARY KEY (tag)
+                                )'''
+                                )
+            self.cursor.execute('''CREATE INDEX tag ON tagIndex (tag)''')
+            self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
+            self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
     
     def insertImageData(self, pid, num, directory, fileName, fileType, width, height, size):
         """
@@ -114,12 +122,12 @@ class PicDatabase:
                        description, 
                        user, 
                        userId, 
-                       date, 
+                       date,
+                       xRestrict, 
                        bookmarkCount = None, 
                        likeCount = None, 
                        viewCount = None, 
-                       commentCount = None, 
-                       xRestrict = None):
+                       commentCount = None, ):
         """
         Insert metadata into the database.
         """
@@ -130,20 +138,85 @@ class PicDatabase:
                              description, 
                              user, 
                              userId, 
-                             date, 
+                             date,
+                             xRestrict, 
                              bookmarkCount, 
                              likeCount, 
                              viewCount, 
                              commentCount, 
-                             xRestrict)
+                             )
                             )
         self.database.commit()
     
-    def close(self):
+    def insertTagIndex(self, tag, pids):
         """
-        Close the database.
+        Insert tag index into the database.
         """
+        self.cursor.execute("INSERT OR IGNORE INTO tagIndex VALUES (?, ?)", (tag, json.dumps(pids)))
+        self.database.commit()
+    
+    def insertTagIndexDict(self, tagIndexDict: dict[str, list[str]]):
+        """
+        Insert tag index dictionary into the database.
+        """
+        for tag, pids in tagIndexDict.items():
+            self.insertTagIndex(tag, pids)
+        self.database.commit()
+    
+    def getPidsByTag(self, tag: str) -> set:
+        """
+        Get pids by tag.
+        """
+        self.cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag))
+        pidsJson = self.cursor.fetchone()
+        if pidsJson:
+            return set(json.loads(pidsJson[0]))
+        else:
+            return []
+    
+    def __del__(self):
         self.database.close()
+    
+    def getTags(self, pid) -> dict:
+        """
+        Get tags of a picture.
+        """
+        self.cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid))
+        tagsJson = self.cursor.fetchone()
+        if tagsJson:
+            return json.loads(tagsJson[0])
+        else:
+            return {}
+        
+    def getPidList(self) -> list:
+        """
+        Get a list of all pids in metadata.
+        """
+        self.cursor.execute("SELECT pid FROM metadata")
+        return [item[0] for item in self.cursor.fetchall()]
+    
+    def getFilePidList(self) -> list:
+        """
+        Get a list of all pids in imageData.
+        """
+        self.cursor.execute("SELECT pid FROM imageData")
+        return [item[0] for item in self.cursor.fetchall()]
+        
+    def overwriteTags(self, pid: str, tags: dict) -> None:
+        """
+        overwrite tags of a picture.
+        """
+        self.cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags), pid))
+        self.database.commit()
+    
+    def addTags(self, pid: str, tags: dict) -> None:
+        """
+        Add tags to a picture.
+        """
+        currentTags = self.getTags(pid)
+        currentTags.update(tags)
+        self.overwriteTags(pid, currentTags)
+        
         
 def parsePicture(filePath: str) -> tuple:
     """
@@ -189,17 +262,22 @@ def parseMetadata(filePath: str) -> tuple:
     Returns:
     tuple: A tuple containing the metadata information.
     """
-    tags = []
-    pid = getline(filePath, 2).strip()
+    tags = {}
+    xRestrict = "allAges"
+    pid = int(getline(filePath, 2).strip())
     title = getline(filePath, 5).strip()
     user = getline(filePath, 8).strip()
-    userId = getline(filePath, 11).strip()
+    userId = int(getline(filePath, 11).strip())
 
     lineNum = 17
     while True: # read tags
         if getline(filePath, lineNum) != "\n":
-            tags.append({getline(filePath, lineNum).strip(): "metadata"})
+            tags.update({getline(filePath, lineNum).strip(): "metadata"})
         else:
+            if "#R-18" in tags:
+                xRestrict = "R-18"
+            elif "#R-18G" in tags:
+                xRestrict = "R-18G"
             tags = json.dumps(tags, ensure_ascii=False) # convert tags to json string
             date = getline(filePath, lineNum + 2).strip()
             descriptionLines = []
@@ -211,24 +289,15 @@ def parseMetadata(filePath: str) -> tuple:
         if line:
             descriptionLines.append(line)
         else:
-            description = ''.join(descriptionLines)
-            return pid, title, tags, description, user, userId, date
+            description = '\n'.join(descriptionLines)
+            return pid, title, tags, description, user, userId, date, xRestrict
         lineNum += 1
 
 
-def getAllData(directory: str) -> None:
+def collectData(directory: str) -> None:
     """
-    Collects all metadata and picture information from a given directory.
-
-    This function iterates over all files in the specified directory. If a file is a metadata file, it extracts the metadata and stores it in the data dictionary. If a file is a picture, it extracts the picture information and also stores it in the data dictionary.
-
-    Parameters:
-    directory (str): The directory to collect data from.
-
-    Returns:
-    dict: A dictionary containing all collected data.
+    Collects data from a directory and stores it in a database.
     """
-
     processedFiles = 0
     database = PicDatabase()
     
@@ -249,7 +318,6 @@ def getAllData(directory: str) -> None:
                 imageData = parsePicture(filePath)
                 database.insertImageData(*imageData)
     print("\n")
-    database.close()
 
 def mergeDirs(src: str, dst: str) -> None:
     """
@@ -274,5 +342,5 @@ def mergeDirs(src: str, dst: str) -> None:
             copy2(src_file, dst_dir)
 
 if __name__ == "__main__":
-    getAllData("C:\\Users\\Exusiai\\Downloads\\pixiv")
+    collectData("C:\\Users\\Exusiai\\Downloads\\pixiv")
     print("All files processed successfully.")

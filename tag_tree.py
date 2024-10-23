@@ -1,14 +1,13 @@
 from PySide6.QtWidgets import QTreeWidgetItem
 
 class Tag:
-    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "depth", "enName"]
+    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "enName"]
     def __init__(self, 
                  name: str, 
                  parent: list[str] = None, 
                  synonyms: set[str] = None, 
                  subTags: dict[str, 'Tag'] = None, 
                  enName: str = "", 
-                 depth: int = -1
                  ):
         self.name = name
         self.enName = enName
@@ -32,7 +31,6 @@ class Tag:
             self.subTags = {}
         else:
             self.subTags = subTags
-        self.depth = depth # Note: A tag may exist in multiple locations within the tree. Therefore, depth is only meaningful for tags that don't exist in multiple locations.
 
     def toDict(self) -> dict:
         """Convert the Tag object to a json serializable dictionary"""
@@ -74,40 +72,30 @@ class Tag:
 class TagTree:
     tagDict: dict[str, Tag] #a dictionary of all tag objects
 
-    def __init__(self, tagTreeData: dict, root = "标签") -> None:
+    def __init__(self, tagTreeData: dict[str, Tag], root = "标签") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tagTreeData = tagTreeData #a dictionary of all tag data, only used in the buildTree function
         self.tagDict = {} #a dictionary of all tag objects
-        self.allTagSet = None #a set of all tags
-        self.root = self.buildTree(tagTreeData[root]) #the root of the TagTree(is a Tag object)
-        self.tagTreeData = None #clear memory
+        self.root = self.buildTree(tagTreeData[root])
 
-    def buildTree(self, data: dict, parent=None, depth: int = 0) -> Tag:
+    def buildTree(self, data: dict, parent=None) -> Tag:
         """Build a Tag object from the data dictionary"""
         name = data['name']
         enName = data['enName']
         parent = data['parent']
         synonyms = set(data['synonyms'])
-
-        #check if the tag is already in the tagDict
+        
         if name in self.tagDict:
             return self.tagDict[name]
 
-        # Get the 'subTags' value from the data dictionary
         subTagNames = data['subTags']
 
-        # Initialize an empty dictionary for the subTags
         subTags = {}
-
-        # Iterate over the key-value pairs in the subTags_data dictionary
         for subTagName in subTagNames:
-            # For each key-value pair, build a new Tag object
-            subTag = self.buildTree(self.tagTreeData[subTagName], name, depth + 1)
-            # Add the new Tag object to the subTags dictionary
+            subTag = self.buildTree(self.tagTreeData[subTagName], name)
             subTags[subTagName] = subTag
         
-        #create a new Tag and add it to the tagDict
-        newTag = Tag(name, parent, synonyms, subTags, enName, depth)
+        newTag = Tag(name, parent, synonyms, subTags, enName)
         self.tagDict[name] = newTag
 
         return newTag
@@ -228,6 +216,7 @@ class TagTree:
         for tag in self.tagDict:
             if self.tagDict[tag].isTag:
                 tagList.append(tag)
+                
         return tagList
 
     def addParentTag(self, tag: str, parentTag: str) -> None:
@@ -252,10 +241,7 @@ class TagTree:
         if subTag in self.tagDict[tag].subTags:
             return True
 
-        # Get the sub tags of the tag
         subTags = self.tagDict[tag].subTags.keys()
-
-        # Check if subTag is a sub tag of any of the sub tags
         for subTagName in subTags:
             if self.isSubTag(subTagName, subTag):
                 return True
@@ -275,11 +261,8 @@ class TagTree:
         if tag is None:
             tag = self.root
 
-        # Create a new QTreeWidgetItem
         treeWidgetItem = QTreeWidgetItem()
         treeWidgetItem.setText(0, tag.name)
-
-        # Add the sub tags to the QTreeWidgetItem
         for subTag in tag.subTags.values():
             treeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
 
@@ -287,13 +270,4 @@ class TagTree:
     
     def isInTree(self, tag: str) -> bool:
         """Check if a tag is in the TagTree"""
-        if self.allTagSet is None:
-            self.allTagSet = set()
-            for tag in self.tagDict:
-                self.allTagSet.add(tag)
-                self.allTagSet.update(self.tagDict[tag].synonyms)
-        
-        if tag in self.allTagSet:
-            return True
-        else:
-            return False
+        return tag in self.tagDict
