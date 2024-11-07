@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QHBoxLayout, QLabel, QPlainTextEdit, QSizePolicy,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
+    QDialogButtonBox, QHBoxLayout, QLabel, QPlainTextEdit,
+    QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_synonym_edit_dialog(object):
     def setupUi(self, synonym_edit_dialog):
@@ -28,17 +28,6 @@ class Ui_synonym_edit_dialog(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.synonyms_label = QLabel(synonym_edit_dialog)
-        self.synonyms_label.setObjectName(u"synonyms_label")
-
-        self.verticalLayout.addWidget(self.synonyms_label)
-
-        self.synonymTextEdit = QPlainTextEdit(synonym_edit_dialog)
-        self.synonymTextEdit.setObjectName(u"synonymTextEdit")
-        self.synonymTextEdit.setPlainText(u"")
-
-        self.verticalLayout.addWidget(self.synonymTextEdit)
-
         self.english_name_label = QLabel(synonym_edit_dialog)
         self.english_name_label.setObjectName(u"english_name_label")
 
@@ -49,6 +38,27 @@ class Ui_synonym_edit_dialog(object):
         self.englishNameEdit.setMaximumSize(QSize(16777215, 30))
 
         self.verticalLayout.addWidget(self.englishNameEdit)
+
+        self.type_label = QLabel(synonym_edit_dialog)
+        self.type_label.setObjectName(u"type_label")
+
+        self.verticalLayout.addWidget(self.type_label)
+
+        self.typeComboBox = QComboBox(synonym_edit_dialog)
+        self.typeComboBox.setObjectName(u"typeComboBox")
+
+        self.verticalLayout.addWidget(self.typeComboBox)
+
+        self.synonyms_label = QLabel(synonym_edit_dialog)
+        self.synonyms_label.setObjectName(u"synonyms_label")
+
+        self.verticalLayout.addWidget(self.synonyms_label)
+
+        self.synonymTextEdit = QPlainTextEdit(synonym_edit_dialog)
+        self.synonymTextEdit.setObjectName(u"synonymTextEdit")
+        self.synonymTextEdit.setPlainText(u"")
+
+        self.verticalLayout.addWidget(self.synonymTextEdit)
 
 
         self.horizontalLayout.addLayout(self.verticalLayout)
@@ -71,7 +81,8 @@ class Ui_synonym_edit_dialog(object):
 
     def retranslateUi(self, synonym_edit_dialog):
         synonym_edit_dialog.setWindowTitle(QCoreApplication.translate("synonym_edit_dialog", u"Edit Synonym", None))
-        self.synonyms_label.setText(QCoreApplication.translate("synonym_edit_dialog", u"Synonyms", None))
         self.english_name_label.setText(QCoreApplication.translate("synonym_edit_dialog", u"English Name", None))
+        self.type_label.setText(QCoreApplication.translate("synonym_edit_dialog", u"Type", None))
+        self.synonyms_label.setText(QCoreApplication.translate("synonym_edit_dialog", u"Synonyms", None))
     # retranslateUi
 

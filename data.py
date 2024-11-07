@@ -6,6 +6,7 @@ from shutil import copy2
 from linecache import getline
 from PIL import Image
 import json
+import dataclasses
 
 def writeJson(data, outputFile: str) -> None:
     """
@@ -49,8 +50,8 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> tree.TagTree:
     """
     with open(tagTreeFile, "r", encoding='utf-8') as file:
         tagTreeDict = json.load(file)
-    Tree = tree.TagTree(tagTreeDict)
-    return Tree
+    tagTree = tree.TagTree(tagTreeDict)
+    return tagTree
 
 class PicDatabase:
     def __init__(self):
@@ -293,7 +294,6 @@ def parseMetadata(filePath: str) -> tuple:
             return pid, title, tags, description, user, userId, date, xRestrict
         lineNum += 1
 
-
 def collectData(directory: str) -> None:
     """
     Collects data from a directory and stores it in a database.
@@ -340,7 +340,3 @@ def mergeDirs(src: str, dst: str) -> None:
             if os.path.exists(dst_file):
                 continue
             copy2(src_file, dst_dir)
-
-if __name__ == "__main__":
-    collectData("C:\\Users\\Exusiai\\Downloads\\pixiv")
-    print("All files processed successfully.")

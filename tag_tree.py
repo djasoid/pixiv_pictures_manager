@@ -1,16 +1,18 @@
 from PySide6.QtWidgets import QTreeWidgetItem
 
 class Tag:
-    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "enName"]
+    __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "enName", "tagType"]
     def __init__(self, 
                  name: str, 
                  parent: list[str] = None, 
                  synonyms: set[str] = None, 
                  subTags: dict[str, 'Tag'] = None, 
                  enName: str = "", 
+                 tagType: str = ""
                  ):
         self.name = name
         self.enName = enName
+        self.tagType = tagType
         
         if self.name.startswith("#"):
             self.isTag = True
@@ -45,7 +47,8 @@ class Tag:
                 'enName': self.enName,
                 'parent': self.parent,
                 'synonyms': list(self.synonyms),
-                'subTags': subTagList
+                'subTags': subTagList,
+                'type': self.tagType
             }
         }
     
@@ -84,6 +87,7 @@ class TagTree:
         enName = data['enName']
         parent = data['parent']
         synonyms = set(data['synonyms'])
+        tagType = data['type']
         
         if name in self.tagDict:
             return self.tagDict[name]
@@ -95,7 +99,7 @@ class TagTree:
             subTag = self.buildTree(self.tagTreeData[subTagName], name)
             subTags[subTagName] = subTag
         
-        newTag = Tag(name, parent, synonyms, subTags, enName)
+        newTag = Tag(name, parent, synonyms, subTags, enName, tagType)
         self.tagDict[name] = newTag
 
         return newTag

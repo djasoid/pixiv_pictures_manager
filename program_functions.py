@@ -1,14 +1,15 @@
 import tag_tree as tree
 import data as dataFn
 
-class Core:
-    def __init__(self,  
-                 tagTree: tree.TagTree, 
-                 ):
+class PicTagManager:
+    """
+    A class that manages picture tags.
+    """
+    def __init__(self):
         self.picDatabase = dataFn.PicDatabase()
-        self.tagTree = tagTree
+        self.tagTree = dataFn.loadTagTree()
         self.tagIndexCache = {}
-        
+        self.unknownTags = {}
 
     def completeTag(self) -> None:
         """
@@ -23,10 +24,22 @@ class Core:
             for tag in tags:
                 if tag in allParentTagDict:
                     newTags.update(allParentTagDict[tag])
+                else:
+                    if tag in self.unknownTags:
+                        self.unknownTags[tag] += 1
+                    else:
+                        self.unknownTags[tag] = 1
             
             newTags -= tags
             newtagsDict = {tag: "tree" for tag in newTags}
             self.picDatabase.addTags(pid, newtagsDict)
+
+        tagsToDelete = [tag for tag in self.unknownTags if self.unknownTags[tag] < 10]
+        for tag in tagsToDelete:
+            del self.unknownTags[tag]
+            
+        sortedUnknownTags = sorted(self.unknownTags.items(), key=lambda item: item[1], reverse=True)
+        dataFn.writeJson(sortedUnknownTags, "unknown_tags.json")
 
     def initTagIndex(self) -> None:
         """
@@ -61,22 +74,10 @@ class Core:
         
         self.picDatabase.insertTagIndexDict(tagIndex)
 
-        
-
-
-    def tagSearch(self, includeTags: list, excludeTags: list, includeSubTags: bool = False) -> set:
+    def tagSearch(self, includeTags: list, excludeTags: list, includeSubTags: bool = True) -> set:
         """
-        Searches for tags in a tag index and returns a list of pids.
-
-        This function takes in a tag index, and two lists of tags. It then searches for the tags in the tag index and returns a list of pids that contain the tags.
-
-        Parameters:
-        includeTag (list): A list of tags to include.
-        excludeTag (list): A list of tags to exclude.
-        includeSubTags (bool, optional): Whether to include subtags of the tags in includeTag. Defaults to False.
-
-        Returns:
-        set: A set of pids that contain the tags.
+        Search for pictures with tags.
+        the search will return a set of picture ids that have all the tags in includeTags and none of the tags in excludeTags.
         """
         def findPids(tag: str) -> set:
             if tag in self.tagIndexCache:
@@ -85,32 +86,28 @@ class Core:
                 pids = self.picDatabase.getPidsByTag(tag)
                 self.tagIndexCache[tag] = pids
                 return pids
-            
-        # check if the tag is in the tag tree
-        for tag in includeTags:
-            if not self.tagTree.isInTree(tag):
-                print(f"ERROR: tag {tag} not in tag tree")
-                return set()
-        for tag in excludeTags:
-            if not self.tagTree.isInTree(tag):
-                print(f"ERROR: tag {tag} not in tag tree")
-                return set()
         
         allExcludeTag = excludeTags.copy()
-        allIncludeTag = includeTags.copy()
+        allIncludeTag = []
 
         for tag in excludeTags:
             allExcludeTag.extend(self.tagTree.getSubTags(tag))
         
         if includeSubTags:
             for tag in includeTags:
-                allIncludeTag.extend(self.tagTree.getSubTags(tag))
-
-        # from tag index get all pids that contain the tags
+                allIncludeTag.append(self.tagTree.getSubTags(tag).append(tag))
+                
         includePid = set()
+        for tags in allIncludeTag:
+            pids = set()
+            for tag in tags:
+                pids.update(findPids(tag))
+            if includePid:
+                includePid &= pids
+            else:
+                includePid = pids.copy()
+
         excludePid = set()
-        for tag in allIncludeTag:
-            includePid.update(findPids(tag))
         for tag in allExcludeTag:
             excludePid.update(findPids(tag))
         

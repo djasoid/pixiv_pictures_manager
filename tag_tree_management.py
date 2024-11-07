@@ -10,12 +10,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.initVariables()
+        self.initTreeSearch()
         self.bind()
         self.loadTagTree()
         self.loadNewTag()
+        self.setMainTreeRef()
+        self.expandTopLevel()
         
-    def initVariables(self):
+    def initTreeSearch(self):
         self.viewTreeLastSearch = ""
         self.viewTreeSearchIndex = 0
         self.viewTreeSearchList = []
@@ -50,7 +52,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mainTreeSearchEdit.installEventFilter(self)
 
         # Connect the save shortcut
-        self.saveShortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.saveShortcut = QShortcut(QKeySequence.StandardKey.Save, self)
         self.saveShortcut.activated.connect(self.saveTree)
 
         # double click to edit item in new_tag_transl_lst
@@ -119,14 +121,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             tree.setCurrentItem(item)
             
         searchText = searchEdit.toPlainText()
-        if searchText == lastSearch:
-            if searchList:
-                if searchIndex < len(searchList):
-                    expandAndScrollToItem(searchList[searchIndex])
-                    searchIndex += 1
-                else:
-                    searchIndex = 0
-                    expandAndScrollToItem(searchList[searchIndex])
+        if searchText == lastSearch and searchList:
+            if searchIndex < len(searchList):
+                expandAndScrollToItem(searchList[searchIndex])
+                searchIndex += 1
+            else:
+                searchIndex = 0
+                expandAndScrollToItem(searchList[searchIndex])
         else:
             searchList = tree.findItems(searchText, Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive)
             searchIndex = 0
@@ -134,21 +135,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if searchList:
                 expandAndScrollToItem(searchList[searchIndex])
                 searchIndex += 1
+                
         return lastSearch, searchIndex, searchList
     
     def loadTagTree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
         self.tagTree = dataFn.loadTagTree() # load tag tree from tag_tree.json
-
         self.viewTree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
-
+        self.mainTree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
+        
+    def setMainTreeRef(self):
         self.mainTree.setTagTree(self.tagTree)
         self.mainTree.setOutputBox(self.outputTextEdit)
         self.mainTree.setListWidgets(self.newTagOrignalList, self.newTagTranslList, self.newTagStoreList)
         self.mainTree.setCheckBox(self.tagMovingCheckBox)
         self.mainTree.setViewTree(self.viewTree)
+        self.mainTree.setNewTagLst(self.newTagLst)
         
-        # expand the tree widget
+    def expandTopLevel(self):
         self.viewTree.expandItem(self.viewTree.topLevelItem(0))
         for i in range(self.viewTree.topLevelItem(0).childCount()):
             self.viewTree.expandItem(self.viewTree.topLevelItem(0).child(i))
@@ -174,12 +178,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 continue
             self.newTagOrignalList.addItem(tagPair[0])
             newTraslItem = QListWidgetItem(tagPair[1])
-            newTraslItem.setFlags(newTraslItem.flags() | Qt.ItemIsEditable) # make the item editable
+            newTraslItem.setFlags(newTraslItem.flags() | Qt.ItemIsEditable)
             self.newTagTranslList.addItem(newTraslItem)
             newTagCount += 1
         
         self.outputTextEdit.append(f"new tag loaded, {newTagCount} tags in total")
-        self.mainTree.setNewTagLst(self.newTagLst) # pass newTagLst to main_tree to record which tags are added
 
     def showTagInfo(self):
         """show the tag info of the selected tag in the tag tree widget"""
@@ -198,6 +201,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         # Show the tag info in the tag info text edit
         self.tagInfo.setText(f"标签名: {tag.name}\n"
+                             f"标签类型: {tag.tagType}\n"
                              f"同义标签:\n{', '.join(tag.synonyms)}\n"
                              f"父标签:\n{', '.join(tag.parent)}\n"
                              f"子标签:\n{', '.join(tag.subTags.keys())}\n"

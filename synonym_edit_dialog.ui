@@ -17,20 +17,6 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="synonyms_label">
-       <property name="text">
-        <string>Synonyms</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPlainTextEdit" name="synonymTextEdit">
-       <property name="plainText">
-        <string notr="true"/>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="english_name_label">
        <property name="text">
         <string>English Name</string>
@@ -44,6 +30,30 @@
          <width>16777215</width>
          <height>30</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="type_label">
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="typeComboBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="synonyms_label">
+       <property name="text">
+        <string>Synonyms</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="synonymTextEdit">
+       <property name="plainText">
+        <string notr="true"/>
        </property>
       </widget>
      </item>
