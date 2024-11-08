@@ -1,10 +1,11 @@
 from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QAbstractItemView
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut, QTextCursor, QTextCharFormat, QFont
 
 from Ui_tag_tree_management import Ui_MainWindow
 
 import data as dataFn
+from tag_tree import Tag
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -138,11 +139,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 
         return lastSearch, searchIndex, searchList
     
+    def getTreeItem(self, tag: Tag) -> QTreeWidgetItem:
+        item = QTreeWidgetItem([tag.name])
+        for subTag in tag.subTags.values():
+            item.addChild(self.getTreeItem(subTag))
+        return item
+    
     def loadTagTree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
-        self.tagTree = dataFn.loadTagTree() # load tag tree from tag_tree.json
-        self.viewTree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
-        self.mainTree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
+        self.tagTree = dataFn.loadTagTree()
+        self.viewTree.addTopLevelItem(self.getTreeItem(self.tagTree.root))
+        self.mainTree.addTopLevelItem(self.getTreeItem(self.tagTree.root))
         
     def setMainTreeRef(self):
         self.mainTree.setTagTree(self.tagTree)
@@ -159,11 +166,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mainTree.expandItem(self.mainTree.topLevelItem(0))
         for i in range(self.mainTree.topLevelItem(0).childCount()):
             self.mainTree.expandItem(self.mainTree.topLevelItem(0).child(i))
-    
-    def reloadViewTree(self):
-        """reload the view tree"""
-        self.viewTree.clear()
-        self.viewTree.addTopLevelItem(self.tagTree.toTreeWidgetItem())
 
     def loadNewTag(self):
         """load new tag file and show it in the new tag lst"""
@@ -172,7 +174,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for tagPair in self.newTagLst:
             if len(tagPair) > 2: # if the tag has been added to the tag tree, pass it
                 continue
-            if self.tagTree.isInTree(tagPair[0]): # if the tag is exist in tag tree, pass it
+            if self.tagTree.isInTree(tagPair[0]):
                 if len(tagPair) == 2:
                     tagPair.append("added")
                 continue
@@ -186,27 +188,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def showTagInfo(self):
         """show the tag info of the selected tag in the tag tree widget"""
-        # Get the currently selected item
         currentItem = self.sender().currentItem()
         if currentItem is None:
             return
-
+    
         tagName = currentItem.text(0)
         tag = self.tagTree.tagDict[tagName]
-        if not tag.isTag:
-            self.tagInfo.setText(f"类: {tag.name}\n"
-                                 f"子标签:\n{', '.join(tag.subTags.keys())}\n"
-                                )
-            return
         
-        # Show the tag info in the tag info text edit
-        self.tagInfo.setText(f"标签名: {tag.name}\n"
-                             f"标签类型: {tag.tagType}\n"
-                             f"同义标签:\n{', '.join(tag.synonyms)}\n"
-                             f"父标签:\n{', '.join(tag.parent)}\n"
-                             f"子标签:\n{', '.join(tag.subTags.keys())}\n"
-                            )
-
+        self.tagInfo.clear()
+    
+        if not tag.isTag:
+            self.tagInfo.append("<b>类:</b> " + tag.name)
+            self.tagInfo.append("<b>子标签:</b>")
+            self.tagInfo.append(", ".join(tag.subTags.keys()))
+        else:
+            items = [
+                ("标签名: ", tag.name),
+                ("标签类型: ", tag.tagType),
+                ("同义标签: ", ", ".join(tag.synonyms)),
+                ("父标签: ", ", ".join(tag.parent)),
+                ("子标签: ", ", ".join(tag.subTags.keys()))
+            ]
+            for label, content in items:
+                self.tagInfo.append(f"<b>{label}</b>{content}")
+    
+        self.tagInfo.verticalScrollBar().setValue(0)
+    
     def saveTree(self):
         dataFn.writeJson(self.tagTree.toDict(), "tag_tree.json")
         dataFn.writeJson(self.newTagLst, "new_tag.json")

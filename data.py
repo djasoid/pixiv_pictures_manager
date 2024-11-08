@@ -5,7 +5,6 @@ import tag_tree as tree
 from shutil import copy2
 from linecache import getline
 from PIL import Image
-import json
 import dataclasses
 
 def writeJson(data, outputFile: str) -> None:

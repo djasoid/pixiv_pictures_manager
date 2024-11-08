@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QTreeWidgetItem
+# This file contains the Tag and TagTree classes, which are used to store and manage the tag tree data
 
 class Tag:
     __slots__ = ["name", "isTag", "parent", "synonyms", "subTags", "enName", "tagType"]
@@ -109,8 +109,7 @@ class TagTree:
         Get a list of all subTags of a Tag recursively
         """
         if tag not in self.tagDict:
-            print("tag not found")
-            return None
+            raise ValueError(f"tag {tag} not found")
 
         subTags = list(self.tagDict[tag].subTags.keys())
         allSubTags = subTags.copy()
@@ -172,36 +171,32 @@ class TagTree:
 
         return parentDict
 
-    def addNewTag(self, newTag: str, parentTag: str):
+    def addNewTag(self, newTag: str, parentTag: str) -> bool:
         """
         Add a new tag to the TagTree at sub tag of parentTag
         parentTag must be in the TagTree
         newTag must not be in the TagTree
         """
         if parentTag not in self.tagDict:
-            print(f"parentTag {parentTag} not found")
-            return
+            raise ValueError(f"parentTag {parentTag} not found")
         
         if newTag in self.tagDict:
-            print(f"newTag {newTag} already exists")
-            return
+            raise ValueError(f"tag {newTag} already exists")
         
         NewTag = Tag(newTag)
 
         self.tagDict[NewTag.name] = NewTag
         self.tagDict[parentTag].addSubTag(NewTag)
         self.tagDict[NewTag.name].addParentTag(parentTag)
-        print(f"added {newTag} to {parentTag}")
+        return True
 
-    def deleteTag(self, tag: str, parentTag: str) -> None:
+    def deleteTag(self, tag: str, parentTag: str) -> bool:
         """Delete a tag from a parent tag, tag must be in the TagTree"""
         if tag not in self.tagDict:
-            print(f"tag {tag} not found")
-            return
+            raise ValueError(f"tag {tag} not found")
         
         if parentTag not in self.tagDict:
-            print(f"parentTag {parentTag} not found")
-            return
+            raise ValueError(f"parentTag {parentTag} not found")
         
         self.tagDict[parentTag].subTags.pop(tag)
         self.tagDict[tag].parent.remove(parentTag)
@@ -210,7 +205,7 @@ class TagTree:
         if not self.tagDict[tag].parent:
             self.tagDict.pop(tag)
 
-        print(f"deleted {tag} from {parentTag}")
+        return True
 
     def getTagList(self) -> list:
         """
@@ -223,19 +218,17 @@ class TagTree:
                 
         return tagList
 
-    def addParentTag(self, tag: str, parentTag: str) -> None:
+    def addParentTag(self, tag: str, parentTag: str) -> bool:
         """Add a parent tag to a existing tag, tag must be in the TagTree"""
         if tag not in self.tagDict:
-            print(f"subTag {tag} not found")
-            return
+            raise ValueError(f"tag {tag} not found")
         
         if parentTag not in self.tagDict:
-            print(f"parentTag {parentTag} not found")
-            return
+            raise ValueError(f"parentTag {parentTag} not found")
         
         self.tagDict[tag].addParentTag(parentTag)
         self.tagDict[parentTag].addSubTag(self.tagDict[tag])
-        print(f"added {tag} to {parentTag}")
+        return True
 
     def isSubTag(self, tag: str, subTag: str) -> bool:
         """Check if subTag is a sub tag of tag"""
@@ -259,18 +252,6 @@ class TagTree:
             outputDict.update(self.tagDict[tag].toDict())
 
         return outputDict
-    
-    def toTreeWidgetItem(self, tag: Tag = None) -> QTreeWidgetItem:
-        """Convert the TagTree object to a QTreeWidgetItem"""
-        if tag is None:
-            tag = self.root
-
-        treeWidgetItem = QTreeWidgetItem()
-        treeWidgetItem.setText(0, tag.name)
-        for subTag in tag.subTags.values():
-            treeWidgetItem.addChild(self.toTreeWidgetItem(subTag))
-
-        return treeWidgetItem
     
     def isInTree(self, tag: str) -> bool:
         """Check if a tag is in the TagTree"""
