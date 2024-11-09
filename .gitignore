@@ -7,3 +7,4 @@ backup/
 脚本.py
 match_pids.json
 pic_data.db
+tag_tree.json

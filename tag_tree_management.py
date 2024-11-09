@@ -110,7 +110,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         return super().eventFilter(source, event)
     
-    def searchTree(self, tree: QTreeWidget, searchEdit: QTextEdit, lastSearch: str, searchIndex: int, searchList: list[QTreeWidgetItem] ):
+    def searchTree(
+            self, 
+            tree: QTreeWidget, 
+            searchEdit: QTextEdit, 
+            lastSearch: str, 
+            searchIndex: int, 
+            searchList: list[QTreeWidgetItem]
+        ):
         """search the tree widget"""
         def expandAndScrollToItem(item: QTreeWidgetItem):
             """expand the tree widget and scroll to the item"""
@@ -180,7 +187,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 continue
             self.newTagOrignalList.addItem(tagPair[0])
             newTraslItem = QListWidgetItem(tagPair[1])
-            newTraslItem.setFlags(newTraslItem.flags() | Qt.ItemIsEditable)
+            newTraslItem.setFlags(newTraslItem.flags() | Qt.ItemFlag.ItemIsEditable)
             self.newTagTranslList.addItem(newTraslItem)
             newTagCount += 1
         

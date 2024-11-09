@@ -20,7 +20,6 @@ def writeJson(data, outputFile: str) -> None:
     """
     with open(outputFile, "w", encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print (f"write to {outputFile} successfully")
 
 def loadJson(filePath: str):
     """
@@ -68,40 +67,43 @@ class PicDatabase:
         else:
             self.database = sqlite3.connect("pic_data.db")
             self.cursor = self.database.cursor()
-            self.cursor.execute('''CREATE TABLE imageData (
-                                pid INT, 
-                                num INT, 
-                                directory TEXT, 
-                                fileName TEXT, 
-                                fileType TEXT,
-                                width INT, 
-                                height INT, 
-                                size INT, 
-                                PRIMARY KEY (pid, num)
-                                )'''
-                                )
-            self.cursor.execute('''CREATE TABLE metadata (
-                                pid INT, 
-                                title TEXT, 
-                                tags TEXT,
-                                description TEXT,
-                                user TEXT,
-                                userId INT,
-                                date TEXT,
-                                xRestrict TEXT,
-                                bookmarkCount INT,
-                                likeCount INT,
-                                viewCount INT,
-                                commentCount INT,
-                                PRIMARY KEY (pid)
-                                )'''
-                                )
-            self.cursor.execute('''CREATE TABLE tagIndex (
-                                tag TEXT,
-                                pids TEXT,
-                                PRIMARY KEY (tag)
-                                )'''
-                                )
+            self.cursor.execute(
+                '''CREATE TABLE imageData (
+                    pid INT, 
+                    num INT, 
+                    directory TEXT, 
+                    fileName TEXT, 
+                    fileType TEXT,
+                    width INT, 
+                    height INT, 
+                    size INT, 
+                    PRIMARY KEY (pid, num)
+                )'''
+            )
+            self.cursor.execute(
+                '''CREATE TABLE metadata (
+                    pid INT, 
+                    title TEXT, 
+                    tags TEXT,
+                    description TEXT,
+                    user TEXT,
+                    userId INT,
+                    date TEXT,
+                    xRestrict TEXT,
+                    bookmarkCount INT,
+                    likeCount INT,
+                    viewCount INT,
+                    commentCount INT,
+                    PRIMARY KEY (pid)
+                )'''
+            )
+            self.cursor.execute(
+                '''CREATE TABLE tagIndex (
+                    tag TEXT,
+                    pids TEXT,
+                    PRIMARY KEY (tag)
+                )'''
+            )
             self.cursor.execute('''CREATE INDEX tag ON tagIndex (tag)''')
             self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
             self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
@@ -115,37 +117,40 @@ class PicDatabase:
                             )
         self.database.commit()
         
-    def insertMetadata(self, 
-                       pid, 
-                       title, 
-                       tags, 
-                       description, 
-                       user, 
-                       userId, 
-                       date,
-                       xRestrict, 
-                       bookmarkCount = None, 
-                       likeCount = None, 
-                       viewCount = None, 
-                       commentCount = None, ):
+    def insertMetadata(
+            self, 
+            pid, 
+            title, 
+            tags, 
+            description, 
+            user, 
+            userId, 
+            date,
+            xRestrict, 
+            bookmarkCount=None, 
+            likeCount=None, 
+            viewCount=None, 
+            commentCount=None
+        ):
         """
         Insert metadata into the database.
         """
-        self.cursor.execute("INSERT OR IGNORE INTO metadata VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                            (pid, 
-                             title, 
-                             tags, 
-                             description, 
-                             user, 
-                             userId, 
-                             date,
-                             xRestrict, 
-                             bookmarkCount, 
-                             likeCount, 
-                             viewCount, 
-                             commentCount, 
-                             )
-                            )
+        self.cursor.execute(
+            "INSERT OR IGNORE INTO metadata VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                pid, 
+                title, 
+                tags, 
+                description, 
+                user, 
+                userId, 
+                date,
+                xRestrict, 
+                bookmarkCount, 
+                likeCount, 
+                viewCount, 
+                commentCount
+            )
+        )
         self.database.commit()
     
     def insertTagIndex(self, tag, pids):

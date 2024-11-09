@@ -68,15 +68,15 @@ class MainTagTreeWidget(QTreeWidget):
 
     def dropEvent(self, event):
         """handle drop event and make changes to the tag tree"""
-        targetItem = self.itemAt(event.position().toPoint()) # get the item at the drop position
-        if targetItem is None: # if the drop position is not on an item, do nothing
+        targetItem = self.itemAt(event.position().toPoint())
+        if targetItem is None:
             return
         
         targetTag = targetItem.text(0)
         
         source = event.source().objectName()
 
-        if source == "viewTree": # get the tag name from the source
+        if source == "viewTree":
             dragTagItem = event.source().currentItem()
             dragTagSourceItem = dragTagItem.parent()
             dragTagSource = dragTagSourceItem.text(0)
@@ -107,6 +107,7 @@ class MainTagTreeWidget(QTreeWidget):
                 originalTag = self.newTagOrignalList.item(self.newTagTranslList.row(event.source().currentItem())).text()
                 self.addSynonym(originalTag, dragTag)
                 self.markAdded(dragTag, False)
+                
         except ValueError as e:
             self.outputBox.append(f"<b><span style='color: red;'>操作失败: {str(e)}</span></b>")
     
@@ -116,7 +117,7 @@ class MainTagTreeWidget(QTreeWidget):
         parentItem.addChild(QTreeWidgetItem([sub]))
         viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
         viewParentItem.addChild(QTreeWidgetItem([sub]))
-        self.outputBox.append(f"添加新标签 {sub} 到 {parent}")
+        self.outputBox.append(f"添加新标签 <b>{sub}</b>到 <b>{parent}</b>")
     
     def addParentTag(self, sub: str, parent: str, parentItem: QTreeWidgetItem):
         """Add a parent tag"""
@@ -124,12 +125,12 @@ class MainTagTreeWidget(QTreeWidget):
         parentItem.addChild(QTreeWidgetItem([sub]))
         viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
         viewParentItem.addChild(QTreeWidgetItem([sub]))
-        self.outputBox.append(f"标签 {sub} 添加至 {parent}下")
+        self.outputBox.append(f"标签 <b>{sub}</b> 添加至 <b>{parent}</b> 下")
     
     def addSynonym(self, sub: str, parent: str):
         """Add a synonym"""
         self.tagTree.tagDict[parent].addSynonym(sub)
-        self.outputBox.append(f"同义标签 {sub} 添加至 {parent}")
+        self.outputBox.append(f"同义标签 <b>{sub}</b> 添加至 <b>{parent}</b>")
     
     def deleteTag(self, sub: str, parent: str, subItem: QTreeWidgetItem, parentItem: QTreeWidgetItem):
         """Delete a tag"""
@@ -137,7 +138,7 @@ class MainTagTreeWidget(QTreeWidget):
         viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
         viewParentItem.removeChild(self.getCorrespondingTreeItem(subItem, self.viewTree))
         parentItem.removeChild(subItem)
-        self.outputBox.append(f"标签 {sub} 从 {parent} 删除")
+        self.outputBox.append(f"标签 <b>{sub}</b> 从 <b>{parent}</b> 删除")
     
     def moveTag(self, sub: str, parent: str, source: str, subItem: QTreeWidgetItem, parentItem: QTreeWidgetItem, sourceItem: QTreeWidgetItem):
         """Move a tag"""
@@ -150,7 +151,7 @@ class MainTagTreeWidget(QTreeWidget):
         viewTreeParentItem.addChild(subItem.clone())
         mainTreeSourceItem.removeChild(mainTreeSubItem)
         sourceItem.removeChild(subItem)
-        self.outputBox.append(f"标签 {sub} 从 {source} 移动至 {parent}")
+        self.outputBox.append(f"标签 <b>{sub}</b> 从 <b>{source}</b> 移动至 <b>{parent}</b>")
 
     def getCorrespondingTreeItem(self, sourceItem: QTreeWidgetItem, targetTree: QTreeWidget) -> QTreeWidgetItem:
         """
@@ -179,7 +180,6 @@ class MainTagTreeWidget(QTreeWidget):
     def markAdded(self, tag: str, orignal: bool):
         """mark the tag as added to the tag tree"""
         if orignal:
-            # set the font of the orignal tag to gray
             orignalItems = self.newTagOrignalList.findItems(tag, Qt.MatchExactly)
             if orignalItems:
                 orignalItem = orignalItems[0]
@@ -187,22 +187,17 @@ class MainTagTreeWidget(QTreeWidget):
             else:
                 return
 
-            # mark the tag in the new tag list as added
             for tagPair in self.newTagLst:
                 if tagPair[0] == tag:
                     tagPair.append("added")
                     return
                 
         else:
-            # set the font of the transl tag and the orignal tag to gray
             translItem = self.newTagTranslList.findItems(tag, Qt.MatchExactly)[0]
             orignalItem = self.newTagOrignalList.item(self.newTagTranslList.row(translItem))
             orignalItem.setForeground(Qt.gray)
             translItem.setForeground(Qt.gray)
-
             orignalTag = orignalItem.text()
-
-            # mark the tag in the new tag list as added
             for tagPair in self.newTagLst:
                 if tagPair[0] == orignalTag:
                     tagPair.append("added")
@@ -210,13 +205,9 @@ class MainTagTreeWidget(QTreeWidget):
     
     def contextMenuEvent(self, event: QContextMenuEvent):
         """show context menu when right click"""
-        # Get the currently selected item
         currentItem = self.itemAt(event.pos())
-        # get the parent item of the currently selected item
         parentItem = currentItem.parent()
-        # get the tag name of the currently selected item
         tagName = currentItem.text(0)
-        # get the tag name of the parent item
         parentTagName = parentItem.text(0)
         contextMenu = QMenu(self)
         contextMenu.addAction(QAction("在view tree中展开", self, triggered=lambda: self.showInViewTree()))

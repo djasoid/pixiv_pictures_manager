@@ -50,12 +50,9 @@ class PicTagManager:
 
         tagIndex: dict[str, list[str]] = {}
 
-        # interate every picture info
         for pid in pidList:
             tags = self.picDatabase.getTags(pid).keys()
             tagInTree = set()
-
-            # iterate every tag in the picture, check if the tag is in the tag tree then collect tag in the tag tree
             for tag in tags:
                 if tag in allParentTagDict:
                     tagInTree.add(tag)
