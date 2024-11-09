@@ -1,10 +1,7 @@
 __pycache__/
 .vscode/
-new_tag.json
-tag_group.json
 backup/
+*.db
+*.json
 .python-version
 脚本.py
-match_pids.json
-pic_data.db
-tag_tree.json
