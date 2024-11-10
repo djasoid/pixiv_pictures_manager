@@ -9,12 +9,12 @@ import tag_tree as tree
 import data as dataFn
 
 class DeleteDialog(QDialog, Ui_delete_tag_dialog):
-    def __init__(self, parent, tagName, parentTagName):
+    def __init__(self, parent, tag_name, parent_tag_name):
         super().__init__(parent)
         self.setupUi(self)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
-        self.deleteInfoLabel.setText(f"确认从 {parentTagName} 删除 {tagName} ?")
+        self.deleteInfoLabel.setText(f"确认从 {parent_tag_name} 删除 {tag_name} ?")
     
     def accept(self):
         super().accept()
@@ -23,12 +23,12 @@ class DeleteDialog(QDialog, Ui_delete_tag_dialog):
         super().reject()
 
 class SynonymEditDialog(QDialog, Ui_synonym_edit_dialog):
-    def __init__(self, parent, tagName: str, synonyms: set, enName: str, type: str):
+    def __init__(self, parent, tag_name: str, synonyms: set, enName: str, type: str):
         super().__init__(parent)
         self.setupUi(self)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
-        self.setWindowTitle(f"编辑同义标签：{tagName}")
+        self.setWindowTitle(f"编辑同义标签：{tag_name}")
         self.synonymTextEdit.setPlainText("\n".join(synonyms))
         self.englishNameEdit.setPlainText(enName)
         self.typeComboBox.addItems(["", "IP", "Character", "R-18"])
@@ -44,116 +44,115 @@ class SynonymEditDialog(QDialog, Ui_synonym_edit_dialog):
 class MainTagTreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.addedFont = QFont()
 
-    def setTagTree(self, tagTree: tree.TagTree):
-        self.tagTree = tagTree
+    def set_tag_tree(self, tag_tree: tree.TagTree):
+        self.tag_tree = tag_tree
         
-    def setViewTree(self, viewTree: QTreeWidget):
-        self.viewTree = viewTree
+    def set_view_tree(self, view_tree: QTreeWidget):
+        self.view_tree = view_tree
 
-    def setOutputBox(self, outputBox: QTextEdit):
-        self.outputBox = outputBox
+    def set_output_box(self, output_box: QTextEdit):
+        self.output_box = output_box
 
-    def setNewTagLst(self, newTagLst: list):
-        self.newTagLst = newTagLst
+    def set_new_tag_list(self, new_tag_list: list):
+        self.new_tag_list = new_tag_list
     
-    def setListWidgets(self, newTagOrignalList: QListWidget, newTagTranslList: QListWidget, newTagStoreList: QListWidget):
-        self.newTagOrignalList = newTagOrignalList
-        self.newTagTranslList = newTagTranslList
-        self.newTagStoreList = newTagStoreList
+    def set_list_widgets(self, new_tag_orignal_list: QListWidget, new_tag_transl_list: QListWidget, new_tag_store_list: QListWidget):
+        self.new_tag_orignal_list = new_tag_orignal_list
+        self.new_tag_transl_list = new_tag_transl_list
+        self.new_tag_store_list = new_tag_store_list
 
-    def setCheckBox(self, tagMovingCheckBox: QCheckBox):
-        self.tagMovingCheckBox = tagMovingCheckBox
+    def set_check_box(self, tag_moving_check_box: QCheckBox):
+        self.tag_moving_check_box = tag_moving_check_box
 
     def dropEvent(self, event):
         """handle drop event and make changes to the tag tree"""
-        targetItem = self.itemAt(event.position().toPoint())
-        if targetItem is None:
+        target_item = self.itemAt(event.position().toPoint())
+        if target_item is None:
             return
         
-        targetTag = targetItem.text(0)
+        target_tag = target_item.text(0)
         
         source = event.source().objectName()
 
         if source == "viewTree":
-            dragTagItem = event.source().currentItem()
-            dragTagSourceItem = dragTagItem.parent()
-            dragTagSource = dragTagSourceItem.text(0)
-            dragTag = dragTagItem.text(0)
+            drag_tag_item = event.source().currentItem()
+            drag_tag_source_item = drag_tag_item.parent()
+            drag_tag_source = drag_tag_source_item.text(0)
+            drag_tag = drag_tag_item.text(0)
         else:
-            dragTag = event.source().currentItem().text()
+            drag_tag = event.source().currentItem().text()
 
         try:
             if source == "viewTree": # copy and move operation
-                if dragTag == targetTag:
-                    self.outputBox.append("不能将标签移动到自身")
+                if drag_tag == target_tag:
+                    self.output_box.append("不能将标签移动到自身")
                 else:
-                    if self.tagMovingCheckBox.isChecked():
-                        self.moveTag(dragTag, targetTag, dragTagSource, dragTagItem, targetItem, dragTagSourceItem) 
+                    if self.tag_moving_check_box.isChecked():
+                        self.move_tag(drag_tag, target_tag, drag_tag_source, drag_tag_item, target_item, drag_tag_source_item) 
                     else:
-                        self.addParentTag(dragTag, targetTag, targetItem)
+                        self.add_parent_tag(drag_tag, target_tag, target_item)
 
             elif source == "newTagStoreList": # add operation
-                self.addNewTag(dragTag, targetTag, targetItem)
-                self.markAdded(dragTag, True)
+                self.add_new_tag(drag_tag, target_tag, target_item)
+                self.mark_added(drag_tag, True)
 
             elif source == "newTagOrignalList":
-                self.addSynonym(dragTag, targetTag)
-                self.markAdded(dragTag, True)
+                self.add_synonym(drag_tag, target_tag)
+                self.mark_added(drag_tag, True)
 
             elif source == "newTagTranslList": # add operation
-                self.addNewTag(dragTag, targetTag, targetItem)
-                originalTag = self.newTagOrignalList.item(self.newTagTranslList.row(event.source().currentItem())).text()
-                self.addSynonym(originalTag, dragTag)
-                self.markAdded(dragTag, False)
+                self.add_new_tag(drag_tag, target_tag, target_item)
+                original_tag = self.new_tag_orignal_list.item(self.new_tag_transl_list.row(event.source().currentItem())).text()
+                self.add_synonym(original_tag, drag_tag)
+                self.mark_added(drag_tag, False)
                 
         except ValueError as e:
-            self.outputBox.append(f"<b><span style='color: red;'>操作失败: {str(e)}</span></b>")
+            self.output_box.append(f"<b><span style='color: red;'>操作失败: {str(e)}</span></b>")
     
-    def addNewTag(self, sub: str, parent: str, parentItem: QTreeWidgetItem):
+    def add_new_tag(self, sub: str, parent: str, parent_item: QTreeWidgetItem):
         """Add a new tag"""
-        self.tagTree.addNewTag(sub, parent)
-        parentItem.addChild(QTreeWidgetItem([sub]))
-        viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
-        viewParentItem.addChild(QTreeWidgetItem([sub]))
-        self.outputBox.append(f"添加新标签 <b>{sub}</b>到 <b>{parent}</b>")
+        self.tag_tree.add_new_tag(sub, parent)
+        parent_item.addChild(QTreeWidgetItem([sub]))
+        view_parent_item = self.get_corresponding_tree_item(parent_item, self.view_tree)
+        view_parent_item.addChild(QTreeWidgetItem([sub]))
+        self.output_box.append(f"添加新标签 <b>{sub}</b>到 <b>{parent}</b>")
     
-    def addParentTag(self, sub: str, parent: str, parentItem: QTreeWidgetItem):
+    def add_parent_tag(self, sub: str, parent: str, parentItem: QTreeWidgetItem):
         """Add a parent tag"""
-        self.tagTree.addParentTag(sub, parent)
+        self.tag_tree.add_parent_tag(sub, parent)
         parentItem.addChild(QTreeWidgetItem([sub]))
-        viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
+        viewParentItem = self.get_corresponding_tree_item(parentItem, self.view_tree)
         viewParentItem.addChild(QTreeWidgetItem([sub]))
-        self.outputBox.append(f"标签 <b>{sub}</b> 添加至 <b>{parent}</b> 下")
+        self.output_box.append(f"标签 <b>{sub}</b> 添加至 <b>{parent}</b> 下")
     
-    def addSynonym(self, sub: str, parent: str):
+    def add_synonym(self, sub: str, parent: str):
         """Add a synonym"""
-        self.tagTree.tagDict[parent].addSynonym(sub)
-        self.outputBox.append(f"同义标签 <b>{sub}</b> 添加至 <b>{parent}</b>")
+        self.tag_tree.tag_dict[parent].add_synonym(sub)
+        self.output_box.append(f"同义标签 <b>{sub}</b> 添加至 <b>{parent}</b>")
     
-    def deleteTag(self, sub: str, parent: str, subItem: QTreeWidgetItem, parentItem: QTreeWidgetItem):
+    def delete_tag(self, sub: str, parent: str, subItem: QTreeWidgetItem, parent_item: QTreeWidgetItem):
         """Delete a tag"""
-        self.tagTree.deleteTag(sub, parent)
-        viewParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
-        viewParentItem.removeChild(self.getCorrespondingTreeItem(subItem, self.viewTree))
-        parentItem.removeChild(subItem)
-        self.outputBox.append(f"标签 <b>{sub}</b> 从 <b>{parent}</b> 删除")
+        self.tag_tree.delete_tag(sub, parent)
+        view_parent_item = self.get_corresponding_tree_item(parent_item, self.view_tree)
+        view_parent_item.removeChild(self.get_corresponding_tree_item(subItem, self.view_tree))
+        parent_item.removeChild(subItem)
+        self.output_box.append(f"标签 <b>{sub}</b> 从 <b>{parent}</b> 删除")
     
-    def moveTag(self, sub: str, parent: str, source: str, subItem: QTreeWidgetItem, parentItem: QTreeWidgetItem, sourceItem: QTreeWidgetItem):
+    def move_tag(self, sub: str, parent: str, source: str, subItem: QTreeWidgetItem, parent_item: QTreeWidgetItem, source_item: QTreeWidgetItem):
         """Move a tag"""
-        self.tagTree.addParentTag(sub, parent)
-        self.tagTree.deleteTag(sub, source)
-        mainTreeSourceItem = self.getCorrespondingTreeItem(sourceItem, self)
-        mainTreeSubItem = self.getCorrespondingTreeItem(subItem, self)
-        viewTreeParentItem = self.getCorrespondingTreeItem(parentItem, self.viewTree)
-        parentItem.addChild(mainTreeSubItem.clone())
-        viewTreeParentItem.addChild(subItem.clone())
-        mainTreeSourceItem.removeChild(mainTreeSubItem)
-        sourceItem.removeChild(subItem)
-        self.outputBox.append(f"标签 <b>{sub}</b> 从 <b>{source}</b> 移动至 <b>{parent}</b>")
+        self.tag_tree.add_parent_tag(sub, parent)
+        self.tag_tree.delete_tag(sub, source)
+        main_tree_source_item = self.get_corresponding_tree_item(source_item, self)
+        main_tree_sub_item = self.get_corresponding_tree_item(subItem, self)
+        view_tree_parent_item = self.get_corresponding_tree_item(parent_item, self.view_tree)
+        parent_item.addChild(main_tree_sub_item.clone())
+        view_tree_parent_item.addChild(subItem.clone())
+        main_tree_source_item.removeChild(main_tree_sub_item)
+        source_item.removeChild(subItem)
+        self.output_box.append(f"标签 <b>{sub}</b> 从 <b>{source}</b> 移动至 <b>{parent}</b>")
 
-    def getCorrespondingTreeItem(self, sourceItem: QTreeWidgetItem, targetTree: QTreeWidget) -> QTreeWidgetItem:
+    def get_corresponding_tree_item(self, source_item: QTreeWidgetItem, target_tree: QTreeWidget) -> QTreeWidgetItem:
         """
         Retrieves the corresponding tree item in the target tree for a given source tree item.
 
@@ -166,41 +165,41 @@ class MainTagTreeWidget(QTreeWidget):
             QTreeWidgetItem: The corresponding tree item in the target tree.
         """
         index = []
-        pItem = sourceItem.parent()
-        while pItem:
-            index.append(pItem.indexOfChild(sourceItem))
-            sourceItem = pItem
-            pItem = sourceItem.parent()
+        p_item = source_item.parent()
+        while p_item:
+            index.append(p_item.indexOfChild(source_item))
+            source_item = p_item
+            p_item = source_item.parent()
         index.reverse()
-        targetItem = targetTree.topLevelItem(0)
+        target_item = target_tree.topLevelItem(0)
         for i in index:
-                targetItem = targetItem.child(i)
-        return targetItem
+                target_item = target_item.child(i)
+        return target_item
 
-    def markAdded(self, tag: str, orignal: bool):
+    def mark_added(self, tag: str, orignal: bool):
         """mark the tag as added to the tag tree"""
         if orignal:
-            orignalItems = self.newTagOrignalList.findItems(tag, Qt.MatchExactly)
-            if orignalItems:
-                orignalItem = orignalItems[0]
-                orignalItem.setForeground(Qt.gray)
+            orignal_items = self.new_tag_orignal_list.findItems(tag, Qt.MatchExactly)
+            if orignal_items:
+                orignal_item = orignal_items[0]
+                orignal_item.setForeground(Qt.gray)
             else:
                 return
 
-            for tagPair in self.newTagLst:
-                if tagPair[0] == tag:
-                    tagPair.append("added")
+            for tag_pair in self.new_tag_list:
+                if tag_pair[0] == tag:
+                    tag_pair.append("added")
                     return
                 
         else:
-            translItem = self.newTagTranslList.findItems(tag, Qt.MatchExactly)[0]
-            orignalItem = self.newTagOrignalList.item(self.newTagTranslList.row(translItem))
-            orignalItem.setForeground(Qt.gray)
-            translItem.setForeground(Qt.gray)
-            orignalTag = orignalItem.text()
-            for tagPair in self.newTagLst:
-                if tagPair[0] == orignalTag:
-                    tagPair.append("added")
+            transl_item = self.new_tag_transl_list.findItems(tag, Qt.MatchExactly)[0]
+            orignal_item = self.new_tag_orignal_list.item(self.new_tag_transl_list.row(transl_item))
+            orignal_item.setForeground(Qt.gray)
+            transl_item.setForeground(Qt.gray)
+            orignal_tag = orignal_item.text()
+            for tag_pair in self.new_tag_list:
+                if tag_pair[0] == orignal_tag:
+                    tag_pair.append("added")
                     return
     
     def contextMenuEvent(self, event: QContextMenuEvent):
@@ -210,43 +209,43 @@ class MainTagTreeWidget(QTreeWidget):
         tagName = currentItem.text(0)
         parentTagName = parentItem.text(0)
         contextMenu = QMenu(self)
-        contextMenu.addAction(QAction("在view tree中展开", self, triggered=lambda: self.showInViewTree()))
-        contextMenu.addAction(QAction("编辑同义标签", self, triggered=lambda: self.synonymEdit(tagName)))
-        contextMenu.addAction(QAction("删除标签", self, triggered=lambda: self.confirmDelete(tagName, parentTagName, currentItem, parentItem)))
+        contextMenu.addAction(QAction("在view tree中展开", self, triggered=lambda: self.show_in_view_tree()))
+        contextMenu.addAction(QAction("编辑同义标签", self, triggered=lambda: self.synonym_edit(tagName)))
+        contextMenu.addAction(QAction("删除标签", self, triggered=lambda: self.confirm_delete(tagName, parentTagName, currentItem, parentItem)))
         contextMenu.exec_(event.globalPos())
 
-    def showInViewTree(self):
-        resultItem = self.getCorrespondingTreeItem(self.currentItem(), self.viewTree)
-        self.viewTree.setFocus()
-        self.viewTree.setCurrentItem(resultItem)
-        self.viewTree.scrollToItem(resultItem)
+    def show_in_view_tree(self):
+        result_item = self.get_corresponding_tree_item(self.currentItem(), self.view_tree)
+        self.view_tree.setFocus()
+        self.view_tree.setCurrentItem(result_item)
+        self.view_tree.scrollToItem(result_item)
 
-    def confirmDelete(self, tagName, parentTagName, currentItem, parentItem):
+    def confirm_delete(self, tag_name, parent_tag_name, current_item, parent_item):
         """show the delete tag dialog"""
-        dialog = DeleteDialog(self, tagName, parentTagName)
+        dialog = DeleteDialog(self, tag_name, parent_tag_name)
         result = dialog.exec_()
         if result == QDialog.DialogCode.Accepted:
-            self.deleteTag(tagName, parentTagName, currentItem, parentItem)
+            self.delete_tag(tag_name, parent_tag_name, current_item, parent_item)
 
-    def synonymEdit(self, tagName):
+    def synonym_edit(self, tag_name):
         """show the synonym edit dialog"""
-        synonyms = self.tagTree.tagDict[tagName].synonyms
-        enName = self.tagTree.tagDict[tagName].enName
-        tagType = self.tagTree.tagDict[tagName].tagType
-        dialog = SynonymEditDialog(self, tagName, synonyms, enName, tagType)
+        synonyms = self.tag_tree.tag_dict[tag_name].synonyms
+        en_name = self.tag_tree.tag_dict[tag_name].en_name
+        tag_type = self.tag_tree.tag_dict[tag_name].tag_type
+        dialog = SynonymEditDialog(self, tag_name, synonyms, en_name, tag_type)
         result = dialog.exec_()
         if result == QDialog.DialogCode.Accepted:
-            synonymsInput = set(dialog.synonymTextEdit.toPlainText().split("\n"))
-            enNameInput = dialog.englishNameEdit.toPlainText()
-            typeInput = dialog.typeComboBox.currentText()
+            synonyms_input = set(dialog.synonymTextEdit.toPlainText().split("\n"))
+            en_name_input = dialog.englishNameEdit.toPlainText()
+            type_input = dialog.typeComboBox.currentText()
             
-            if enNameInput.isascii():
-                self.tagTree.tagDict[tagName].setEnName(enNameInput)
+            if en_name_input.isascii():
+                self.tag_tree.tag_dict[tag_name].set_en_name(en_name_input)
             else:
-                self.outputBox.append("英文名只能包含ASCII字符")
+                self.output_box.append("英文名只能包含ASCII字符")
             
-            if typeInput:
-                self.tagTree.tagDict[tagName].tagType = typeInput
+            if type_input:
+                self.tag_tree.tag_dict[tag_name].tag_type = type_input
             
-            edited = {i for i in synonymsInput if i.startswith("#")}
-            self.tagTree.tagDict[tagName].synonyms = edited
+            edited = {i for i in synonyms_input if i.startswith("#")}
+            self.tag_tree.tag_dict[tag_name].synonyms = edited

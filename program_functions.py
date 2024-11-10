@@ -6,109 +6,109 @@ class PicTagManager:
     A class that manages picture tags.
     """
     def __init__(self):
-        self.picDatabase = dataFn.PicDatabase()
-        self.tagTree = dataFn.loadTagTree()
-        self.tagIndexCache = {}
-        self.unknownTags = {}
+        self.pic_database = dataFn.PicDatabase()
+        self.tag_tree = dataFn.load_tag_tree()
+        self.tag_index_cache = {}
+        self.unknown_tags = {}
 
-    def completeTag(self) -> None:
+    def complete_tag(self) -> None:
         """
         iterate through the database and completes tags for each picture data in database with tag tree.
         """
-        allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=True)
-        pidList = self.picDatabase.getPidList()
+        all_parent_tag_dict = self.tag_tree.get_all_parent_tag(include_synonyms=True)
+        pid_list = self.pic_database.get_pid_list()
 
-        for pid in pidList:
-            tags = self.picDatabase.getTags(pid).keys()
-            newTags = set()
+        for pid in pid_list:
+            tags = self.pic_database.get_tags(pid).keys()
+            new_tags = set()
             for tag in tags:
-                if tag in allParentTagDict:
-                    newTags.update(allParentTagDict[tag])
+                if tag in all_parent_tag_dict:
+                    new_tags.update(all_parent_tag_dict[tag])
                 else:
-                    if tag in self.unknownTags:
-                        self.unknownTags[tag] += 1
+                    if tag in self.unknown_tags:
+                        self.unknown_tags[tag] += 1
                     else:
-                        self.unknownTags[tag] = 1
+                        self.unknown_tags[tag] = 1
             
-            newTags -= tags
-            newtagsDict = {tag: "tree" for tag in newTags}
-            self.picDatabase.addTags(pid, newtagsDict)
+            new_tags -= tags
+            new_tags_dict = {tag: "tree" for tag in new_tags}
+            self.pic_database.add_tags(pid, new_tags_dict)
 
-        tagsToDelete = [tag for tag in self.unknownTags if self.unknownTags[tag] < 10]
-        for tag in tagsToDelete:
-            del self.unknownTags[tag]
+        tags_to_delete = [tag for tag in self.unknown_tags if self.unknown_tags[tag] < 10]
+        for tag in tags_to_delete:
+            del self.unknown_tags[tag]
             
-        sortedUnknownTags = sorted(self.unknownTags.items(), key=lambda item: item[1], reverse=True)
-        dataFn.writeJson(sortedUnknownTags, "unknown_tags.json")
+        sorted_unknown_tags = sorted(self.unknown_tags.items(), key=lambda item: item[1], reverse=True)
+        dataFn.write_json(sorted_unknown_tags, "unknown_tags.json")
 
-    def initTagIndex(self) -> None:
+    def init_tag_index(self) -> None:
         """
         Initializes a tag index.
         """
-        allParentTagDict = self.tagTree.getAllParentTag(includeSynonyms=False)
-        pidList = self.picDatabase.getPidList()
+        all_parent_tag_dict = self.tag_tree.get_all_parent_tag(include_synonyms=False)
+        pid_list = self.pic_database.get_pid_list()
 
-        tagIndex: dict[str, list[str]] = {}
+        tag_index: dict[str, list[str]] = {}
 
-        for pid in pidList:
-            tags = self.picDatabase.getTags(pid).keys()
-            tagInTree = set()
+        for pid in pid_list:
+            tags = self.pic_database.get_tags(pid).keys()
+            tag_in_tree = set()
             for tag in tags:
-                if tag in allParentTagDict:
-                    tagInTree.add(tag)
+                if tag in all_parent_tag_dict:
+                    tag_in_tree.add(tag)
             
             # remove all parent tags from the tag set to remove excessive tags
-            tagSet = tagInTree.copy()
-            for tag in tagInTree:
-                if tag in tagSet:
-                    tagSet -= allParentTagDict[tag]
+            tag_set = tag_in_tree.copy()
+            for tag in tag_in_tree:
+                if tag in tag_set:
+                    tag_set -= all_parent_tag_dict[tag]
             
-            for tag in tagSet:
-                if tag in tagIndex:
-                    tagIndex[tag].append(pid)
+            for tag in tag_set:
+                if tag in tag_index:
+                    tag_index[tag].append(pid)
                 else:
-                    tagIndex[tag] = [pid]
+                    tag_index[tag] = [pid]
         
-        self.picDatabase.insertTagIndexDict(tagIndex)
+        self.pic_database.insert_tag_index_dict(tag_index)
 
-    def tagSearch(self, includeTags: list, excludeTags: list, includeSubTags: bool = True) -> set:
+    def tag_search(self, include_tags: list, exclude_tags: list, include_sub_tags: bool = True) -> set:
         """
         Search for pictures with tags.
         the search will return a set of picture ids that have all the tags in includeTags and none of the tags in excludeTags.
         """
-        def findPids(tag: str) -> set:
-            if tag in self.tagIndexCache:
-                return self.tagIndexCache[tag]
+        def find_pids(tag: str) -> set:
+            if tag in self.tag_index_cache:
+                return self.tag_index_cache[tag]
             else:
-                pids = self.picDatabase.getPidsByTag(tag)
-                self.tagIndexCache[tag] = pids
+                pids = self.pic_database.get_pids_by_tag(tag)
+                self.tag_index_cache[tag] = pids
                 return pids
         
-        allExcludeTag = excludeTags.copy()
-        allIncludeTag = []
+        all_exclude_tag = exclude_tags.copy()
+        all_include_tag = []
 
-        for tag in excludeTags:
-            allExcludeTag.extend(self.tagTree.getSubTags(tag))
+        for tag in exclude_tags:
+            all_exclude_tag.extend(self.tag_tree.get_sub_tags(tag))
         
-        if includeSubTags:
-            for tag in includeTags:
-                allIncludeTag.append(self.tagTree.getSubTags(tag).append(tag))
+        if include_sub_tags:
+            for tag in include_tags:
+                all_include_tag.append(self.tag_tree.get_sub_tags(tag).append(tag))
                 
-        includePid = set()
-        for tags in allIncludeTag:
+        include_pid = set()
+        for tags in all_include_tag:
             pids = set()
             for tag in tags:
-                pids.update(findPids(tag))
-            if includePid:
-                includePid &= pids
+                pids.update(find_pids(tag))
+            if include_pid:
+                include_pid &= pids
             else:
-                includePid = pids.copy()
+                include_pid = pids.copy()
 
-        excludePid = set()
-        for tag in allExcludeTag:
-            excludePid.update(findPids(tag))
+        exclude_pid = set()
+        for tag in all_exclude_tag:
+            exclude_pid.update(find_pids(tag))
         
-        return includePid - excludePid
+        return include_pid - exclude_pid
     
 if __name__ == "__main__":
     pass

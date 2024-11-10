@@ -7,7 +7,7 @@ from linecache import getline
 from PIL import Image
 import dataclasses
 
-def writeJson(data, outputFile: str) -> None:
+def write_json(data, output_file: str) -> None:
     """
     Writes data to a JSON file.
 
@@ -18,10 +18,10 @@ def writeJson(data, outputFile: str) -> None:
     output_directory (str): The directory to write the file to.
     filename (str): The name of the file to write.
     """
-    with open(outputFile, "w", encoding='utf-8') as file:
+    with open(output_file, "w", encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-def loadJson(filePath: str):
+def load_json(file_path: str):
     """
     Loads a JSON file.
 
@@ -30,11 +30,11 @@ def loadJson(filePath: str):
     Do not use this function to load tag_tree.json.
     please use loadTagTree() instead.
     """
-    with open(filePath, "r", encoding='utf-8') as file:
+    with open(file_path, "r", encoding='utf-8') as file:
         data = json.load(file)
     return data
 
-def loadTagTree(tagTreeFile: str = "tag_tree.json") -> tree.TagTree:
+def load_tag_tree(tag_tree_file: str = "tag_tree.json") -> tree.TagTree:
     """
     Initializes a TagTree object from a JSON file.
 
@@ -46,18 +46,18 @@ def loadTagTree(tagTreeFile: str = "tag_tree.json") -> tree.TagTree:
     Returns:
     classes.TagTree: A TagTree object.
     """
-    with open(tagTreeFile, "r", encoding='utf-8') as file:
-        tagTreeDict = json.load(file)
-    tagTree = tree.TagTree(tagTreeDict)
+    with open(tag_tree_file, "r", encoding='utf-8') as file:
+        tag_tree_dict = json.load(file)
+    tagTree = tree.TagTree(tag_tree_dict)
     return tagTree
 
 class PicDatabase:
     def __init__(self):
         self.database = None
         self.cursor = None
-        self.loadDatabase()
+        self.load_database()
         
-    def loadDatabase(self):
+    def load_database(self):
         """
         Load the database.
         """
@@ -108,29 +108,29 @@ class PicDatabase:
             self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
             self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
     
-    def insertImageData(self, pid, num, directory, fileName, fileType, width, height, size):
+    def insert_image_data(self, pid, num, directory, file_name, file_type, width, height, size):
         """
         Insert image data into the database.
         """
         self.cursor.execute("INSERT OR IGNORE INTO imageData VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                            (pid, num, directory, fileName, fileType, width, height, size)
+                            (pid, num, directory, file_name, file_type, width, height, size)
                             )
         self.database.commit()
         
-    def insertMetadata(
+    def insert_metadata(
             self, 
             pid, 
             title, 
             tags, 
             description, 
             user, 
-            userId, 
+            user_id, 
             date,
             xRestrict, 
-            bookmarkCount=None, 
-            likeCount=None, 
-            viewCount=None, 
-            commentCount=None
+            bookmark_count=None, 
+            like_count=None, 
+            view_count=None, 
+            comment_count=None
         ):
         """
         Insert metadata into the database.
@@ -142,33 +142,33 @@ class PicDatabase:
                 tags, 
                 description, 
                 user, 
-                userId, 
+                user_id, 
                 date,
                 xRestrict, 
-                bookmarkCount, 
-                likeCount, 
-                viewCount, 
-                commentCount
+                bookmark_count, 
+                like_count, 
+                view_count, 
+                comment_count
             )
         )
         self.database.commit()
     
-    def insertTagIndex(self, tag, pids):
+    def insert_tag_index(self, tag, pids):
         """
         Insert tag index into the database.
         """
         self.cursor.execute("INSERT OR IGNORE INTO tagIndex VALUES (?, ?)", (tag, json.dumps(pids)))
         self.database.commit()
     
-    def insertTagIndexDict(self, tagIndexDict: dict[str, list[str]]):
+    def insert_tag_index_dict(self, tag_index_dict: dict[str, list[str]]):
         """
         Insert tag index dictionary into the database.
         """
-        for tag, pids in tagIndexDict.items():
-            self.insertTagIndex(tag, pids)
+        for tag, pids in tag_index_dict.items():
+            self.insert_tag_index(tag, pids)
         self.database.commit()
     
-    def getPidsByTag(self, tag: str) -> set:
+    def get_pids_by_tag(self, tag: str) -> set:
         """
         Get pids by tag.
         """
@@ -182,48 +182,48 @@ class PicDatabase:
     def __del__(self):
         self.database.close()
     
-    def getTags(self, pid) -> dict:
+    def get_tags(self, pid) -> dict:
         """
         Get tags of a picture.
         """
         self.cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid))
-        tagsJson = self.cursor.fetchone()
-        if tagsJson:
-            return json.loads(tagsJson[0])
+        tags_json = self.cursor.fetchone()
+        if tags_json:
+            return json.loads(tags_json[0])
         else:
             return {}
         
-    def getPidList(self) -> list:
+    def get_pid_list(self) -> list:
         """
         Get a list of all pids in metadata.
         """
         self.cursor.execute("SELECT pid FROM metadata")
         return [item[0] for item in self.cursor.fetchall()]
     
-    def getFilePidList(self) -> list:
+    def get_file_pid_list(self) -> list:
         """
         Get a list of all pids in imageData.
         """
         self.cursor.execute("SELECT pid FROM imageData")
         return [item[0] for item in self.cursor.fetchall()]
         
-    def overwriteTags(self, pid: str, tags: dict) -> None:
+    def overwrite_tags(self, pid: str, tags: dict) -> None:
         """
         overwrite tags of a picture.
         """
         self.cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags), pid))
         self.database.commit()
     
-    def addTags(self, pid: str, tags: dict) -> None:
+    def add_tags(self, pid: str, tags: dict) -> None:
         """
         Add tags to a picture.
         """
-        currentTags = self.getTags(pid)
-        currentTags.update(tags)
-        self.overwriteTags(pid, currentTags)
+        current_tags = self.get_tags(pid)
+        current_tags.update(tags)
+        self.overwrite_tags(pid, current_tags)
         
         
-def parsePicture(filePath: str) -> tuple:
+def parse_picture(file_path: str) -> tuple:
     """
     Extracts and returns information about a picture.
 
@@ -235,12 +235,12 @@ def parsePicture(filePath: str) -> tuple:
     Returns:
     a tuple: A tuple containing the picture information.
     """
-    with Image.open(filePath) as img:# get resolution
+    with Image.open(file_path) as img:# get resolution
         resolution = img.size
 
-    fileName = os.path.basename(filePath)
-    name = fileName.split(".")# seprate the file name and file extention
-    fileType = name.pop()
+    file_name = os.path.basename(file_path)
+    name = file_name.split(".")# seprate the file name and file extention
+    file_type = name.pop()
     name = str(name[0])
     parts = name.split("_p")# apart id and ordinal number
     pid = int(parts[0])
@@ -250,12 +250,12 @@ def parsePicture(filePath: str) -> tuple:
         num = int(parts[1])
     width = resolution[0]
     height = resolution[1]
-    size = os.path.getsize(filePath)
-    directory = os.path.dirname(filePath)
+    size = os.path.getsize(file_path)
+    directory = os.path.dirname(file_path)
 
-    return pid, num, directory, fileName, fileType, width, height, size
+    return pid, num, directory, file_name, file_type, width, height, size
 
-def parseMetadata(filePath: str) -> tuple:
+def parse_metadata(file_path: str) -> tuple:
     """
     Parses a metadata file and returns a PicData object.
 
@@ -269,61 +269,61 @@ def parseMetadata(filePath: str) -> tuple:
     """
     tags = {}
     xRestrict = "allAges"
-    pid = int(getline(filePath, 2).strip())
-    title = getline(filePath, 5).strip()
-    user = getline(filePath, 8).strip()
-    userId = int(getline(filePath, 11).strip())
+    pid = int(getline(file_path, 2).strip())
+    title = getline(file_path, 5).strip()
+    user = getline(file_path, 8).strip()
+    user_id = int(getline(file_path, 11).strip())
 
-    lineNum = 17
+    line_num = 17
     while True: # read tags
-        if getline(filePath, lineNum) != "\n":
-            tags.update({getline(filePath, lineNum).strip(): "metadata"})
+        if getline(file_path, line_num) != "\n":
+            tags.update({getline(file_path, line_num).strip(): "metadata"})
         else:
             if "#R-18" in tags:
                 xRestrict = "R-18"
             elif "#R-18G" in tags:
                 xRestrict = "R-18G"
             tags = json.dumps(tags, ensure_ascii=False) # convert tags to json string
-            date = getline(filePath, lineNum + 2).strip()
-            descriptionLines = []
-            lineNum += 6
+            date = getline(file_path, line_num + 2).strip()
+            description_lines = []
+            line_num += 6
             break
-        lineNum += 1
+        line_num += 1
     while True: # read description
-        line = getline(filePath, lineNum)
+        line = getline(file_path, line_num)
         if line:
-            descriptionLines.append(line)
+            description_lines.append(line)
         else:
-            description = '\n'.join(descriptionLines)
-            return pid, title, tags, description, user, userId, date, xRestrict
-        lineNum += 1
+            description = '\n'.join(description_lines)
+            return pid, title, tags, description, user, user_id, date, xRestrict
+        line_num += 1
 
-def collectData(directory: str) -> None:
+def collect_data(directory: str) -> None:
     """
     Collects data from a directory and stores it in a database.
     """
-    processedFiles = 0
+    processed_files = 0
     database = PicDatabase()
     
     for root, dirs, files in os.walk(directory):
         for file in files:
-            processedFiles += 1
-            print(f'Processed {processedFiles} files', end='\r')
+            processed_files += 1
+            print(f'Processed {processed_files} files', end='\r')
 
-            filePath = os.path.join(root, file)
+            file_path = os.path.join(root, file)
             if file.endswith(".txt"):
-                metadata = parseMetadata(filePath)
-                database.insertMetadata(*metadata)
+                metadata = parse_metadata(file_path)
+                database.insert_metadata(*metadata)
             
             elif file.endswith(".webp"): # ignore webp files because they cannot be processed
                 continue
 
             else:
-                imageData = parsePicture(filePath)
-                database.insertImageData(*imageData)
+                image_data = parse_picture(file_path)
+                database.insert_image_data(*image_data)
     print("\n")
 
-def mergeDirs(src: str, dst: str) -> None:
+def merge_dirs(src: str, dst: str) -> None:
     """
     Copies all files from one directory to another.
 
