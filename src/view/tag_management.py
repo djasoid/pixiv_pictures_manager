@@ -2,7 +2,7 @@ from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetItem, QTreeWidget, QTreeWidgetItem, QAbstractItemView
 from PySide6.QtGui import QKeySequence, QShortcut, QTextCursor, QTextCharFormat, QFont
 
-from Ui_tag_tree_management import Ui_MainWindow
+from ui_compiled.Ui_tag_tree_management import Ui_MainWindow
 
 import data as dataFn
 from tag_tree import Tag

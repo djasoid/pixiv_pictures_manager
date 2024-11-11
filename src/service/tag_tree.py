@@ -1,5 +1,7 @@
 # This file contains the Tag and TagTree classes, which are used to store and manage the tag tree data
 
+from utils.json import load_json
+
 class Tag:
     __slots__ = ["name", "is_tag", "parent", "synonyms", "sub_tags", "en_name", "tag_type"]
     def __init__(self, 
@@ -75,28 +77,27 @@ class Tag:
 class TagTree:
     tag_dict: dict[str, Tag] #a dictionary of all tag objects
 
-    def __init__(self, tag_tree_data: dict[str, Tag], root = "标签") -> None:
+    def __init__(self, tag_tree_file: str) -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
-        self.tag_tree_data = tag_tree_data #a dictionary of all tag data, only used in the buildTree function
         self.tag_dict = {} #a dictionary of all tag objects
-        self.root = self.build_tree(tag_tree_data[root])
-
-    def build_tree(self, data: dict, parent=None) -> Tag:
+        self.load_tag_tree(tag_tree_file)
+        
+    def build_tree(self, tag_tree_data: dict[str, dict], tag_data: dict[str, str|list], parent=None) -> Tag:
         """Build a Tag object from the data dictionary"""
-        name = data['name']
-        en_name = data['enName']
-        parent = data['parent']
-        synonyms = set(data['synonyms'])
-        tag_type = data['type']
+        name = tag_data['name']
+        en_name = tag_data['enName']
+        parent = tag_data['parent']
+        synonyms = set(tag_data['synonyms'])
+        tag_type = tag_data['type']
         
         if name in self.tag_dict:
             return self.tag_dict[name]
 
-        sub_tag_names = data['subTags']
+        sub_tag_names = tag_data['subTags']
 
         sub_tags = {}
         for sub_tag_name in sub_tag_names:
-            sub_tag = self.build_tree(self.tag_tree_data[sub_tag_name], name)
+            sub_tag = self.build_tree(tag_tree_data, tag_tree_data[sub_tag_name], name)
             sub_tags[sub_tag_name] = sub_tag
         
         new_tag = Tag(name, parent, synonyms, sub_tags, en_name, tag_type)
@@ -256,3 +257,13 @@ class TagTree:
     def is_in_tree(self, tag: str) -> bool:
         """Check if a tag is in the TagTree"""
         return tag in self.tag_dict
+    
+    def load_tag_tree(self, tag_tree_file: str, root = "标签") -> dict:
+        """
+        Initializes TagTree object from a JSON file.
+
+        Parameters:
+        tagTreeFile (str): The JSON file to load.
+        """
+        tag_tree_data = load_json(tag_tree_file)
+        self.root = self.build_tree(tag_tree_data, tag_tree_data[root])

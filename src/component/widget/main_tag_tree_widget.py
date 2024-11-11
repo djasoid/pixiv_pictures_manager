@@ -2,44 +2,11 @@ from PySide6.QtWidgets import QTextEdit, QTreeWidget, QTreeWidgetItem, QListWidg
 from PySide6.QtGui import QContextMenuEvent, QFont, QAction
 from PySide6.QtCore import QByteArray, Qt
 
-from Ui_delete_tag_dialog import Ui_delete_tag_dialog
-from Ui_synonym_edit_dialog import Ui_synonym_edit_dialog
+from ui_compiled.Ui_delete_tag_dialog import Ui_delete_tag_dialog
+from ui_compiled.Ui_synonym_edit_dialog import Ui_synonym_edit_dialog
 
 import tag_tree as tree
 import data as dataFn
-
-class DeleteDialog(QDialog, Ui_delete_tag_dialog):
-    def __init__(self, parent, tag_name, parent_tag_name):
-        super().__init__(parent)
-        self.setupUi(self)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        self.deleteInfoLabel.setText(f"确认从 {parent_tag_name} 删除 {tag_name} ?")
-    
-    def accept(self):
-        super().accept()
-    
-    def reject(self):
-        super().reject()
-
-class SynonymEditDialog(QDialog, Ui_synonym_edit_dialog):
-    def __init__(self, parent, tag_name: str, synonyms: set, enName: str, type: str):
-        super().__init__(parent)
-        self.setupUi(self)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        self.setWindowTitle(f"编辑同义标签：{tag_name}")
-        self.synonymTextEdit.setPlainText("\n".join(synonyms))
-        self.englishNameEdit.setPlainText(enName)
-        self.typeComboBox.addItems(["", "IP", "Character", "R-18"])
-        if type:
-            self.typeComboBox.setCurrentText(type)
-
-    def accept(self):
-        super().accept()
-    
-    def reject(self):
-        super().reject()
 
 class MainTagTreeWidget(QTreeWidget):
     def __init__(self, parent=None):
