@@ -4,4 +4,3 @@ backup/
 *.db
 *.json
 .python-version
-脚本.py

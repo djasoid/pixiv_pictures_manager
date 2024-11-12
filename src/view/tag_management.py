@@ -6,15 +6,14 @@ from ui_compiled.Ui_tag_tree_management import Ui_MainWindow
 from controller.tag_management import TagManagementController as Controller
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, tag_tree_path: str, new_tag_path: str):
+    def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setup_controller(tag_tree_path, new_tag_path)
-        self.bind()
         
-    def setup_controller(self, tag_tree_path: str, new_tag_path: str):
-        self.controller = Controller(self, tag_tree_path, new_tag_path)
-        self.mainTree.set_controller(self.controller)
+    def setup_controller(self, controller: Controller):
+        self.controller = controller
+        self.mainTree.set_controller(controller)
+        self.bind()
         
     def bind(self):
         """
@@ -26,11 +25,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Returns:
             None
         """
-        # Connect the scrollbar between new_tag_orignal_lst and new_tag_store_lst
-        self.newTagOrignalList.verticalScrollBar().valueChanged.connect(
+        # Connect the scrollbar between new_tag_original_lst and new_tag_store_lst
+        self.newTagOriginalList.verticalScrollBar().valueChanged.connect(
             self.newTagTranslList.verticalScrollBar().setValue)
         self.newTagTranslList.verticalScrollBar().valueChanged.connect(
-            self.newTagOrignalList.verticalScrollBar().setValue)
+            self.newTagOriginalList.verticalScrollBar().setValue)
         
         # show tag info when a tag is selected
         self.viewTree.itemSelectionChanged.connect(self.show_tag_info)
@@ -38,7 +37,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # install event filter
         self.newTagInput.installEventFilter(self)
-        self.newTagOrignalList.installEventFilter(self)
+        self.newTagOriginalList.installEventFilter(self)
         self.viewTreeSearchEdit.installEventFilter(self)
         self.mainTreeSearchEdit.installEventFilter(self)
 
@@ -65,10 +64,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.newTagInput.clear()
                 return True
         
-        # Filter for new_tag_orignal_lst, implement copy without '#' at the beginning
-        elif (source == self.newTagOrignalList and event.type() == QEvent.Type.KeyPress):
+        # Filter for new_tag_original_lst, implement copy without '#' at the beginning
+        elif (source == self.newTagOriginalList and event.type() == QEvent.Type.KeyPress):
             if event.matches(QKeySequence.Copy):
-                text = self.newTagOrignalList.currentItem().text()
+                text = self.newTagOriginalList.currentItem().text()
                 QApplication.clipboard().setText(text[1:])
                 return True
         
@@ -97,9 +96,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if current_item is None:
             return
         self.controller.show_tag_info(current_item)
-
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec()

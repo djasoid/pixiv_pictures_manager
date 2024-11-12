@@ -151,16 +151,16 @@ class Ui_MainWindow(object):
 
         self.newTagLayout.addWidget(self.newTagTranslList)
 
-        self.newTagOrignalList = QListWidget(self.tagWidget)
-        self.newTagOrignalList.setObjectName(u"newTagOrignalList")
-        sizePolicy2.setHeightForWidth(self.newTagOrignalList.sizePolicy().hasHeightForWidth())
-        self.newTagOrignalList.setSizePolicy(sizePolicy2)
-        self.newTagOrignalList.setMaximumSize(QSize(150, 16777215))
-        self.newTagOrignalList.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.newTagOrignalList.setDragEnabled(True)
-        self.newTagOrignalList.setDragDropMode(QAbstractItemView.DragOnly)
+        self.newTagOriginalList = QListWidget(self.tagWidget)
+        self.newTagOriginalList.setObjectName(u"newTagOriginalList")
+        sizePolicy2.setHeightForWidth(self.newTagOriginalList.sizePolicy().hasHeightForWidth())
+        self.newTagOriginalList.setSizePolicy(sizePolicy2)
+        self.newTagOriginalList.setMaximumSize(QSize(150, 16777215))
+        self.newTagOriginalList.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.newTagOriginalList.setDragEnabled(True)
+        self.newTagOriginalList.setDragDropMode(QAbstractItemView.DragOnly)
 
-        self.newTagLayout.addWidget(self.newTagOrignalList)
+        self.newTagLayout.addWidget(self.newTagOriginalList)
 
 
         self.tagEditLayout.addLayout(self.newTagLayout)
