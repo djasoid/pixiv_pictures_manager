@@ -1,10 +1,6 @@
 import json
 import sqlite3
 import os
-from shutil import copy2
-from linecache import getline
-from PIL import Image
-import dataclasses
 
 from utils.parser import parse_metadata, parse_picture
 

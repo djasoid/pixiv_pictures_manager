@@ -3,28 +3,18 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QListWidgetI
 from PySide6.QtGui import QKeySequence, QShortcut, QTextCursor, QTextCharFormat, QFont
 
 from ui_compiled.Ui_tag_tree_management import Ui_MainWindow
-
-import data as dataFn
-from tag_tree import Tag
+from controller.tag_management import TagManagementController as Controller
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, tag_tree_path: str, new_tag_path: str):
         super().__init__()
         self.setupUi(self)
-        self.init_tree_search()
+        self.setup_controller(tag_tree_path, new_tag_path)
         self.bind()
-        self.load_tag_tree()
-        self.load_new_tag()
-        self.set_main_tree_ref()
-        self.expand_top_level()
         
-    def init_tree_search(self):
-        self.view_tree_last_search = ""
-        self.view_tree_search_index = 0
-        self.view_tree_search_list = []
-        self.main_tree_last_search = ""
-        self.main_tree_search_index = 0
-        self.main_tree_search_list = []
+    def setup_controller(self, tag_tree_path: str, new_tag_path: str):
+        self.controller = Controller(self, tag_tree_path, new_tag_path)
+        self.mainTree.set_controller(self.controller)
         
     def bind(self):
         """
@@ -54,7 +44,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Connect the save shortcut
         self.save_shortcut = QShortcut(QKeySequence.StandardKey.Save, self)
-        self.save_shortcut.activated.connect(self.save_tree)
+        self.save_shortcut.activated.connect(self.controller.save_tree)
 
         # double click to edit item in new_tag_transl_lst
         self.newTagTranslList.itemDoubleClicked.connect(self.newTagTranslList.editItem)
@@ -85,147 +75,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Filter for view_tree_search_edit, implement search function
         elif (source == self.viewTreeSearchEdit and event.type() == QEvent.Type.KeyPress):
             if event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
-                self.view_tree_last_search, self.view_tree_search_index, self.view_tree_search_list = \
-                    self.search_tree(
-                        self.viewTree, 
-                        self.viewTreeSearchEdit, 
-                        self.view_tree_last_search, 
-                        self.view_tree_search_index, 
-                        self.view_tree_search_list
-                    )
+                self.controller.search_tree(
+                    self.viewTree, 
+                    self.viewTreeSearchEdit, 
+                )
                 return True
 
         # Filter for main_tree_search_edit, implement search function
         elif (source == self.mainTreeSearchEdit and event.type() == QEvent.Type.KeyPress):
             if event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
-                self.main_tree_last_search, self.main_tree_search_index, self.main_tree_search_list = \
-                    self.search_tree(
-                        self.mainTree, 
-                        self.mainTreeSearchEdit, 
-                        self.main_tree_last_search, 
-                        self.main_tree_search_index, 
-                        self.main_tree_search_list
-                    )
+                self.controller.search_tree(
+                    self.mainTree, 
+                    self.mainTreeSearchEdit, 
+                )
                 return True
         
         return super().eventFilter(source, event)
     
-    def search_tree(
-            self, 
-            tree: QTreeWidget, 
-            searchEdit: QTextEdit, 
-            last_search: str, 
-            search_index: int, 
-            search_list: list[QTreeWidgetItem]
-        ):
-        """search the tree widget"""
-        def expand_and_scroll_to_item(item: QTreeWidgetItem):
-            """expand the tree widget and scroll to the item"""
-            parent = item.parent()
-            while parent:
-                parent.setExpanded(True)
-                parent = parent.parent()
-            tree.scrollToItem(item, QAbstractItemView.ScrollHint.PositionAtCenter)
-            tree.setCurrentItem(item)
-            
-        search_text = searchEdit.toPlainText()
-        if search_text == last_search and search_list:
-            if search_index < len(search_list):
-                expand_and_scroll_to_item(search_list[search_index])
-                search_index += 1
-            else:
-                search_index = 0
-                expand_and_scroll_to_item(search_list[search_index])
-        else:
-            search_list = tree.findItems(search_text, Qt.MatchFlag.MatchContains | Qt.MatchFlag.MatchRecursive)
-            search_index = 0
-            last_search = search_text
-            if search_list:
-                expand_and_scroll_to_item(search_list[search_index])
-                search_index += 1
-                
-        return last_search, search_index, search_list
-    
-    def get_tree_item(self, tag: Tag) -> QTreeWidgetItem:
-        item = QTreeWidgetItem([tag.name])
-        for subTag in tag.sub_tags.values():
-            item.addChild(self.get_tree_item(subTag))
-        return item
-    
-    def load_tag_tree(self):
-        """load tag tree from tag_tree.json and show it in the tree widget"""
-        self.tag_tree = dataFn.load_tag_tree()
-        self.viewTree.addTopLevelItem(self.get_tree_item(self.tag_tree.root))
-        self.mainTree.addTopLevelItem(self.get_tree_item(self.tag_tree.root))
-        
-    def set_main_tree_ref(self):
-        self.mainTree.set_tag_tree(self.tag_tree)
-        self.mainTree.set_output_box(self.outputTextEdit)
-        self.mainTree.set_list_widgets(self.newTagOrignalList, self.newTagTranslList, self.newTagStoreList)
-        self.mainTree.set_check_box(self.tagMovingCheckBox)
-        self.mainTree.set_view_tree(self.viewTree)
-        self.mainTree.set_new_tag_list(self.newTagLst)
-        
-    def expand_top_level(self):
-        self.viewTree.expandItem(self.viewTree.topLevelItem(0))
-        for i in range(self.viewTree.topLevelItem(0).childCount()):
-            self.viewTree.expandItem(self.viewTree.topLevelItem(0).child(i))
-        self.mainTree.expandItem(self.mainTree.topLevelItem(0))
-        for i in range(self.mainTree.topLevelItem(0).childCount()):
-            self.mainTree.expandItem(self.mainTree.topLevelItem(0).child(i))
-
-    def load_new_tag(self):
-        """load new tag file and show it in the new tag lst"""
-        self.newTagLst = dataFn.load_json("new_tag.json")
-        newTagCount = 0
-        for tagPair in self.newTagLst:
-            if len(tagPair) > 2: # if the tag has been added to the tag tree, pass it
-                continue
-            if self.tag_tree.is_in_tree(tagPair[0]):
-                if len(tagPair) == 2:
-                    tagPair.append("added")
-                continue
-            self.newTagOrignalList.addItem(tagPair[0])
-            new_trasl_item = QListWidgetItem(tagPair[1])
-            new_trasl_item.setFlags(new_trasl_item.flags() | Qt.ItemFlag.ItemIsEditable)
-            self.newTagTranslList.addItem(new_trasl_item)
-            newTagCount += 1
-        
-        self.outputTextEdit.append(f"new tag loaded, {newTagCount} tags in total")
-
     def show_tag_info(self):
-        """show the tag info of the selected tag in the tag tree widget"""
         current_item = self.sender().currentItem()
         if current_item is None:
             return
-    
-        tag_name = current_item.text(0)
-        tag = self.tag_tree.tag_dict[tag_name]
-        
-        self.tagInfo.clear()
-    
-        if not tag.is_tag:
-            self.tagInfo.append("<b>类:</b> " + tag.name)
-            self.tagInfo.append("<b>子标签:</b>")
-            self.tagInfo.append(", ".join(tag.sub_tags.keys()))
-        else:
-            items = [
-                ("标签名: ", tag.name),
-                ("标签类型: ", tag.tag_type),
-                ("同义标签: ", ", ".join(tag.synonyms)),
-                ("父标签: ", ", ".join(tag.parent)),
-                ("子标签: ", ", ".join(tag.sub_tags.keys()))
-            ]
-            for label, content in items:
-                self.tagInfo.append(f"<b>{label}</b>{content}")
-    
-        self.tagInfo.verticalScrollBar().setValue(0)
-    
-    def save_tree(self):
-        dataFn.write_json(self.tag_tree.to_dict(), "tag_tree.json")
-        dataFn.write_json(self.newTagLst, "new_tag.json")
-        self.outputTextEdit.append("标签树已保存")
-        return
+        self.controller.show_tag_info(current_item)
 
 if __name__ == "__main__":
     app = QApplication([])

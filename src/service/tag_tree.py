@@ -1,6 +1,6 @@
 # This file contains the Tag and TagTree classes, which are used to store and manage the tag tree data
 
-from utils.json import load_json
+from utils.json import load_json, write_json
 
 class Tag:
     __slots__ = ["name", "is_tag", "parent", "synonyms", "sub_tags", "en_name", "tag_type"]
@@ -80,6 +80,7 @@ class TagTree:
     def __init__(self, tag_tree_file: str) -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tag_dict = {} #a dictionary of all tag objects
+        self.file_path = tag_tree_file
         self.load_tag_tree(tag_tree_file)
         
     def build_tree(self, tag_tree_data: dict[str, dict], tag_data: dict[str, str|list], parent=None) -> Tag:
@@ -267,3 +268,7 @@ class TagTree:
         """
         tag_tree_data = load_json(tag_tree_file)
         self.root = self.build_tree(tag_tree_data, tag_tree_data[root])
+        
+    def save_tree(self) -> None:
+        """Save the TagTree object to the original file"""
+        write_json(self.to_dict(), self.file_path)
