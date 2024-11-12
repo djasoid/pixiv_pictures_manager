@@ -1,16 +1,21 @@
 import os
 
-for root, dirs, filenames in os.walk("../ui/"):
-    for name in filenames:
-        if name[-2:] != "ui":
-            continue
-        outName = name[:-3]
-        sts = os.system(
-            "pyside6-uic.exe {}.ui -o {}.py".format(
-                os.path.join(root, outName), 
-                os.path.join("../src/interface/Ui_", outName)
-            )
-        )
-        pass
+def convert_ui_files(ui_directory, output_directory):
+    for root, dirs, filenames in os.walk(ui_directory):
+        for name in filenames:
+            if not name.endswith(".ui"):
+                continue
+            outName = name[:-3]
+            input_path = os.path.join(root, name)
+            output_path = os.path.join(output_directory, "Ui_" + outName + ".py")
+            command = f"pyside6-uic {input_path} -o {output_path}"
+            sts = os.system(command)
+            if sts != 0:
+                print(f"Error processing {name}")
+                break
 
-print('Finished!')
+if __name__ == "__main__":
+    ui_directory = "./ui/"
+    output_directory = "./src/ui_compiled/"
+    convert_ui_files(ui_directory, output_directory)
+    print('Finished!')

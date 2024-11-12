@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'tag_tree_management.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.1
+## Created by: Qt User Interface Compiler version 6.8.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(921, 750)
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.viewTree.setHeaderItem(__qtreewidgetitem)
         self.viewTree.setObjectName(u"viewTree")
         self.viewTree.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.viewTree.setProperty("showDropIndicator", False)
+        self.viewTree.setProperty(u"showDropIndicator", False)
         self.viewTree.setDragEnabled(True)
         self.viewTree.setDragDropMode(QAbstractItemView.DragOnly)
         self.viewTree.setAnimated(True)
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
 
         self.viewTreeSearchWidget = QWidget(self.tagWidget)
         self.viewTreeSearchWidget.setObjectName(u"viewTreeSearchWidget")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.viewTreeSearchWidget.sizePolicy().hasHeightForWidth())
@@ -137,7 +137,7 @@ class Ui_MainWindow(object):
         self.newTagLayout.setObjectName(u"newTagLayout")
         self.newTagTranslList = QListWidget(self.tagWidget)
         self.newTagTranslList.setObjectName(u"newTagTranslList")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.newTagTranslList.sizePolicy().hasHeightForWidth())
