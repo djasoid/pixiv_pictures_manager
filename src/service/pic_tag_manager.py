@@ -1,13 +1,18 @@
-import tag_tree as tree
-import data as dataFn
+from typing import TYPE_CHECKING
+
+from utils.json import write_json
+
+if TYPE_CHECKING:
+    from tag_tree import TagTree
+    from database import PicDatabase
 
 class PicTagManager:
     """
     A class that manages picture tags.
     """
-    def __init__(self):
-        self.pic_database = dataFn.PicDatabase()
-        self.tag_tree = dataFn.load_tag_tree()
+    def __init__(self, tag_tree: 'TagTree', pic_database: 'PicDatabase') -> None:
+        self.pic_database = pic_database
+        self.tag_tree = tag_tree
         self.tag_index_cache = {}
         self.unknown_tags = {}
 
@@ -39,7 +44,7 @@ class PicTagManager:
             del self.unknown_tags[tag]
             
         sorted_unknown_tags = sorted(self.unknown_tags.items(), key=lambda item: item[1], reverse=True)
-        dataFn.write_json(sorted_unknown_tags, "unknown_tags.json")
+        write_json(sorted_unknown_tags, "unknown_tags.json")
 
     def init_tag_index(self) -> None:
         """

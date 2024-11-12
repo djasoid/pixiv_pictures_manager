@@ -25,6 +25,6 @@ class MainTagTreeWidget(QTreeWidget):
         parentTagName = parentItem.text(0)
         contextMenu = QMenu(self)
         contextMenu.addAction(QAction("在view tree中展开", self, triggered=lambda: self.controller.show_in_view_tree()))
-        contextMenu.addAction(QAction("编辑标签", self, triggered=lambda: self.controller.synonym_edit(tagName)))
+        contextMenu.addAction(QAction("编辑标签", self, triggered=lambda: self.controller.edit_tag(tagName)))
         contextMenu.addAction(QAction("删除标签", self, triggered=lambda: self.controller.confirm_delete(tagName, parentTagName, currentItem, parentItem)))
         contextMenu.exec_(event.globalPos())

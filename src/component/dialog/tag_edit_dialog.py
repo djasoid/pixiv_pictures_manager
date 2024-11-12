@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QDialog
 
-from ui_compiled.Ui_synonym_edit_dialog import Ui_synonym_edit_dialog
+from ui_compiled.Ui_edit_tag_dialog import Ui_edit_tag_dialog
 
-class TagEditDialog(QDialog, Ui_synonym_edit_dialog):
+class TagEditDialog(QDialog, Ui_edit_tag_dialog):
     def __init__(self, parent, tag_name: str, synonyms: set, enName: str, type: str):
         super().__init__(parent)
         self.setupUi(self)

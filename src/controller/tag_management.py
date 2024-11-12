@@ -317,7 +317,7 @@ class TagManagementController:
         if result == QDialog.DialogCode.Accepted:
             self.delete_tag(tag_name, parent_tag_name, current_item, parent_item)
 
-    def synonym_edit(self, tag_name):
+    def edit_tag(self, tag_name):
         """show the synonym edit dialog"""
         synonyms = self.tag_tree.tag_dict[tag_name].synonyms
         en_name = self.tag_tree.tag_dict[tag_name].en_name

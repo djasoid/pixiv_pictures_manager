@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog
     QDialogButtonBox, QHBoxLayout, QLabel, QPlainTextEdit,
     QSizePolicy, QVBoxLayout, QWidget)
 
-class Ui_synonym_edit_dialog(object):
+class Ui_edit_tag_dialog(object):
     def setupUi(self, synonym_edit_dialog):
         if not synonym_edit_dialog.objectName():
             synonym_edit_dialog.setObjectName(u"synonym_edit_dialog")

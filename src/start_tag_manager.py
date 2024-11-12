@@ -1,7 +1,7 @@
+from PySide6.QtWidgets import QApplication
+
 from view.tag_management import MainWindow
 from controller.tag_management import TagManagementController as Controller
-
-from PySide6.QtWidgets import QApplication
 
 if __name__ == "__main__":
     tag_tree_path = "tag_tree.json"
