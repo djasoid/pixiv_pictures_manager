@@ -31,7 +31,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="sizeConstraint">
-     <enum>QLayout::SetDefaultConstraint</enum>
+     <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
     </property>
     <item>
      <widget class="QWidget" name="tagWidget" native="true">
@@ -42,12 +42,12 @@
           <number>0</number>
          </property>
          <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+          <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
          </property>
          <item>
           <widget class="QTreeWidget" name="viewTree">
            <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
+            <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
            </property>
            <property name="showDropIndicator" stdset="0">
             <bool>false</bool>
@@ -56,7 +56,7 @@
             <bool>true</bool>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::DragOnly</enum>
+            <enum>QAbstractItemView::DragDropMode::DragOnly</enum>
            </property>
            <property name="animated">
             <bool>true</bool>
@@ -146,10 +146,13 @@
          <item>
           <widget class="MainTagTreeWidget" name="mainTree">
            <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
+            <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+           </property>
+           <property name="showDropIndicator" stdset="0">
+            <bool>false</bool>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::DropOnly</enum>
+            <enum>QAbstractItemView::DragDropMode::DropOnly</enum>
            </property>
            <property name="animated">
             <bool>true</bool>
@@ -210,19 +213,19 @@
               </size>
              </property>
              <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
+              <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
              </property>
              <property name="editTriggers">
-              <set>QAbstractItemView::DoubleClicked</set>
+              <set>QAbstractItemView::EditTrigger::DoubleClicked</set>
              </property>
              <property name="dragEnabled">
               <bool>true</bool>
              </property>
              <property name="dragDropMode">
-              <enum>QAbstractItemView::DragOnly</enum>
+              <enum>QAbstractItemView::DragDropMode::DragOnly</enum>
              </property>
              <property name="defaultDropAction">
-              <enum>Qt::CopyAction</enum>
+              <enum>Qt::DropAction::CopyAction</enum>
              </property>
             </widget>
            </item>
@@ -241,13 +244,13 @@
               </size>
              </property>
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="dragEnabled">
               <bool>true</bool>
              </property>
              <property name="dragDropMode">
-              <enum>QAbstractItemView::DragOnly</enum>
+              <enum>QAbstractItemView::DragDropMode::DragOnly</enum>
              </property>
             </widget>
            </item>
@@ -271,7 +274,7 @@
             <bool>true</bool>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::DragDrop</enum>
+            <enum>QAbstractItemView::DragDropMode::DragDrop</enum>
            </property>
           </widget>
          </item>
@@ -315,7 +318,7 @@
         <number>0</number>
        </property>
        <property name="sizeConstraint">
-        <enum>QLayout::SetMaximumSize</enum>
+        <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
        </property>
        <property name="leftMargin">
         <number>0</number>
@@ -368,32 +371,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>921</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
-   </widget>
-   <addaction name="menu"/>
-   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">

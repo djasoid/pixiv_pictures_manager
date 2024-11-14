@@ -2,6 +2,7 @@ from PIL import Image
 import os
 from linecache import getline
 import json
+import csv
 
 def parse_picture(file_path: str) -> tuple:
     """
@@ -77,3 +78,57 @@ def parse_metadata(file_path: str) -> tuple:
             description = '\n'.join(description_lines)
             return pid, title, tags, description, user, user_id, date, xRestrict
         line_num += 1
+
+def parse_csv(file_path: str) -> list:
+    """
+    Parses a CSV file and returns a list of PicData objects.
+
+    This function reads a CSV file line by line, extracts the metadata, and stores it in a list of PicData objects.
+
+    Parameters:
+    path (str): The path to the CSV file.
+
+    Returns:
+    list: A list containing the metadata information.
+    """
+    pics = []
+    with open(file_path, "r") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            pid = int(row[0])
+            tags = ["#" + tag for tag in row[1].split(',')]
+            tags_transl = ["#" + tag for tag in row[2].split(',')]
+            user = row[3]
+            user_id = int(row[4])
+            title = row[5]
+            description = row[6]
+            bookmarks = int(row[9])
+            like = int(row[11])
+            view = int(row[12])
+            comment = int(row[13])
+            width = int(row[14])
+            height = int(row[15])
+            xRestrict = row[16]
+            date = row[17]
+            file_name = row[20]
+            file_type = file_name.split(".")[1]
+            pics.append((
+                pid, 
+                tags, 
+                tags_transl, 
+                user, 
+                user_id,
+                title,
+                description, 
+                bookmarks,
+                like,
+                view,
+                comment, 
+                width, 
+                height, 
+                xRestrict, 
+                date, 
+                file_name, 
+                file_type
+            ))
+    return pics

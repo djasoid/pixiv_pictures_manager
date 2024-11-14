@@ -18,9 +18,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QHBoxLayout,
     QHeaderView, QLayout, QListWidget, QListWidgetItem,
-    QMainWindow, QMenu, QMenuBar, QSizePolicy,
-    QStatusBar, QTextEdit, QTreeWidget, QTreeWidgetItem,
-    QVBoxLayout, QWidget)
+    QMainWindow, QSizePolicy, QStatusBar, QTextEdit,
+    QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
 from component.widget.main_tag_tree_widget import MainTagTreeWidget
 
@@ -48,7 +47,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.verticalLayout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.tagWidget = QWidget(self.centralwidget)
         self.tagWidget.setObjectName(u"tagWidget")
         self.horizontalLayout = QHBoxLayout(self.tagWidget)
@@ -56,16 +55,16 @@ class Ui_MainWindow(object):
         self.viewTreeLayout = QVBoxLayout()
         self.viewTreeLayout.setSpacing(0)
         self.viewTreeLayout.setObjectName(u"viewTreeLayout")
-        self.viewTreeLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.viewTreeLayout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.viewTree = QTreeWidget(self.tagWidget)
         __qtreewidgetitem = QTreeWidgetItem()
         __qtreewidgetitem.setText(0, u"1");
         self.viewTree.setHeaderItem(__qtreewidgetitem)
         self.viewTree.setObjectName(u"viewTree")
-        self.viewTree.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.viewTree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.viewTree.setProperty(u"showDropIndicator", False)
         self.viewTree.setDragEnabled(True)
-        self.viewTree.setDragDropMode(QAbstractItemView.DragOnly)
+        self.viewTree.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
         self.viewTree.setAnimated(True)
         self.viewTree.setHeaderHidden(True)
         self.viewTree.setColumnCount(1)
@@ -111,8 +110,9 @@ class Ui_MainWindow(object):
         __qtreewidgetitem1.setText(0, u"1");
         self.mainTree.setHeaderItem(__qtreewidgetitem1)
         self.mainTree.setObjectName(u"mainTree")
-        self.mainTree.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.mainTree.setDragDropMode(QAbstractItemView.DropOnly)
+        self.mainTree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.mainTree.setProperty(u"showDropIndicator", False)
+        self.mainTree.setDragDropMode(QAbstractItemView.DragDropMode.DropOnly)
         self.mainTree.setAnimated(True)
         self.mainTree.setHeaderHidden(True)
         self.mainTree.setColumnCount(1)
@@ -143,11 +143,11 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.newTagTranslList.sizePolicy().hasHeightForWidth())
         self.newTagTranslList.setSizePolicy(sizePolicy2)
         self.newTagTranslList.setMaximumSize(QSize(150, 16777215))
-        self.newTagTranslList.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.newTagTranslList.setEditTriggers(QAbstractItemView.DoubleClicked)
+        self.newTagTranslList.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.newTagTranslList.setEditTriggers(QAbstractItemView.EditTrigger.DoubleClicked)
         self.newTagTranslList.setDragEnabled(True)
-        self.newTagTranslList.setDragDropMode(QAbstractItemView.DragOnly)
-        self.newTagTranslList.setDefaultDropAction(Qt.CopyAction)
+        self.newTagTranslList.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
+        self.newTagTranslList.setDefaultDropAction(Qt.DropAction.CopyAction)
 
         self.newTagLayout.addWidget(self.newTagTranslList)
 
@@ -156,9 +156,9 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.newTagOriginalList.sizePolicy().hasHeightForWidth())
         self.newTagOriginalList.setSizePolicy(sizePolicy2)
         self.newTagOriginalList.setMaximumSize(QSize(150, 16777215))
-        self.newTagOriginalList.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.newTagOriginalList.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.newTagOriginalList.setDragEnabled(True)
-        self.newTagOriginalList.setDragDropMode(QAbstractItemView.DragOnly)
+        self.newTagOriginalList.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly)
 
         self.newTagLayout.addWidget(self.newTagOriginalList)
 
@@ -171,7 +171,7 @@ class Ui_MainWindow(object):
         self.newTagStoreList.setSizePolicy(sizePolicy2)
         self.newTagStoreList.setMaximumSize(QSize(16777215, 100))
         self.newTagStoreList.setDragEnabled(True)
-        self.newTagStoreList.setDragDropMode(QAbstractItemView.DragDrop)
+        self.newTagStoreList.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
 
         self.tagEditLayout.addWidget(self.newTagStoreList)
 
@@ -196,7 +196,7 @@ class Ui_MainWindow(object):
         self.info_layout = QHBoxLayout(self.infoWidget)
         self.info_layout.setSpacing(0)
         self.info_layout.setObjectName(u"info_layout")
-        self.info_layout.setSizeConstraint(QLayout.SetMaximumSize)
+        self.info_layout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
         self.info_layout.setContentsMargins(0, 0, 0, 0)
         self.tagInfo = QTextEdit(self.infoWidget)
         self.tagInfo.setObjectName(u"tagInfo")
@@ -219,24 +219,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.infoWidget)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 921, 21))
-        self.menu = QMenu(self.menubar)
-        self.menu.setObjectName(u"menu")
-        self.menuEdit = QMenu(self.menubar)
-        self.menuEdit.setObjectName(u"menuEdit")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
-        self.menubar.addAction(self.menu.menuAction())
-        self.menubar.addAction(self.menuEdit.menuAction())
-        self.menu.addAction(self.actionOpen)
-        self.menu.addAction(self.actionSave)
-        self.menuEdit.addAction(self.actionUndo)
-        self.menuEdit.addAction(self.actionRedo)
 
         self.retranslateUi(MainWindow)
 
@@ -253,7 +238,5 @@ class Ui_MainWindow(object):
         self.tagMovingCheckBox.setText(QCoreApplication.translate("MainWindow", u"\u79fb\u52a8\u6807\u7b7e", None))
         self.mainTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search Above", None))
         self.newTagInput.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Enter new tags", None))
-        self.menu.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
-        self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
     # retranslateUi
 

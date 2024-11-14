@@ -1,5 +1,3 @@
-# This file contains the Tag and TagTree classes, which are used to store and manage the tag tree data
-
 from utils.json import load_json, write_json
 
 class Tag:
@@ -144,7 +142,9 @@ class TagTree:
         if tag is None:
             tag = self.root
 
-        if tag.is_tag:
+        if not tag.is_tag:
+            parent_set = parent
+        else:
             # Add the parent tag to the parent set
             parent_set = parent.copy()
 
@@ -165,8 +165,6 @@ class TagTree:
                         parent_dict[synonym].add(tag.name)
 
             parent_set.add(tag.name)
-        else:
-            parent_set = parent
 
         for sub_tag in tag.sub_tags.values():
             parent_dict.update(self.get_all_parent_tag(sub_tag, parent_set, parent_dict, include_synonyms))
@@ -180,7 +178,7 @@ class TagTree:
         newTag must not be in the TagTree
         """
         if parent_tag not in self.tag_dict:
-            raise ValueError(f"parentTag {parent_tag} not found")
+            raise KeyError(f"parentTag {parent_tag} not found")
         
         if new_tag in self.tag_dict:
             raise ValueError(f"tag {new_tag} already exists")
@@ -195,10 +193,10 @@ class TagTree:
     def delete_tag(self, tag: str, parent_tag: str) -> bool:
         """Delete a tag from a parent tag, tag must be in the TagTree"""
         if tag not in self.tag_dict:
-            raise ValueError(f"tag {tag} not found")
+            raise KeyError(f"tag {tag} not found")
         
         if parent_tag not in self.tag_dict:
-            raise ValueError(f"parentTag {parent_tag} not found")
+            raise KeyError(f"parentTag {parent_tag} not found")
         
         self.tag_dict[parent_tag].sub_tags.pop(tag)
         self.tag_dict[tag].parent.remove(parent_tag)
@@ -223,10 +221,10 @@ class TagTree:
     def add_parent_tag(self, tag: str, parent_tag: str) -> bool:
         """Add a parent tag to a existing tag, tag must be in the TagTree"""
         if tag not in self.tag_dict:
-            raise ValueError(f"tag {tag} not found")
+            raise KeyError(f"tag {tag} not found")
         
         if parent_tag not in self.tag_dict:
-            raise ValueError(f"parentTag {parent_tag} not found")
+            raise KeyError(f"parentTag {parent_tag} not found")
         
         self.tag_dict[tag].add_parent_tag(parent_tag)
         self.tag_dict[parent_tag].add_sub_tag(self.tag_dict[tag])
