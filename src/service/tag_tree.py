@@ -71,6 +71,11 @@ class Tag:
     def set_en_name(self, enName: str) -> None:
         """Set the enName of this tag"""
         self.en_name = enName
+
+    def remove_synonym(self, synonym: str) -> None:
+        """Remove a synonym from this tag"""
+        if synonym in self.synonyms:
+            self.synonyms.remove(synonym)
     
 class TagTree:
     tag_dict: dict[str, Tag] #a dictionary of all tag objects
@@ -121,7 +126,13 @@ class TagTree:
 
         return all_sub_tags
     
-    def get_all_parent_tag(self, tag: Tag = None, parent: set = None, parent_dict: dict[str, set] = None, include_synonyms: bool = False) -> dict:
+    def get_all_parent_tag(
+            self, 
+            tag: Tag = None, 
+            parent: set = None, 
+            parent_dict: dict[str, set] = None, 
+            include_synonyms: bool = False
+        ) -> dict[str, set[str]]:
         """
         Get all parent tags of tags in the TagTree
 
@@ -196,14 +207,10 @@ class TagTree:
             raise KeyError(f"tag {tag} not found")
         
         if parent_tag not in self.tag_dict:
-            raise KeyError(f"parentTag {parent_tag} not found")
+            raise KeyError(f"parent tag {parent_tag} not found")
         
         self.tag_dict[parent_tag].sub_tags.pop(tag)
         self.tag_dict[tag].parent.remove(parent_tag)
-
-        # check if the tag has any parent tag left
-        if not self.tag_dict[tag].parent:
-            self.tag_dict.pop(tag)
 
         return True
 

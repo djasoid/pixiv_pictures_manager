@@ -196,7 +196,10 @@ def collect_data(directory: str) -> None:
             elif file.endswith(".webp"): # ignore webp files because they cannot be processed
                 continue
 
-            else:
+            elif file.endswith(".jpg") or file.endswith(".png") or file.endswith(".jpeg") or file.endswith(".gif"):
                 image_data = parse_picture(file_path)
                 database.insert_image_data(*image_data)
+                
+            elif file.endswith(".csv"):
+                pass
     print("\n")

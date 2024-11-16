@@ -47,6 +47,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # double click to edit item in new_tag_transl_lst
         self.newTagTranslList.itemDoubleClicked.connect(self.newTagTranslList.editItem)
+        
+        # Connect undo
+        self.undo_shortcut = QShortcut(QKeySequence.StandardKey.Undo, self)
+        self.undo_shortcut.activated.connect(self.controller.undo)
 
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for new_tag_input, implement tab to add '#' and enter to add tag

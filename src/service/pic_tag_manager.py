@@ -24,27 +24,15 @@ class PicTagManager:
         pid_list = self.pic_database.get_pid_list()
 
         for pid in pid_list:
-            tags = self.pic_database.get_tags(pid).keys()
+            tags = set(self.pic_database.get_tags(pid).keys())
             new_tags = set()
             for tag in tags:
                 if tag in all_parent_tag_dict:
                     new_tags.update(all_parent_tag_dict[tag])
-                else:
-                    if tag in self.unknown_tags:
-                        self.unknown_tags[tag] += 1
-                    else:
-                        self.unknown_tags[tag] = 1
             
             new_tags -= tags
             new_tags_dict = {tag: "tree" for tag in new_tags}
             self.pic_database.add_tags(pid, new_tags_dict)
-
-        tags_to_delete = [tag for tag in self.unknown_tags if self.unknown_tags[tag] < 10]
-        for tag in tags_to_delete:
-            del self.unknown_tags[tag]
-            
-        sorted_unknown_tags = sorted(self.unknown_tags.items(), key=lambda item: item[1], reverse=True)
-        write_json(sorted_unknown_tags, "unknown_tags.json")
 
     def init_tag_index(self) -> None:
         """

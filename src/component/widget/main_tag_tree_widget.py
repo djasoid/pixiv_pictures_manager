@@ -16,7 +16,7 @@ class MainTagTreeWidget(QTreeWidget):
 
     def dropEvent(self, event):
         """handle drop event and make changes to the tag tree"""
-        self.controller.mainTree_drop_event(event)
+        self.controller.main_tree_drop_event(event)
     
     def contextMenuEvent(self, event: QContextMenuEvent):
         """show context menu when right click"""
