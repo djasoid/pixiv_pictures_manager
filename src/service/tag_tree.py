@@ -264,7 +264,7 @@ class TagTree:
         """Check if a tag is in the TagTree"""
         return tag in self.tag_dict
     
-    def load_tag_tree(self, tag_tree_file: str, root = "标签") -> dict:
+    def load_tag_tree(self, tag_tree_file: str, root = "标签") -> None:
         """
         Initializes TagTree object from a JSON file.
 

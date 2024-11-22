@@ -14,14 +14,21 @@ class PicTagManager:
         self.pic_database = pic_database
         self.tag_tree = tag_tree
         self.tag_index_cache = {}
-        self.unknown_tags = {}
 
-    def complete_tag(self) -> None:
+    def complete_tag(self, pid_list: list[int] = None) -> None:
         """
-        iterate through the database and completes tags for each picture data in database with tag tree.
+        iterate through the picture tags and add all parent tags to the picture tags.
+
+        Args:
+            pid_list (list[int], optional): a list of picture ids to complete the tags. If None, all picture tags will be completed. Defaults to None.
+
+        Returns:
+            None
         """
         all_parent_tag_dict = self.tag_tree.get_all_parent_tag(include_synonyms=True)
-        pid_list = self.pic_database.get_pid_list()
+
+        if pid_list is None:
+            pid_list = self.pic_database.get_pid_list()
 
         for pid in pid_list:
             tags = set(self.pic_database.get_tags(pid).keys())
@@ -41,7 +48,7 @@ class PicTagManager:
         all_parent_tag_dict = self.tag_tree.get_all_parent_tag(include_synonyms=False)
         pid_list = self.pic_database.get_pid_list()
 
-        tag_index: dict[str, list[str]] = {}
+        tag_index: dict[str, list[int]] = {}
 
         for pid in pid_list:
             tags = self.pic_database.get_tags(pid).keys()

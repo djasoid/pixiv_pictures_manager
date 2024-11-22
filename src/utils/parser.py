@@ -38,7 +38,7 @@ def parse_picture(file_path: str) -> tuple:
 
 def parse_metadata(file_path: str) -> tuple:
     """
-    Parses a metadata file and returns a PicData object.
+    Parses a metadata file and returns a tuple.
 
     This function reads a metadata file line by line, extracts the metadata, and stores it in a PicData object.
 
@@ -79,9 +79,9 @@ def parse_metadata(file_path: str) -> tuple:
             return pid, title, tags, description, user, user_id, date, xRestrict
         line_num += 1
 
-def parse_csv(file_path: str) -> list:
+def parse_csv(file_path: str) -> list[tuple]:
     """
-    Parses a CSV file and returns a list of PicData objects.
+    Parses a CSV file and returns a list of tuples.
 
     This function reads a CSV file line by line, extracts the metadata, and stores it in a list of PicData objects.
 
@@ -106,12 +106,8 @@ def parse_csv(file_path: str) -> list:
             like = int(row[11])
             view = int(row[12])
             comment = int(row[13])
-            width = int(row[14])
-            height = int(row[15])
             xRestrict = row[16]
             date = row[17]
-            file_name = row[20]
-            file_type = file_name.split(".")[1]
             pics.append((
                 pid, 
                 tags, 
@@ -123,12 +119,8 @@ def parse_csv(file_path: str) -> list:
                 bookmarks,
                 like,
                 view,
-                comment, 
-                width, 
-                height, 
+                comment,
                 xRestrict, 
                 date, 
-                file_name, 
-                file_type
             ))
     return pics
