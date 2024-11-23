@@ -3,6 +3,7 @@ import sqlite3
 import os
 
 from utils.parser import parse_metadata, parse_picture, parse_csv
+from tools.log import Log, log_execution
 
 class PicDatabase:
     _instance = None
@@ -23,6 +24,7 @@ class PicDatabase:
         if self.database:
             self.database.close()
 
+    @log_execution("Info", "Loading database", "Database loaded")
     def _load_database(self):
         """
         Load the database.
@@ -33,54 +35,58 @@ class PicDatabase:
         else:
             self.database = sqlite3.connect("pic_data.db")
             self.cursor = self.database.cursor()
-            self.cursor.execute(
-                '''CREATE TABLE imageData (
-                    pid INT, 
-                    num INT, 
-                    directory TEXT, 
-                    fileName TEXT, 
-                    fileType TEXT,
-                    width INT, 
-                    height INT, 
-                    size INT, 
-                    PRIMARY KEY (pid, num)
-                )'''
-            )
-            self.cursor.execute(
-                '''CREATE TABLE metadata (
-                    pid INT, 
-                    title TEXT, 
-                    tags TEXT,
-                    description TEXT,
-                    user TEXT,
-                    userId INT,
-                    date TEXT,
-                    xRestrict TEXT,
-                    bookmarkCount INT,
-                    likeCount INT,
-                    viewCount INT,
-                    commentCount INT,
-                    PRIMARY KEY (pid)
-                )'''
-            )
-            self.cursor.execute(
-                '''CREATE TABLE tagIndex (
-                    tag TEXT,
-                    pids TEXT,
-                    PRIMARY KEY (tag)
-                )'''
-            )
-            self.cursor.execute(
-                '''CREATE TABLE tags (
-                    originalTag TEXT,
-                    translatedTag TEXT,
-                    appearanceCount INT,
-                    PRIMARY KEY (originalTag)
-                )'''
-            )
-            self.cursor.execute('''CREATE INDEX tag ON tagIndex (tag)''')
-            self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
-            self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
+            self._initialize_database()
+           
+    @log_execution("Info", "No existing database found. Creating new database", "Database created") 
+    def _initialize_database(self):
+        self.cursor.execute(
+            '''CREATE TABLE imageData (
+                pid INT, 
+                num INT, 
+                directory TEXT, 
+                fileName TEXT, 
+                fileType TEXT,
+                width INT, 
+                height INT, 
+                size INT, 
+                PRIMARY KEY (pid, num)
+            )'''
+        )
+        self.cursor.execute(
+            '''CREATE TABLE metadata (
+                pid INT, 
+                title TEXT, 
+                tags TEXT,
+                description TEXT,
+                user TEXT,
+                userId INT,
+                date TEXT,
+                xRestrict TEXT,
+                bookmarkCount INT,
+                likeCount INT,
+                viewCount INT,
+                commentCount INT,
+                PRIMARY KEY (pid)
+            )'''
+        )
+        self.cursor.execute(
+            '''CREATE TABLE tagIndex (
+                tag TEXT,
+                pids TEXT,
+                PRIMARY KEY (tag)
+            )'''
+        )
+        self.cursor.execute(
+            '''CREATE TABLE tags (
+                originalTag TEXT,
+                translatedTag TEXT,
+                appearanceCount INT,
+                PRIMARY KEY (originalTag)
+            )'''
+        )
+        self.cursor.execute('''CREATE INDEX tag ON tagIndex (tag)''')
+        self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
+        self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
     
     def insert_image_data(
             self, 
@@ -121,10 +127,39 @@ class PicDatabase:
         Insert metadata into the database.
         """
         self.cursor.execute(
-            "INSERT OR IGNORE INTO metadata VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+            """
+                INSERT INTO metadata (
+                    pid, 
+                    title, 
+                    tags, 
+                    description, 
+                    user, 
+                    userId, 
+                    date, 
+                    xRestrict, 
+                    bookmarkCount, 
+                    likeCount, 
+                    viewCount, 
+                    commentCount
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(pid) DO UPDATE SET
+                title=excluded.title, 
+                tags=excluded.tags, 
+                description=excluded.description, 
+                user=excluded.user, 
+                userId=excluded.userId,
+                date=excluded.date, 
+                xRestrict=excluded.xRestrict, 
+                bookmarkCount=excluded.bookmarkCount, 
+                likeCount=excluded.likeCount,
+                viewCount=excluded.viewCount, 
+                commentCount=excluded.commentCount
+            """,
+            (
                 pid, 
                 title, 
-                tags, 
+                json.dumps(tags), 
                 description, 
                 user, 
                 user_id, 
@@ -246,21 +281,6 @@ class PicDatabase:
 
         This function inserts data from a CSV file into the database. It inserts the metadata and image data into the database.
 
-        Parameters:
-        pid (int): The picture id.
-        tags (list): The tags of the picture.
-        tags_transl (list): The translated tags of the picture.
-        user (str): The user who uploaded the picture.
-        user_id (int): The user id.
-        title (str): The title of the picture.
-        description (str): The description of the picture.
-        bookmarks (int): The number of bookmarks.
-        like (int): The number of likes.
-        view (int): The number of views.
-        comment (int): The number of comments.
-        xRestrict (str): The xRestrict of the picture.
-        date (str): The date the picture was uploaded.
-
         Returns:
         None
         """
@@ -274,15 +294,21 @@ class PicDatabase:
             title, 
             tags_dict, 
             description, 
-            user, user_id, 
-            date, xRestrict, 
+            user, 
+            user_id, 
+            date, 
+            xRestrict, 
             bookmarks, 
             like, 
             view, 
             comment
         )
 
-
+    @log_execution(
+        "Info", 
+        "Collecting data from directroy {args[1]}", 
+        "Collected data from directory {args[1]}, used {execution_time} seconds"
+    )
     def collect_data(self, directory: str) -> list:
         """
         Collects data from a directory and stores it in a database.

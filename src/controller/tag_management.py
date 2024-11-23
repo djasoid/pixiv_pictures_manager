@@ -8,6 +8,7 @@ from service.tag_tree import TagTree, Tag
 from utils.json import load_json, write_json
 from component.dialog.tag_delete_dialog import DeleteDialog
 from component.dialog.tag_edit_dialog import TagEditDialog
+from tools.log import log_execution
 
 if TYPE_CHECKING:
     from view.tag_management import MainWindow
@@ -98,6 +99,7 @@ class TagManagementController:
         self.view.tagInfo.verticalScrollBar().setValue(0)
         return
         
+    @log_execution("Info", "Saving tag tree", "Tag tree saved")
     def save_tree(self):
         self.tag_tree.save_tree()
         write_json(self.new_tag_list, self.new_tag_path)
@@ -287,6 +289,7 @@ class TagManagementController:
             item.addChild(self._get_tree_item(subTag))
         return item
     
+    @log_execution("Info", "Loading tag tree", "Tag tree loaded")
     def _load_tag_tree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
         self.view.viewTree.addTopLevelItem(self._get_tree_item(self.tag_tree.root))
@@ -301,6 +304,7 @@ class TagManagementController:
         
         return
             
+    @log_execution("Info", "Loading new tag", "New tag loaded")
     def _load_new_tag(self, new_tag_path: str):
         """load new tag file and show it in the new tag lst"""
         self.new_tag_list = load_json(new_tag_path)
