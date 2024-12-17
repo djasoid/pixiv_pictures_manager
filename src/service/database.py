@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 from utils.parser import parse_metadata, parse_picture, parse_csv
-from tools.log import Log, log_execution
+from tools.log import log_execution
 
 class PicDatabase:
     _instance = None
@@ -313,7 +313,9 @@ class PicDatabase:
         """
         Collects data from a directory and stores it in a database.
 
-        This function reads all files in a directory and processes them. It reads metadata from .txt files, image data from image files, and CSV data from .csv files. It then stores the data in the database.
+        This function reads all files in a directory and processes them. 
+        It reads metadata from .txt files, image data from image files, and CSV data from .csv files. 
+        It then stores the data in the database.
 
         Parameters:
         directory (str): The directory to read data from.

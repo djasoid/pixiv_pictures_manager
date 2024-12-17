@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>985</width>
-    <height>594</height>
+    <width>999</width>
+    <height>698</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
          <x>0</x>
          <y>0</y>
          <width>300</width>
-         <height>466</height>
+         <height>541</height>
         </rect>
        </property>
        <attribute name="label">
@@ -64,7 +64,7 @@
           </property>
           <widget class="QWidget" name="characterTagTab">
            <attribute name="title">
-            <string>人物</string>
+            <string>角色</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <property name="leftMargin">
@@ -168,25 +168,207 @@
          <x>0</x>
          <y>0</y>
          <width>300</width>
-         <height>499</height>
+         <height>541</height>
         </rect>
        </property>
        <attribute name="label">
-        <string>图像筛选</string>
+        <string>图片筛选</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QGroupBox" name="groupBox">
+         <widget class="QGroupBox" name="fileTypeGroupBox">
           <property name="title">
-           <string>GroupBox</string>
+           <string>文件格式</string>
           </property>
+          <widget class="QCheckBox" name="checkBox">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>40</y>
+             <width>78</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>PNG</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_2">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>80</y>
+             <width>78</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>JPG</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="checkBox_3">
+           <property name="geometry">
+            <rect>
+             <x>80</x>
+             <y>120</y>
+             <width>78</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>GIF</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_2">
+         <widget class="QGroupBox" name="resolutionGroupBox">
           <property name="title">
-           <string>GroupBox</string>
+           <string>分辨率</string>
           </property>
+          <widget class="QPlainTextEdit" name="resolutionWidthEdit">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>70</y>
+             <width>104</width>
+             <height>31</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="resolutionHightEdit">
+           <property name="geometry">
+            <rect>
+             <x>160</x>
+             <y>70</y>
+             <width>104</width>
+             <height>31</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="timeGroupBox">
+          <property name="title">
+           <string>时间范围</string>
+          </property>
+          <widget class="QDateEdit" name="minDateEdit">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>80</y>
+             <width>120</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QDateEdit" name="maxDateEdit">
+           <property name="geometry">
+            <rect>
+             <x>150</x>
+             <y>80</y>
+             <width>120</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="imageSorter">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>300</width>
+         <height>541</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>图片排序</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,2">
+        <item>
+         <widget class="QGroupBox" name="ratioGroupBox">
+          <property name="title">
+           <string>宽高比</string>
+          </property>
+          <widget class="QSlider" name="horizontalSlider">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>30</y>
+             <width>160</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="toolTipDuration">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <number>-100</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="sliderPosition">
+            <number>0</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="invertedAppearance">
+            <bool>false</bool>
+           </property>
+           <property name="invertedControls">
+            <bool>false</bool>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TickPosition::NoTicks</enum>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="plainTextEdit_3">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>90</y>
+             <width>101</width>
+             <height>41</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="plainTextEdit_4">
+           <property name="geometry">
+            <rect>
+             <x>160</x>
+             <y>90</y>
+             <width>101</width>
+             <height>41</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="priorityGroupBox">
+          <property name="title">
+           <string>排序优先级</string>
+          </property>
+          <widget class="QListWidget" name="listWidget">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>30</y>
+             <width>221</width>
+             <height>291</height>
+            </rect>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -230,13 +412,13 @@
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
+        <widget class="QWidget" name="picBrowseContentWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>657</width>
-           <height>464</height>
+           <width>671</width>
+           <height>568</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -257,7 +439,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>985</width>
+     <width>999</width>
      <height>33</height>
     </rect>
    </property>
@@ -271,7 +453,13 @@
      <string>关于</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>选项</string>
+    </property>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_3"/>
    <addaction name="menu_2"/>
   </widget>
  </widget>

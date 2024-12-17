@@ -80,7 +80,7 @@ class Tag:
 class TagTree:
     tag_dict: dict[str, Tag] #a dictionary of all tag objects
 
-    def __init__(self, tag_tree_file: str) -> None:
+    def __init__(self, tag_tree_file: str = "tag_tree.json") -> None:
         """Initialize the TagTree object from the data in tagTree.json file"""
         self.tag_dict = {} #a dictionary of all tag objects
         self.file_path = tag_tree_file
@@ -109,20 +109,21 @@ class TagTree:
 
         return new_tag
 
-    def get_sub_tags(self, tag: str, include_synonyoms = False) -> list:
+    def get_sub_tags(self, tag: str, include_synonyoms = False) -> set[str]:
         """
-        Get a list of all subTags of a Tag recursively
+        Get a set of all subTags of a Tag recursively
         """
         if tag not in self.tag_dict:
             raise ValueError(f"tag {tag} not found")
 
-        sub_tags = list(self.tag_dict[tag].sub_tags.keys())
+        sub_tags = set(self.tag_dict[tag].sub_tags.keys())
         all_sub_tags = sub_tags.copy()
 
         if include_synonyoms:
-            all_sub_tags.extend(self.tag_dict[tag].synonyms)
+            all_sub_tags.update(self.tag_dict[tag].synonyms)
+
         for subTag in sub_tags:
-            all_sub_tags.extend(self.get_sub_tags(subTag, include_synonyoms))
+            all_sub_tags.update(self.get_sub_tags(subTag, include_synonyoms))
 
         return all_sub_tags
     

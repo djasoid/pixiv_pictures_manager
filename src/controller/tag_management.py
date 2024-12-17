@@ -298,6 +298,7 @@ class TagManagementController:
         self.view.viewTree.expandItem(self.view.viewTree.topLevelItem(0))
         for i in range(self.view.viewTree.topLevelItem(0).childCount()):
             self.view.viewTree.expandItem(self.view.viewTree.topLevelItem(0).child(i))
+
         self.view.mainTree.expandItem(self.view.mainTree.topLevelItem(0))
         for i in range(self.view.mainTree.topLevelItem(0).childCount()):
             self.view.mainTree.expandItem(self.view.mainTree.topLevelItem(0).child(i))
