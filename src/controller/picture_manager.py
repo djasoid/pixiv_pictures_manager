@@ -6,22 +6,28 @@ from PySide6.QtGui import QDropEvent, QBrush
 
 from service.tag_tree import TagTree, Tag
 from service.database import PicDatabase
-from utils.json import load_json, write_json
 from tools.log import log_execution
-
+from component.widget.tag_widget import TagWidget
 if TYPE_CHECKING:
     from view.picture_manager import MainWindow
 
 class PictureManagerController:
     def __init__(self, view: 'MainWindow'):
         self.view = view
-        self.show_restricted = False
         self.tag_index_cache = {}
         self.database = PicDatabase()
+        self._init_context()
         self._init_tag_tree()
         self.view.setup_controller(self)
         self._init_tag_search()
-
+        
+    def _init_context(self):
+        self.show_restricted = False
+        self.include_tag_set = set()
+        self.exclude_tag_set = set()
+        self.filtered_pids = set()
+        self.sorted_pids = []
+        
     def _init_tag_tree(self):
         self.tag_tree = TagTree()
         self.tag_item_dict: dict[str, set[QTreeWidgetItem]] = {}
@@ -49,11 +55,40 @@ class PictureManagerController:
         
         return item
 
-    def add_include_tag(self):
-        pass
-    
-    def add_exclude_tag(self):  
-        pass
+    def add_include_tag(self, item: QTreeWidgetItem, column: int):
+        tag_name = item.text(0)
+        tag = self.tag_tree.get_tag(tag_name)
+        if not tag.is_tag:
+            return
+        
+        if tag_name not in self.include_tag_set and tag_name not in self.exclude_tag_set:
+            self.include_tag_set.add(tag_name)
+            tag_widget = TagWidget(self, tag_name, True)
+            self.view.selectedTagLayout.insertWidget(0, tag_widget)
+            self.last_added_tag = tag_widget
+        else:
+            return
+        
+    def add_exclude_tag(self, item: QTreeWidgetItem, column: int):
+        tag_name = item.text(0)
+        tag = self.tag_tree.get_tag(tag_name)
+        if not tag.is_tag:
+            return
+        
+        if tag_name not in self.exclude_tag_set:
+            self.remove_selected_tag(self.last_added_tag)    
+            self.exclude_tag_set.add(tag_name)
+            self.view.selectedTagLayout.addWidget(TagWidget(self, tag_name, False))
+        else:
+            return
+        
+    def remove_selected_tag(self, tag_widget: TagWidget):
+        if tag_widget.include:
+            self.include_tag_set.remove(tag_widget.tag_name)
+        else:
+            self.exclude_tag_set.remove(tag_widget.tag_name)
+        self.view.selectedTagLayout.removeWidget(tag_widget)
+        tag_widget.deleteLater()
     
     def _init_tag_search(self):
         self.tag_last_search = ""
@@ -94,7 +129,7 @@ class PictureManagerController:
         tree_widget.setCurrentItem(tag_item)
         tree_widget.scrollToItem(tag_item, QAbstractItemView.ScrollHint.PositionAtCenter)
         
-    def _pic_tag_search(self, include_tags: set, exclude_tags: set) -> set:
+    def _pic_tag_search(self) -> None:
         """
         Search for pictures with tags.
         the search will return a set of picture ids that have all the tags in includeTags and none of the tags in excludeTags.
@@ -113,14 +148,16 @@ class PictureManagerController:
             return pids
                 
         included_pids = None
-        for tag in include_tags:
+        for tag in self.include_tag_set:
             if included_pids is None:
                 included_pids = find_pids(tag)
             else:
                 included_pids &= find_pids(tag)
 
         excluded_pids = set()
-        for tag in exclude_tags:
+        for tag in self.exclude_tag_set:
             excluded_pids.update(find_pids(tag))
         
-        return included_pids - excluded_pids
+        self.filtered_pids = included_pids - excluded_pids if included_pids else set()
+    
+    

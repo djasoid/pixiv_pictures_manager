@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>999</width>
-    <height>698</height>
+    <width>955</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tagSelector">
        <property name="geometry">
@@ -35,7 +35,7 @@
          <x>0</x>
          <y>0</y>
          <width>300</width>
-         <height>541</height>
+         <height>504</height>
         </rect>
        </property>
        <attribute name="label">
@@ -137,7 +137,7 @@
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>30</height>
+            <height>25</height>
            </size>
           </property>
           <property name="cursor" stdset="0">
@@ -168,7 +168,7 @@
          <x>0</x>
          <y>0</y>
          <width>300</width>
-         <height>541</height>
+         <height>504</height>
         </rect>
        </property>
        <attribute name="label">
@@ -180,45 +180,41 @@
           <property name="title">
            <string>文件格式</string>
           </property>
-          <widget class="QCheckBox" name="checkBox">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>40</y>
-             <width>78</width>
-             <height>19</height>
-            </rect>
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <property name="leftMargin">
+            <number>100</number>
            </property>
-           <property name="text">
-            <string>PNG</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBox_2">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>80</y>
-             <width>78</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>JPG</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBox_3">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>120</y>
-             <width>78</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>GIF</string>
-           </property>
-          </widget>
+           <item>
+            <widget class="QCheckBox" name="pngCheckBox">
+             <property name="text">
+              <string>PNG</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="jpgCheckBox">
+             <property name="text">
+              <string>JPG</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="gifCheckBox">
+             <property name="text">
+              <string>GIF</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -226,25 +222,62 @@
           <property name="title">
            <string>分辨率</string>
           </property>
-          <widget class="QPlainTextEdit" name="resolutionWidthEdit">
+          <widget class="QPushButton" name="pushButton_3">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>70</y>
-             <width>104</width>
-             <height>31</height>
+             <x>190</x>
+             <y>120</y>
+             <width>75</width>
+             <height>23</height>
             </rect>
+           </property>
+           <property name="text">
+            <string>清空</string>
            </property>
           </widget>
-          <widget class="QPlainTextEdit" name="resolutionHightEdit">
+          <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
-             <x>160</x>
-             <y>70</y>
-             <width>104</width>
+             <x>50</x>
+             <y>40</y>
+             <width>171</width>
              <height>31</height>
             </rect>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>宽：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPlainTextEdit" name="resolutionWidthEdit"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>50</x>
+             <y>80</y>
+             <width>171</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>高：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPlainTextEdit" name="resolutionHightEdit"/>
+            </item>
+           </layout>
           </widget>
          </widget>
         </item>
@@ -273,6 +306,19 @@
             </rect>
            </property>
           </widget>
+          <widget class="QCheckBox" name="checkBox_2">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>40</y>
+             <width>78</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>启用</string>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -283,7 +329,7 @@
          <x>0</x>
          <y>0</y>
          <width>300</width>
-         <height>541</height>
+         <height>504</height>
         </rect>
        </property>
        <attribute name="label">
@@ -295,80 +341,194 @@
           <property name="title">
            <string>宽高比</string>
           </property>
-          <widget class="QSlider" name="horizontalSlider">
-           <property name="geometry">
-            <rect>
-             <x>60</x>
-             <y>30</y>
-             <width>160</width>
-             <height>16</height>
-            </rect>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <property name="leftMargin">
+            <number>20</number>
            </property>
-           <property name="toolTipDuration">
-            <number>2</number>
+           <property name="topMargin">
+            <number>10</number>
            </property>
-           <property name="minimum">
-            <number>-100</number>
+           <property name="rightMargin">
+            <number>20</number>
            </property>
-           <property name="maximum">
-            <number>100</number>
+           <property name="bottomMargin">
+            <number>20</number>
            </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-           <property name="sliderPosition">
-            <number>0</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="invertedAppearance">
-            <bool>false</bool>
-           </property>
-           <property name="invertedControls">
-            <bool>false</bool>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TickPosition::NoTicks</enum>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="plainTextEdit_3">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>90</y>
-             <width>101</width>
-             <height>41</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="plainTextEdit_4">
-           <property name="geometry">
-            <rect>
-             <x>160</x>
-             <y>90</y>
-             <width>101</width>
-             <height>41</height>
-            </rect>
-           </property>
-          </widget>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>启用</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>宽图</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>正方图</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>长图</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="toolTipDuration">
+                <number>2</number>
+               </property>
+               <property name="minimum">
+                <number>-100</number>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="sliderPosition">
+                <number>0</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+               <property name="invertedControls">
+                <bool>false</bool>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TickPosition::NoTicks</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>10</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="priorityGroupBox">
+         <widget class="QGroupBox" name="sortPriorityGroupBox">
           <property name="title">
            <string>排序优先级</string>
           </property>
-          <widget class="QListWidget" name="listWidget">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>30</y>
-             <width>221</width>
-             <height>291</height>
-            </rect>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="leftMargin">
+            <number>20</number>
            </property>
-          </widget>
+           <property name="topMargin">
+            <number>20</number>
+           </property>
+           <property name="rightMargin">
+            <number>20</number>
+           </property>
+           <property name="bottomMargin">
+            <number>20</number>
+           </property>
+           <item>
+            <widget class="QListWidget" name="listWidget"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="text">
+              <string>重置</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -397,14 +557,7 @@
         <property name="frameShadow">
          <enum>QFrame::Shadow::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QWidget" name="includedTagWidget" native="true"/>
-         </item>
-         <item>
-          <widget class="QWidget" name="excludedTagWidget" native="true"/>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="selectedTagLayout"/>
        </widget>
       </item>
       <item>
@@ -417,8 +570,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>671</width>
-           <height>568</height>
+           <width>627</width>
+           <height>531</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -439,7 +592,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>999</width>
+     <width>955</width>
      <height>33</height>
     </rect>
    </property>
@@ -447,6 +600,7 @@
     <property name="title">
      <string>文件</string>
     </property>
+    <addaction name="action"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -457,11 +611,22 @@
     <property name="title">
      <string>选项</string>
     </property>
+    <addaction name="actionR_18"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_3"/>
    <addaction name="menu_2"/>
   </widget>
+  <action name="actionR_18">
+   <property name="text">
+    <string>R-18</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>添加文件夹</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -278,3 +278,7 @@ class TagTree:
     def save_tree(self) -> None:
         """Save the TagTree object to the original file"""
         write_json(self.to_dict(), self.file_path)
+
+    def get_tag(self, tag: str) -> Tag:
+        """Get a tag object from the tag name"""
+        return self.tag_dict[tag]

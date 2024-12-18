@@ -16,19 +16,24 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QDateEdit, QFrame,
-    QGroupBox, QHBoxLayout, QHeaderView, QListWidget,
-    QListWidgetItem, QMainWindow, QMenu, QMenuBar,
-    QPlainTextEdit, QScrollArea, QSizePolicy, QSlider,
-    QStatusBar, QTabWidget, QToolBox, QTreeWidget,
-    QTreeWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QDateEdit, QDoubleSpinBox,
+    QFrame, QGroupBox, QHBoxLayout, QHeaderView,
+    QLabel, QListWidget, QListWidgetItem, QMainWindow,
+    QMenu, QMenuBar, QPlainTextEdit, QPushButton,
+    QScrollArea, QSizePolicy, QSlider, QStatusBar,
+    QTabWidget, QToolBox, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(999, 698)
+        MainWindow.resize(955, 661)
+        self.actionR_18 = QAction(MainWindow)
+        self.actionR_18.setObjectName(u"actionR_18")
+        self.action = QAction(MainWindow)
+        self.action.setObjectName(u"action")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_4 = QHBoxLayout(self.centralwidget)
@@ -38,7 +43,7 @@ class Ui_MainWindow(object):
         self.filterToolBox.setMaximumSize(QSize(300, 16777215))
         self.tagSelector = QWidget()
         self.tagSelector.setObjectName(u"tagSelector")
-        self.tagSelector.setGeometry(QRect(0, 0, 300, 541))
+        self.tagSelector.setGeometry(QRect(0, 0, 300, 504))
         self.verticalLayout = QVBoxLayout(self.tagSelector)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(-1, 0, -1, 0)
@@ -87,7 +92,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.searchTagTreeTextEdit.sizePolicy().hasHeightForWidth())
         self.searchTagTreeTextEdit.setSizePolicy(sizePolicy)
-        self.searchTagTreeTextEdit.setMaximumSize(QSize(16777215, 30))
+        self.searchTagTreeTextEdit.setMaximumSize(QSize(16777215, 25))
         self.searchTagTreeTextEdit.viewport().setProperty(u"cursor", QCursor(Qt.CursorShape.IBeamCursor))
         self.searchTagTreeTextEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.searchTagTreeTextEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -99,31 +104,72 @@ class Ui_MainWindow(object):
         self.filterToolBox.addItem(self.tagSelector, u"\u6807\u7b7e\u9009\u62e9")
         self.imageSelector = QWidget()
         self.imageSelector.setObjectName(u"imageSelector")
-        self.imageSelector.setGeometry(QRect(0, 0, 300, 541))
+        self.imageSelector.setGeometry(QRect(0, 0, 300, 504))
         self.verticalLayout_5 = QVBoxLayout(self.imageSelector)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.fileTypeGroupBox = QGroupBox(self.imageSelector)
         self.fileTypeGroupBox.setObjectName(u"fileTypeGroupBox")
-        self.checkBox = QCheckBox(self.fileTypeGroupBox)
-        self.checkBox.setObjectName(u"checkBox")
-        self.checkBox.setGeometry(QRect(80, 40, 78, 19))
-        self.checkBox_2 = QCheckBox(self.fileTypeGroupBox)
-        self.checkBox_2.setObjectName(u"checkBox_2")
-        self.checkBox_2.setGeometry(QRect(80, 80, 78, 19))
-        self.checkBox_3 = QCheckBox(self.fileTypeGroupBox)
-        self.checkBox_3.setObjectName(u"checkBox_3")
-        self.checkBox_3.setGeometry(QRect(80, 120, 78, 19))
+        self.verticalLayout_10 = QVBoxLayout(self.fileTypeGroupBox)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.verticalLayout_10.setContentsMargins(100, -1, -1, -1)
+        self.pngCheckBox = QCheckBox(self.fileTypeGroupBox)
+        self.pngCheckBox.setObjectName(u"pngCheckBox")
+        self.pngCheckBox.setChecked(True)
+
+        self.verticalLayout_10.addWidget(self.pngCheckBox)
+
+        self.jpgCheckBox = QCheckBox(self.fileTypeGroupBox)
+        self.jpgCheckBox.setObjectName(u"jpgCheckBox")
+        self.jpgCheckBox.setChecked(True)
+
+        self.verticalLayout_10.addWidget(self.jpgCheckBox)
+
+        self.gifCheckBox = QCheckBox(self.fileTypeGroupBox)
+        self.gifCheckBox.setObjectName(u"gifCheckBox")
+        self.gifCheckBox.setChecked(True)
+
+        self.verticalLayout_10.addWidget(self.gifCheckBox)
+
 
         self.verticalLayout_5.addWidget(self.fileTypeGroupBox)
 
         self.resolutionGroupBox = QGroupBox(self.imageSelector)
         self.resolutionGroupBox.setObjectName(u"resolutionGroupBox")
-        self.resolutionWidthEdit = QPlainTextEdit(self.resolutionGroupBox)
+        self.pushButton_3 = QPushButton(self.resolutionGroupBox)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.pushButton_3.setGeometry(QRect(190, 120, 75, 23))
+        self.layoutWidget = QWidget(self.resolutionGroupBox)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.layoutWidget.setGeometry(QRect(50, 40, 171, 31))
+        self.horizontalLayout_6 = QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.layoutWidget)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout_6.addWidget(self.label)
+
+        self.resolutionWidthEdit = QPlainTextEdit(self.layoutWidget)
         self.resolutionWidthEdit.setObjectName(u"resolutionWidthEdit")
-        self.resolutionWidthEdit.setGeometry(QRect(10, 70, 104, 31))
-        self.resolutionHightEdit = QPlainTextEdit(self.resolutionGroupBox)
+
+        self.horizontalLayout_6.addWidget(self.resolutionWidthEdit)
+
+        self.layoutWidget1 = QWidget(self.resolutionGroupBox)
+        self.layoutWidget1.setObjectName(u"layoutWidget1")
+        self.layoutWidget1.setGeometry(QRect(50, 80, 171, 31))
+        self.horizontalLayout_7 = QHBoxLayout(self.layoutWidget1)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.label_2 = QLabel(self.layoutWidget1)
+        self.label_2.setObjectName(u"label_2")
+
+        self.horizontalLayout_7.addWidget(self.label_2)
+
+        self.resolutionHightEdit = QPlainTextEdit(self.layoutWidget1)
         self.resolutionHightEdit.setObjectName(u"resolutionHightEdit")
-        self.resolutionHightEdit.setGeometry(QRect(160, 70, 104, 31))
+
+        self.horizontalLayout_7.addWidget(self.resolutionHightEdit)
+
 
         self.verticalLayout_5.addWidget(self.resolutionGroupBox)
 
@@ -135,20 +181,64 @@ class Ui_MainWindow(object):
         self.maxDateEdit = QDateEdit(self.timeGroupBox)
         self.maxDateEdit.setObjectName(u"maxDateEdit")
         self.maxDateEdit.setGeometry(QRect(150, 80, 120, 22))
+        self.checkBox_2 = QCheckBox(self.timeGroupBox)
+        self.checkBox_2.setObjectName(u"checkBox_2")
+        self.checkBox_2.setGeometry(QRect(20, 40, 78, 19))
 
         self.verticalLayout_5.addWidget(self.timeGroupBox)
 
         self.filterToolBox.addItem(self.imageSelector, u"\u56fe\u7247\u7b5b\u9009")
         self.imageSorter = QWidget()
         self.imageSorter.setObjectName(u"imageSorter")
-        self.imageSorter.setGeometry(QRect(0, 0, 300, 541))
+        self.imageSorter.setGeometry(QRect(0, 0, 300, 504))
         self.verticalLayout_6 = QVBoxLayout(self.imageSorter)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.ratioGroupBox = QGroupBox(self.imageSorter)
         self.ratioGroupBox.setObjectName(u"ratioGroupBox")
+        self.verticalLayout_9 = QVBoxLayout(self.ratioGroupBox)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalLayout_9.setContentsMargins(20, 10, 20, 20)
+        self.checkBox = QCheckBox(self.ratioGroupBox)
+        self.checkBox.setObjectName(u"checkBox")
+
+        self.verticalLayout_9.addWidget(self.checkBox)
+
+        self.verticalLayout_7 = QVBoxLayout()
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_3 = QLabel(self.ratioGroupBox)
+        self.label_3.setObjectName(u"label_3")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_2.addWidget(self.label_3)
+
+        self.label_4 = QLabel(self.ratioGroupBox)
+        self.label_4.setObjectName(u"label_4")
+        sizePolicy1.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy1)
+        self.label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.horizontalLayout_2.addWidget(self.label_4)
+
+        self.label_5 = QLabel(self.ratioGroupBox)
+        self.label_5.setObjectName(u"label_5")
+        sizePolicy1.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
+        self.label_5.setSizePolicy(sizePolicy1)
+        self.label_5.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
+
+        self.horizontalLayout_2.addWidget(self.label_5)
+
+
+        self.verticalLayout_7.addLayout(self.horizontalLayout_2)
+
         self.horizontalSlider = QSlider(self.ratioGroupBox)
         self.horizontalSlider.setObjectName(u"horizontalSlider")
-        self.horizontalSlider.setGeometry(QRect(60, 30, 160, 16))
+        self.horizontalSlider.setMinimumSize(QSize(0, 20))
         self.horizontalSlider.setToolTipDuration(2)
         self.horizontalSlider.setMinimum(-100)
         self.horizontalSlider.setMaximum(100)
@@ -158,22 +248,61 @@ class Ui_MainWindow(object):
         self.horizontalSlider.setInvertedAppearance(False)
         self.horizontalSlider.setInvertedControls(False)
         self.horizontalSlider.setTickPosition(QSlider.TickPosition.NoTicks)
-        self.plainTextEdit_3 = QPlainTextEdit(self.ratioGroupBox)
-        self.plainTextEdit_3.setObjectName(u"plainTextEdit_3")
-        self.plainTextEdit_3.setGeometry(QRect(20, 90, 101, 41))
-        self.plainTextEdit_4 = QPlainTextEdit(self.ratioGroupBox)
-        self.plainTextEdit_4.setObjectName(u"plainTextEdit_4")
-        self.plainTextEdit_4.setGeometry(QRect(160, 90, 101, 41))
+
+        self.verticalLayout_7.addWidget(self.horizontalSlider)
+
+
+        self.verticalLayout_9.addLayout(self.verticalLayout_7)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.doubleSpinBox = QDoubleSpinBox(self.ratioGroupBox)
+        self.doubleSpinBox.setObjectName(u"doubleSpinBox")
+        self.doubleSpinBox.setMinimumSize(QSize(0, 30))
+
+        self.horizontalLayout.addWidget(self.doubleSpinBox)
+
+        self.label_6 = QLabel(self.ratioGroupBox)
+        self.label_6.setObjectName(u"label_6")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
+        self.label_6.setSizePolicy(sizePolicy2)
+        self.label_6.setMaximumSize(QSize(10, 16777215))
+        self.label_6.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.horizontalLayout.addWidget(self.label_6)
+
+        self.doubleSpinBox_2 = QDoubleSpinBox(self.ratioGroupBox)
+        self.doubleSpinBox_2.setObjectName(u"doubleSpinBox_2")
+        self.doubleSpinBox_2.setMinimumSize(QSize(0, 30))
+
+        self.horizontalLayout.addWidget(self.doubleSpinBox_2)
+
+
+        self.verticalLayout_9.addLayout(self.horizontalLayout)
+
 
         self.verticalLayout_6.addWidget(self.ratioGroupBox)
 
-        self.priorityGroupBox = QGroupBox(self.imageSorter)
-        self.priorityGroupBox.setObjectName(u"priorityGroupBox")
-        self.listWidget = QListWidget(self.priorityGroupBox)
+        self.sortPriorityGroupBox = QGroupBox(self.imageSorter)
+        self.sortPriorityGroupBox.setObjectName(u"sortPriorityGroupBox")
+        self.verticalLayout_8 = QVBoxLayout(self.sortPriorityGroupBox)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(20, 20, 20, 20)
+        self.listWidget = QListWidget(self.sortPriorityGroupBox)
         self.listWidget.setObjectName(u"listWidget")
-        self.listWidget.setGeometry(QRect(30, 30, 221, 291))
 
-        self.verticalLayout_6.addWidget(self.priorityGroupBox)
+        self.verticalLayout_8.addWidget(self.listWidget)
+
+        self.pushButton_2 = QPushButton(self.sortPriorityGroupBox)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+
+        self.verticalLayout_8.addWidget(self.pushButton_2)
+
+
+        self.verticalLayout_6.addWidget(self.sortPriorityGroupBox)
 
         self.verticalLayout_6.setStretch(0, 1)
         self.verticalLayout_6.setStretch(1, 2)
@@ -185,26 +314,16 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.selectedTagFrame = QFrame(self.centralwidget)
         self.selectedTagFrame.setObjectName(u"selectedTagFrame")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.selectedTagFrame.sizePolicy().hasHeightForWidth())
-        self.selectedTagFrame.setSizePolicy(sizePolicy1)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.selectedTagFrame.sizePolicy().hasHeightForWidth())
+        self.selectedTagFrame.setSizePolicy(sizePolicy3)
         self.selectedTagFrame.setMinimumSize(QSize(0, 50))
         self.selectedTagFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.selectedTagFrame.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_5 = QHBoxLayout(self.selectedTagFrame)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.includedTagWidget = QWidget(self.selectedTagFrame)
-        self.includedTagWidget.setObjectName(u"includedTagWidget")
-
-        self.horizontalLayout_5.addWidget(self.includedTagWidget)
-
-        self.excludedTagWidget = QWidget(self.selectedTagFrame)
-        self.excludedTagWidget.setObjectName(u"excludedTagWidget")
-
-        self.horizontalLayout_5.addWidget(self.excludedTagWidget)
-
+        self.selectedTagLayout = QHBoxLayout(self.selectedTagFrame)
+        self.selectedTagLayout.setObjectName(u"selectedTagLayout")
 
         self.verticalLayout_2.addWidget(self.selectedTagFrame)
 
@@ -213,7 +332,7 @@ class Ui_MainWindow(object):
         self.picBrowseScrollArea.setWidgetResizable(True)
         self.picBrowseContentWidget = QWidget()
         self.picBrowseContentWidget.setObjectName(u"picBrowseContentWidget")
-        self.picBrowseContentWidget.setGeometry(QRect(0, 0, 671, 568))
+        self.picBrowseContentWidget.setGeometry(QRect(0, 0, 627, 531))
         self.horizontalLayout_3 = QHBoxLayout(self.picBrowseContentWidget)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.picBrowseWidget = QWidget(self.picBrowseContentWidget)
@@ -234,7 +353,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 999, 33))
+        self.menubar.setGeometry(QRect(0, 0, 955, 33))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         self.menu_2 = QMenu(self.menubar)
@@ -246,10 +365,12 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
+        self.menu.addAction(self.action)
+        self.menu_3.addAction(self.actionR_18)
 
         self.retranslateUi(MainWindow)
 
-        self.filterToolBox.setCurrentIndex(0)
+        self.filterToolBox.setCurrentIndex(2)
         self.tagTreeTabWidget.setCurrentIndex(0)
 
 
@@ -258,19 +379,31 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.actionR_18.setText(QCoreApplication.translate("MainWindow", u"R-18", None))
+        self.action.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u6587\u4ef6\u5939", None))
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.characterTagTab), QCoreApplication.translate("MainWindow", u"\u89d2\u8272", None))
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.attributeTagTab), QCoreApplication.translate("MainWindow", u"\u5c5e\u6027", None))
         self.searchTagTreeTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u6807\u7b7e", None))
         self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.tagSelector), QCoreApplication.translate("MainWindow", u"\u6807\u7b7e\u9009\u62e9", None))
         self.fileTypeGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6\u683c\u5f0f", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"PNG", None))
-        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"JPG", None))
-        self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"GIF", None))
+        self.pngCheckBox.setText(QCoreApplication.translate("MainWindow", u"PNG", None))
+        self.jpgCheckBox.setText(QCoreApplication.translate("MainWindow", u"JPG", None))
+        self.gifCheckBox.setText(QCoreApplication.translate("MainWindow", u"GIF", None))
         self.resolutionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5206\u8fa8\u7387", None))
+        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"\u6e05\u7a7a", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\uff1a", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\uff1a", None))
         self.timeGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u65f6\u95f4\u8303\u56f4", None))
+        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"\u542f\u7528", None))
         self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSelector), QCoreApplication.translate("MainWindow", u"\u56fe\u7247\u7b5b\u9009", None))
         self.ratioGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5bbd\u9ad8\u6bd4", None))
-        self.priorityGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6392\u5e8f\u4f18\u5148\u7ea7", None))
+        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"\u542f\u7528", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\u56fe", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"\u6b63\u65b9\u56fe", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\u957f\u56fe", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u":", None))
+        self.sortPriorityGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6392\u5e8f\u4f18\u5148\u7ea7", None))
+        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u7f6e", None))
         self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSorter), QCoreApplication.translate("MainWindow", u"\u56fe\u7247\u6392\u5e8f", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
