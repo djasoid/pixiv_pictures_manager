@@ -4,3 +4,4 @@ backup/
 log/
 *.db
 *.json
+test*

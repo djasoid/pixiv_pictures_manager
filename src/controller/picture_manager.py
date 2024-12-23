@@ -5,7 +5,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QDropEvent, QBrush
 
 from service.tag_tree import TagTree, Tag
-from service.database import PicDatabase
+from service.database import PicDatabase, PicFile, PicMetadata
 from tools.log import log_execution
 from component.widget.tag_widget import TagWidget
 if TYPE_CHECKING:
@@ -25,8 +25,19 @@ class PictureManagerController:
         self.show_restricted = False
         self.include_tag_set = set()
         self.exclude_tag_set = set()
-        self.filtered_pids = set()
-        self.sorted_pids = []
+        self.tag_filtered_pids: list[int] = []
+        self.pic_metadata_list: list[PicMetadata] = []
+        self.pic_file_list: list[PicFile] = []
+        self.display_pic_file_list: list[PicFile] = []
+        self.last_file_type_filter = {
+            'jpg': True,
+            'png': True,
+            'gif': True
+        }
+        self.last_resolution_filter = {
+            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
+            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
+        }
         
     def _init_tag_tree(self):
         self.tag_tree = TagTree()
@@ -63,7 +74,7 @@ class PictureManagerController:
         
         if tag_name not in self.include_tag_set and tag_name not in self.exclude_tag_set:
             self.include_tag_set.add(tag_name)
-            tag_widget = TagWidget(self, tag_name, True)
+            tag_widget = TagWidget(self.view.selectedTagFrame, self, tag_name, True)
             self.view.selectedTagLayout.insertWidget(0, tag_widget)
             self.last_added_tag = tag_widget
         else:
@@ -72,21 +83,23 @@ class PictureManagerController:
     def add_exclude_tag(self, item: QTreeWidgetItem, column: int):
         tag_name = item.text(0)
         tag = self.tag_tree.get_tag(tag_name)
-        if not tag.is_tag:
+        if tag_name in self.exclude_tag_set:
             return
         
-        if tag_name not in self.exclude_tag_set:
-            self.remove_selected_tag(self.last_added_tag)    
-            self.exclude_tag_set.add(tag_name)
-            self.view.selectedTagLayout.addWidget(TagWidget(self, tag_name, False))
-        else:
+        if not tag.is_tag or tag_name != self.last_added_tag.text():
             return
+
+        self.remove_selected_tag(self.last_added_tag) # remove the tag added by single click
+        self.exclude_tag_set.add(tag_name)
+        self.view.selectedTagLayout.addWidget(TagWidget(self.view.selectedTagFrame, self, tag_name, False))
+
         
     def remove_selected_tag(self, tag_widget: TagWidget):
         if tag_widget.include:
             self.include_tag_set.remove(tag_widget.tag_name)
         else:
             self.exclude_tag_set.remove(tag_widget.tag_name)
+
         self.view.selectedTagLayout.removeWidget(tag_widget)
         tag_widget.deleteLater()
     
@@ -158,6 +171,113 @@ class PictureManagerController:
         for tag in self.exclude_tag_set:
             excluded_pids.update(find_pids(tag))
         
-        self.filtered_pids = included_pids - excluded_pids if included_pids else set()
+        self.tag_filtered_pids = list(included_pids - excluded_pids) if included_pids else list()
+        self.pic_metadata_list = self.database.get_metadata_list(self.tag_filtered_pids)
+        self.pic_file_list = self.database.get_file_list(self.tag_filtered_pids)
+
+    def _is_match_file_type(self, pic_file: PicFile) -> bool:
+        return self.last_file_type_filter.get(pic_file.file_type, False)
     
+    def _is_match_resolution(self, pic_file: PicFile) -> bool:
+        min_width, max_width = self.last_resolution_filter['width']
+        min_height, max_height = self.last_resolution_filter['height']
     
+        if min_width != -1 and pic_file.width < min_width:
+            return False
+        
+        if max_width != -1 and pic_file.width > max_width:
+            return False
+        
+        if min_height != -1 and pic_file.height < min_height:
+            return False
+        
+        if max_height != -1 and pic_file.height > max_height:
+            return False
+    
+        return True
+    
+    def _parse_resolution_range(self, resolution_range: str) -> tuple[int, int]:
+        try:
+            if resolution_range.startswith('>'):
+                return int(resolution_range[1:]), -1
+            elif resolution_range.startswith('<'):
+                return -1, int(resolution_range[1:])
+            elif '-' in resolution_range:
+                return tuple(map(int, resolution_range.split('-')))
+            else:
+                value = int(resolution_range)
+                return value, value
+            
+        except ValueError:
+            return -1, -1 # this will be treated as no limit, so it will always return True
+
+    def filter_pic_files(self) -> None:
+        file_type_filter = {
+            'jpg': self.view.jpgCheckBox.isChecked(),
+            'png': self.view.pngCheckBox.isChecked(),
+            'gif': self.view.gifCheckBox.isChecked()
+        }
+        resolution_filter = {
+            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
+            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
+        }
+        
+        if self.last_file_type_filter == file_type_filter:
+            filter_file_type = False
+        else:
+            filter_file_type = True
+            self.last_file_type_filter = file_type_filter
+
+        if self.last_resolution_filter == resolution_filter:
+            filter_resolution = False
+        else:
+            filter_resolution = True
+            self.last_resolution_filter = resolution_filter
+            
+        self.display_pic_file_list = []
+        for pic_file in self.pic_file_list:
+            if filter_file_type and not self._is_match_file_type(pic_file):
+                continue
+
+            if filter_resolution and not self._is_match_resolution(pic_file):
+                continue
+            
+            self.display_pic_file_list.append(pic_file)
+
+    def clear_resolution_filter(self) -> None:
+        self.view.resolutionWidthEdit.clear()
+        self.view.resolutionHeightEdit.clear()
+        self.filter_pic_files()
+        
+    def ratio_slider_sort(self) -> None:
+        slider_value = self.view.ratioSlider.value()
+        if slider_value >= 0:
+            ratio = 1 / (1 + (slider_value / 20))
+            self.view.heightRatioSpinBox.setValue(ratio)
+            self.view.widthRatioSpinBox.setValue(1)
+        else:
+            ratio = 1 - (slider_value / 20)
+            self.view.widthRatioSpinBox.setValue(ratio)
+            self.view.heightRatioSpinBox.setValue(1)
+            
+        if self.view.enableRatioCheckBox.isChecked():
+            self.display_pic_file_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+            
+    def ratio_spin_box_sort(self) -> None:
+        ratio = self.view.widthRatioSpinBox.value() / self.view.heightRatioSpinBox.value()
+        self.view.ratioSlider.setValue(self.convert_to_slider_value(ratio))
+        if self.view.enableRatioCheckBox.isChecked():
+            self.display_pic_file_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+            return
+        # TODO: implement sort by id
+
+    def convert_to_slider_value(self, ratio: float) -> int:
+        if ratio <= 0:
+            return -60
+        elif ratio >= 3:
+            return 60
+        
+        if ratio < 1:
+            return int((1 - (1/(ratio))) * 20)
+        else:
+            return int((ratio - 1) * 20)

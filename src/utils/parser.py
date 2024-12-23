@@ -19,6 +19,7 @@ def parse_picture(file_path: str) -> tuple:
     with Image.open(file_path) as img:# get resolution
         resolution = img.size
 
+    directory = os.path.dirname(file_path)
     file_name = os.path.basename(file_path)
     name = file_name.split(".")# seprate the file name and file extention
     file_type = name.pop()
@@ -32,9 +33,9 @@ def parse_picture(file_path: str) -> tuple:
     width = resolution[0]
     height = resolution[1]
     size = os.path.getsize(file_path)
-    directory = os.path.dirname(file_path)
+    ratio = width / height
 
-    return pid, num, directory, file_name, file_type, width, height, size
+    return pid, num, directory, file_name, file_type, width, height, size, ratio
 
 def parse_metadata(file_path: str) -> tuple:
     """
@@ -64,7 +65,6 @@ def parse_metadata(file_path: str) -> tuple:
                 xRestrict = "R-18"
             elif "#R-18G" in tags:
                 xRestrict = "R-18G"
-            tags = json.dumps(tags, ensure_ascii=False) # convert tags to json string
             date = getline(file_path, line_num + 2).strip()
             description_lines = []
             line_num += 6

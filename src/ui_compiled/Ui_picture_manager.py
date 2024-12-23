@@ -16,13 +16,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QDateEdit, QDoubleSpinBox,
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
     QFrame, QGroupBox, QHBoxLayout, QHeaderView,
-    QLabel, QListWidget, QListWidgetItem, QMainWindow,
-    QMenu, QMenuBar, QPlainTextEdit, QPushButton,
-    QScrollArea, QSizePolicy, QSlider, QStatusBar,
-    QTabWidget, QToolBox, QTreeWidget, QTreeWidgetItem,
-    QVBoxLayout, QWidget)
+    QLabel, QMainWindow, QMenu, QMenuBar,
+    QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy,
+    QSlider, QSpacerItem, QStatusBar, QTabWidget,
+    QToolBox, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -43,7 +43,7 @@ class Ui_MainWindow(object):
         self.filterToolBox.setMaximumSize(QSize(300, 16777215))
         self.tagSelector = QWidget()
         self.tagSelector.setObjectName(u"tagSelector")
-        self.tagSelector.setGeometry(QRect(0, 0, 300, 504))
+        self.tagSelector.setGeometry(QRect(0, 0, 300, 533))
         self.verticalLayout = QVBoxLayout(self.tagSelector)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(-1, 0, -1, 0)
@@ -104,209 +104,271 @@ class Ui_MainWindow(object):
         self.filterToolBox.addItem(self.tagSelector, u"\u6807\u7b7e\u9009\u62e9")
         self.imageSelector = QWidget()
         self.imageSelector.setObjectName(u"imageSelector")
-        self.imageSelector.setGeometry(QRect(0, 0, 300, 504))
+        self.imageSelector.setGeometry(QRect(0, 0, 300, 533))
         self.verticalLayout_5 = QVBoxLayout(self.imageSelector)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.fileTypeGroupBox = QGroupBox(self.imageSelector)
-        self.fileTypeGroupBox.setObjectName(u"fileTypeGroupBox")
-        self.verticalLayout_10 = QVBoxLayout(self.fileTypeGroupBox)
-        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.verticalLayout_10.setContentsMargins(100, -1, -1, -1)
-        self.pngCheckBox = QCheckBox(self.fileTypeGroupBox)
-        self.pngCheckBox.setObjectName(u"pngCheckBox")
-        self.pngCheckBox.setChecked(True)
+        self.filterGroupBox = QGroupBox(self.imageSelector)
+        self.filterGroupBox.setObjectName(u"filterGroupBox")
+        self.verticalLayout_6 = QVBoxLayout(self.filterGroupBox)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_3 = QLabel(self.filterGroupBox)
+        self.label_3.setObjectName(u"label_3")
 
-        self.verticalLayout_10.addWidget(self.pngCheckBox)
+        self.horizontalLayout_2.addWidget(self.label_3)
 
-        self.jpgCheckBox = QCheckBox(self.fileTypeGroupBox)
-        self.jpgCheckBox.setObjectName(u"jpgCheckBox")
-        self.jpgCheckBox.setChecked(True)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.verticalLayout_10.addWidget(self.jpgCheckBox)
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
 
-        self.gifCheckBox = QCheckBox(self.fileTypeGroupBox)
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.gifCheckBox = QCheckBox(self.filterGroupBox)
         self.gifCheckBox.setObjectName(u"gifCheckBox")
         self.gifCheckBox.setChecked(True)
 
-        self.verticalLayout_10.addWidget(self.gifCheckBox)
+        self.horizontalLayout.addWidget(self.gifCheckBox)
+
+        self.jpgCheckBox = QCheckBox(self.filterGroupBox)
+        self.jpgCheckBox.setObjectName(u"jpgCheckBox")
+        self.jpgCheckBox.setChecked(True)
+
+        self.horizontalLayout.addWidget(self.jpgCheckBox)
+
+        self.pngCheckBox = QCheckBox(self.filterGroupBox)
+        self.pngCheckBox.setObjectName(u"pngCheckBox")
+        self.pngCheckBox.setChecked(True)
+
+        self.horizontalLayout.addWidget(self.pngCheckBox)
 
 
-        self.verticalLayout_5.addWidget(self.fileTypeGroupBox)
+        self.verticalLayout_6.addLayout(self.horizontalLayout)
 
-        self.resolutionGroupBox = QGroupBox(self.imageSelector)
-        self.resolutionGroupBox.setObjectName(u"resolutionGroupBox")
-        self.pushButton_3 = QPushButton(self.resolutionGroupBox)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setGeometry(QRect(190, 120, 75, 23))
-        self.layoutWidget = QWidget(self.resolutionGroupBox)
-        self.layoutWidget.setObjectName(u"layoutWidget")
-        self.layoutWidget.setGeometry(QRect(50, 40, 171, 31))
-        self.horizontalLayout_6 = QHBoxLayout(self.layoutWidget)
+        self.line = QFrame(self.filterGroupBox)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_6.addWidget(self.line)
+
+        self.horizontalLayout_9 = QHBoxLayout()
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.label_4 = QLabel(self.filterGroupBox)
+        self.label_4.setObjectName(u"label_4")
+
+        self.horizontalLayout_9.addWidget(self.label_4)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_9)
+
+        self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.label = QLabel(self.layoutWidget)
+        self.label = QLabel(self.filterGroupBox)
         self.label.setObjectName(u"label")
 
         self.horizontalLayout_6.addWidget(self.label)
 
-        self.resolutionWidthEdit = QPlainTextEdit(self.layoutWidget)
+        self.resolutionWidthEdit = QPlainTextEdit(self.filterGroupBox)
         self.resolutionWidthEdit.setObjectName(u"resolutionWidthEdit")
+        sizePolicy.setHeightForWidth(self.resolutionWidthEdit.sizePolicy().hasHeightForWidth())
+        self.resolutionWidthEdit.setSizePolicy(sizePolicy)
+        self.resolutionWidthEdit.setMaximumSize(QSize(16777215, 25))
+        self.resolutionWidthEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         self.horizontalLayout_6.addWidget(self.resolutionWidthEdit)
 
-        self.layoutWidget1 = QWidget(self.resolutionGroupBox)
-        self.layoutWidget1.setObjectName(u"layoutWidget1")
-        self.layoutWidget1.setGeometry(QRect(50, 80, 171, 31))
-        self.horizontalLayout_7 = QHBoxLayout(self.layoutWidget1)
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_6)
+
+        self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.label_2 = QLabel(self.layoutWidget1)
+        self.label_2 = QLabel(self.filterGroupBox)
         self.label_2.setObjectName(u"label_2")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout_7.addWidget(self.label_2)
 
-        self.resolutionHightEdit = QPlainTextEdit(self.layoutWidget1)
-        self.resolutionHightEdit.setObjectName(u"resolutionHightEdit")
+        self.resolutionHeightEdit = QPlainTextEdit(self.filterGroupBox)
+        self.resolutionHeightEdit.setObjectName(u"resolutionHeightEdit")
+        sizePolicy.setHeightForWidth(self.resolutionHeightEdit.sizePolicy().hasHeightForWidth())
+        self.resolutionHeightEdit.setSizePolicy(sizePolicy)
+        self.resolutionHeightEdit.setMaximumSize(QSize(16777215, 25))
+        self.resolutionHeightEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.resolutionHeightEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
-        self.horizontalLayout_7.addWidget(self.resolutionHightEdit)
+        self.horizontalLayout_7.addWidget(self.resolutionHeightEdit)
 
 
-        self.verticalLayout_5.addWidget(self.resolutionGroupBox)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_7)
 
-        self.timeGroupBox = QGroupBox(self.imageSelector)
-        self.timeGroupBox.setObjectName(u"timeGroupBox")
-        self.minDateEdit = QDateEdit(self.timeGroupBox)
-        self.minDateEdit.setObjectName(u"minDateEdit")
-        self.minDateEdit.setGeometry(QRect(10, 80, 120, 22))
-        self.maxDateEdit = QDateEdit(self.timeGroupBox)
-        self.maxDateEdit.setObjectName(u"maxDateEdit")
-        self.maxDateEdit.setGeometry(QRect(150, 80, 120, 22))
-        self.checkBox_2 = QCheckBox(self.timeGroupBox)
-        self.checkBox_2.setObjectName(u"checkBox_2")
-        self.checkBox_2.setGeometry(QRect(20, 40, 78, 19))
+        self.horizontalLayout_10 = QHBoxLayout()
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.verticalLayout_5.addWidget(self.timeGroupBox)
+        self.horizontalLayout_10.addItem(self.horizontalSpacer_3)
 
-        self.filterToolBox.addItem(self.imageSelector, u"\u56fe\u7247\u7b5b\u9009")
-        self.imageSorter = QWidget()
-        self.imageSorter.setObjectName(u"imageSorter")
-        self.imageSorter.setGeometry(QRect(0, 0, 300, 504))
-        self.verticalLayout_6 = QVBoxLayout(self.imageSorter)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.ratioGroupBox = QGroupBox(self.imageSorter)
-        self.ratioGroupBox.setObjectName(u"ratioGroupBox")
-        self.verticalLayout_9 = QVBoxLayout(self.ratioGroupBox)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalLayout_9.setContentsMargins(20, 10, 20, 20)
-        self.checkBox = QCheckBox(self.ratioGroupBox)
-        self.checkBox.setObjectName(u"checkBox")
+        self.clearResolutionPushButton = QPushButton(self.filterGroupBox)
+        self.clearResolutionPushButton.setObjectName(u"clearResolutionPushButton")
 
-        self.verticalLayout_9.addWidget(self.checkBox)
+        self.horizontalLayout_10.addWidget(self.clearResolutionPushButton)
 
-        self.verticalLayout_7 = QVBoxLayout()
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_10)
+
+
+        self.verticalLayout_5.addWidget(self.filterGroupBox)
+
+        self.sortGroupBox = QGroupBox(self.imageSelector)
+        self.sortGroupBox.setObjectName(u"sortGroupBox")
+        self.verticalLayout_7 = QVBoxLayout(self.sortGroupBox)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_3 = QLabel(self.ratioGroupBox)
-        self.label_3.setObjectName(u"label_3")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
-        self.label_3.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout_2.addWidget(self.label_3)
-
-        self.label_4 = QLabel(self.ratioGroupBox)
-        self.label_4.setObjectName(u"label_4")
-        sizePolicy1.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
-        self.label_4.setSizePolicy(sizePolicy1)
-        self.label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.horizontalLayout_2.addWidget(self.label_4)
-
-        self.label_5 = QLabel(self.ratioGroupBox)
+        self.horizontalLayout_11 = QHBoxLayout()
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.label_5 = QLabel(self.sortGroupBox)
         self.label_5.setObjectName(u"label_5")
-        sizePolicy1.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
-        self.label_5.setSizePolicy(sizePolicy1)
-        self.label_5.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
-        self.horizontalLayout_2.addWidget(self.label_5)
+        self.horizontalLayout_11.addWidget(self.label_5)
 
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.verticalLayout_7.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_11.addItem(self.horizontalSpacer_4)
 
-        self.horizontalSlider = QSlider(self.ratioGroupBox)
-        self.horizontalSlider.setObjectName(u"horizontalSlider")
-        self.horizontalSlider.setMinimumSize(QSize(0, 20))
-        self.horizontalSlider.setToolTipDuration(2)
-        self.horizontalSlider.setMinimum(-100)
-        self.horizontalSlider.setMaximum(100)
-        self.horizontalSlider.setValue(0)
-        self.horizontalSlider.setSliderPosition(0)
-        self.horizontalSlider.setOrientation(Qt.Orientation.Horizontal)
-        self.horizontalSlider.setInvertedAppearance(False)
-        self.horizontalSlider.setInvertedControls(False)
-        self.horizontalSlider.setTickPosition(QSlider.TickPosition.NoTicks)
+        self.enableRatioCheckBox = QCheckBox(self.sortGroupBox)
+        self.enableRatioCheckBox.setObjectName(u"enableRatioCheckBox")
 
-        self.verticalLayout_7.addWidget(self.horizontalSlider)
+        self.horizontalLayout_11.addWidget(self.enableRatioCheckBox)
 
 
-        self.verticalLayout_9.addLayout(self.verticalLayout_7)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_11)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.doubleSpinBox = QDoubleSpinBox(self.ratioGroupBox)
-        self.doubleSpinBox.setObjectName(u"doubleSpinBox")
-        self.doubleSpinBox.setMinimumSize(QSize(0, 30))
-
-        self.horizontalLayout.addWidget(self.doubleSpinBox)
-
-        self.label_6 = QLabel(self.ratioGroupBox)
-        self.label_6.setObjectName(u"label_6")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        self.verticalLayout_12 = QVBoxLayout()
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.label_7 = QLabel(self.sortGroupBox)
+        self.label_7.setObjectName(u"label_7")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
-        self.label_6.setSizePolicy(sizePolicy2)
-        self.label_6.setMaximumSize(QSize(10, 16777215))
-        self.label_6.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        sizePolicy2.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
+        self.label_7.setSizePolicy(sizePolicy2)
 
-        self.horizontalLayout.addWidget(self.label_6)
+        self.horizontalLayout_5.addWidget(self.label_7)
 
-        self.doubleSpinBox_2 = QDoubleSpinBox(self.ratioGroupBox)
-        self.doubleSpinBox_2.setObjectName(u"doubleSpinBox_2")
-        self.doubleSpinBox_2.setMinimumSize(QSize(0, 30))
+        self.label_8 = QLabel(self.sortGroupBox)
+        self.label_8.setObjectName(u"label_8")
+        sizePolicy2.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
+        self.label_8.setSizePolicy(sizePolicy2)
+        self.label_8.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.doubleSpinBox_2)
+        self.horizontalLayout_5.addWidget(self.label_8)
 
+        self.label_9 = QLabel(self.sortGroupBox)
+        self.label_9.setObjectName(u"label_9")
+        sizePolicy2.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
+        self.label_9.setSizePolicy(sizePolicy2)
+        self.label_9.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
-        self.verticalLayout_9.addLayout(self.horizontalLayout)
-
-
-        self.verticalLayout_6.addWidget(self.ratioGroupBox)
-
-        self.sortPriorityGroupBox = QGroupBox(self.imageSorter)
-        self.sortPriorityGroupBox.setObjectName(u"sortPriorityGroupBox")
-        self.verticalLayout_8 = QVBoxLayout(self.sortPriorityGroupBox)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.verticalLayout_8.setContentsMargins(20, 20, 20, 20)
-        self.listWidget = QListWidget(self.sortPriorityGroupBox)
-        self.listWidget.setObjectName(u"listWidget")
-
-        self.verticalLayout_8.addWidget(self.listWidget)
-
-        self.pushButton_2 = QPushButton(self.sortPriorityGroupBox)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-
-        self.verticalLayout_8.addWidget(self.pushButton_2)
+        self.horizontalLayout_5.addWidget(self.label_9)
 
 
-        self.verticalLayout_6.addWidget(self.sortPriorityGroupBox)
+        self.verticalLayout_12.addLayout(self.horizontalLayout_5)
 
-        self.verticalLayout_6.setStretch(0, 1)
-        self.verticalLayout_6.setStretch(1, 2)
-        self.filterToolBox.addItem(self.imageSorter, u"\u56fe\u7247\u6392\u5e8f")
+        self.ratioSlider = QSlider(self.sortGroupBox)
+        self.ratioSlider.setObjectName(u"ratioSlider")
+        self.ratioSlider.setMinimumSize(QSize(0, 20))
+        self.ratioSlider.setToolTipDuration(2)
+        self.ratioSlider.setStyleSheet(u"QSlider::sub-page:horizontal, QSlider::add-page:horizontal {\n"
+"background: rgb(200,200,200);\n"
+"}")
+        self.ratioSlider.setMinimum(-100)
+        self.ratioSlider.setMaximum(100)
+        self.ratioSlider.setValue(0)
+        self.ratioSlider.setSliderPosition(0)
+        self.ratioSlider.setOrientation(Qt.Orientation.Horizontal)
+        self.ratioSlider.setInvertedAppearance(False)
+        self.ratioSlider.setInvertedControls(False)
+        self.ratioSlider.setTickPosition(QSlider.TickPosition.NoTicks)
+
+        self.verticalLayout_12.addWidget(self.ratioSlider)
+
+
+        self.verticalLayout_7.addLayout(self.verticalLayout_12)
+
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.widthRatioSpinBox = QDoubleSpinBox(self.sortGroupBox)
+        self.widthRatioSpinBox.setObjectName(u"widthRatioSpinBox")
+        self.widthRatioSpinBox.setMinimumSize(QSize(0, 30))
+
+        self.horizontalLayout_8.addWidget(self.widthRatioSpinBox)
+
+        self.label_10 = QLabel(self.sortGroupBox)
+        self.label_10.setObjectName(u"label_10")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
+        self.label_10.setSizePolicy(sizePolicy3)
+        self.label_10.setMaximumSize(QSize(10, 16777215))
+        self.label_10.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.horizontalLayout_8.addWidget(self.label_10)
+
+        self.heightRatioSpinBox = QDoubleSpinBox(self.sortGroupBox)
+        self.heightRatioSpinBox.setObjectName(u"heightRatioSpinBox")
+        self.heightRatioSpinBox.setMinimumSize(QSize(0, 30))
+
+        self.horizontalLayout_8.addWidget(self.heightRatioSpinBox)
+
+
+        self.verticalLayout_7.addLayout(self.horizontalLayout_8)
+
+        self.line_2 = QFrame(self.sortGroupBox)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.HLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_7.addWidget(self.line_2)
+
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.label_6 = QLabel(self.sortGroupBox)
+        self.label_6.setObjectName(u"label_6")
+
+        self.horizontalLayout_12.addWidget(self.label_6)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_5)
+
+
+        self.verticalLayout_7.addLayout(self.horizontalLayout_12)
+
+        self.sortComboBox = QComboBox(self.sortGroupBox)
+        self.sortComboBox.setObjectName(u"sortComboBox")
+        self.sortComboBox.setMinimumSize(QSize(0, 25))
+
+        self.verticalLayout_7.addWidget(self.sortComboBox)
+
+
+        self.verticalLayout_5.addWidget(self.sortGroupBox)
+
+        self.verticalLayout_5.setStretch(0, 1)
+        self.verticalLayout_5.setStretch(1, 1)
+        self.filterToolBox.addItem(self.imageSelector, u"\u7b5b\u9009\u6392\u5e8f")
 
         self.horizontalLayout_4.addWidget(self.filterToolBox)
 
@@ -314,11 +376,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.selectedTagFrame = QFrame(self.centralwidget)
         self.selectedTagFrame.setObjectName(u"selectedTagFrame")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.selectedTagFrame.sizePolicy().hasHeightForWidth())
-        self.selectedTagFrame.setSizePolicy(sizePolicy3)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.selectedTagFrame.sizePolicy().hasHeightForWidth())
+        self.selectedTagFrame.setSizePolicy(sizePolicy4)
         self.selectedTagFrame.setMinimumSize(QSize(0, 50))
         self.selectedTagFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.selectedTagFrame.setFrameShadow(QFrame.Shadow.Raised)
@@ -370,7 +432,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.filterToolBox.setCurrentIndex(2)
+        self.filterToolBox.setCurrentIndex(1)
         self.tagTreeTabWidget.setCurrentIndex(0)
 
 
@@ -385,26 +447,25 @@ class Ui_MainWindow(object):
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.attributeTagTab), QCoreApplication.translate("MainWindow", u"\u5c5e\u6027", None))
         self.searchTagTreeTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u6807\u7b7e", None))
         self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.tagSelector), QCoreApplication.translate("MainWindow", u"\u6807\u7b7e\u9009\u62e9", None))
-        self.fileTypeGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6\u683c\u5f0f", None))
-        self.pngCheckBox.setText(QCoreApplication.translate("MainWindow", u"PNG", None))
-        self.jpgCheckBox.setText(QCoreApplication.translate("MainWindow", u"JPG", None))
+        self.filterGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u7b5b\u9009", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6\u683c\u5f0f", None))
         self.gifCheckBox.setText(QCoreApplication.translate("MainWindow", u"GIF", None))
-        self.resolutionGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5206\u8fa8\u7387", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"\u6e05\u7a7a", None))
+        self.jpgCheckBox.setText(QCoreApplication.translate("MainWindow", u"JPG", None))
+        self.pngCheckBox.setText(QCoreApplication.translate("MainWindow", u"PNG", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"\u5206\u8fa8\u7387", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\uff1a", None))
+        self.resolutionWidthEdit.setPlaceholderText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\uff1a", None))
-        self.timeGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u65f6\u95f4\u8303\u56f4", None))
-        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"\u542f\u7528", None))
-        self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSelector), QCoreApplication.translate("MainWindow", u"\u56fe\u7247\u7b5b\u9009", None))
-        self.ratioGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5bbd\u9ad8\u6bd4", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"\u542f\u7528", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\u56fe", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"\u6b63\u65b9\u56fe", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\u957f\u56fe", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u":", None))
-        self.sortPriorityGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6392\u5e8f\u4f18\u5148\u7ea7", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u7f6e", None))
-        self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSorter), QCoreApplication.translate("MainWindow", u"\u56fe\u7247\u6392\u5e8f", None))
+        self.clearResolutionPushButton.setText(QCoreApplication.translate("MainWindow", u"\u6e05\u7a7a", None))
+        self.sortGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6392\u5e8f", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\u9ad8\u6bd4", None))
+        self.enableRatioCheckBox.setText(QCoreApplication.translate("MainWindow", u"\u542f\u7528", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\u56fe", None))
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u6b63\u65b9\u56fe", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"\u957f\u56fe", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u":", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"\u6392\u5217\u987a\u5e8f", None))
+        self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSelector), QCoreApplication.translate("MainWindow", u"\u7b5b\u9009\u6392\u5e8f", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u9009\u9879", None))

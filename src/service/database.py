@@ -1,9 +1,11 @@
+from dataclasses import dataclass, field
 import json
 import sqlite3
 import os
 
 from utils.parser import parse_metadata, parse_picture, parse_csv
 from tools.log import log_execution
+from tag_tree import TagTree
 
 class PicDatabase:
     _instance = None
@@ -49,6 +51,7 @@ class PicDatabase:
                 width INT, 
                 height INT, 
                 size INT, 
+                ratio REAL,
                 PRIMARY KEY (pid, num)
             )'''
         )
@@ -97,14 +100,15 @@ class PicDatabase:
             file_type: str, 
             width: int, 
             height: int, 
-            size: int
+            size: int,
+            ratio: float
         ) -> None:
         """
         Insert image data into the database.
         """
         self.cursor.execute(
-            "INSERT OR IGNORE INTO imageData VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (pid, num, directory, file_name, file_type, width, height, size)
+            "INSERT OR IGNORE INTO imageData VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (pid, num, directory, file_name, file_type, width, height, size, ratio)
         )
         self.database.commit()
         
@@ -159,7 +163,7 @@ class PicDatabase:
             (
                 pid, 
                 title, 
-                json.dumps(tags), 
+                json.dumps(tags, ensure_ascii=False), 
                 description, 
                 user, 
                 user_id, 
@@ -364,15 +368,143 @@ class PicDatabase:
         tag_count = {}
         
         for tags in pic_tags:
-            tags = json.loads(tags[0])
-            for tag in tags:
-                if tags[tag] == "metadata":
+            tags_dict = json.loads(tags[0])
+            for tag in tags_dict:
+                if tags_dict[tag] == "metadata":
                     if tag in tag_count:
                         tag_count[tag] += 1
                     else:
                         tag_count[tag] = 1
         
         for tag, count in tag_count.items():
+            self.cursor.execute("INSERT OR IGNORE INTO tags (originalTag, appearanceCount) VALUES (?, ?)", (tag, count))
             self.cursor.execute("UPDATE tags SET appearanceCount = ? WHERE originalTag = ?", (count, tag))
         
         self.database.commit()
+
+    def get_metadata_list(self, pids: list[int]) -> list['PicMetadata']:
+        """
+        Get metadata of a list of pids.
+
+        This function gets the metadata of a list of pids.
+
+        Parameters:
+        pid_list (set): A set of pids.
+
+        Returns:
+        list: A list of PicMetadata objects.
+        """
+        metadata_list = []
+        for pid in pids:
+            self.cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid))
+            metadata = self.cursor.fetchone()
+            metadata_list.append(PicMetadata(*metadata))
+    
+        return metadata_list
+    
+    def get_file_list(self, pids: list[int]) -> list['PicFile']:
+        """
+        Get file data of a list of pids.
+
+        This function gets the file data of a list of pids.
+
+        Parameters:
+        pid_list (list): A list of pids.
+
+        Returns:
+        list: A list of PicFile objects.
+        """
+        file_list = []
+        for pid in pids:
+            self.cursor.execute("SELECT * FROM imageData WHERE pid = ?", (pid))
+            file_data = self.cursor.fetchall()
+            for data in file_data:
+                file_list.append(PicFile(*data))
+        
+        return file_list
+    
+    def complete_tag(self, tag_tree: 'TagTree', pid_list: list[int] = None) -> None:
+        """
+        iterate through the picture tags and add all parent tags to the picture tags.
+
+        Args:
+            pid_list (list[int], optional): a list of picture ids to complete the tags. If None, all picture tags will be completed. Defaults to None.
+
+        Returns:
+            None
+        """
+        all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=True)
+
+        if pid_list is None:
+            pid_list = self.get_pid_list()
+
+        for pid in pid_list:
+            tags = set(self.get_tags(pid).keys())
+            new_tags = set()
+            for tag in tags:
+                if tag in all_parent_tag_dict:
+                    new_tags.update(all_parent_tag_dict[tag])
+            
+            new_tags -= tags
+            new_tags_dict = {tag: "tree" for tag in new_tags}
+            self.add_tags(pid, new_tags_dict)
+
+    def init_tag_index(self, tag_tree: 'TagTree') -> None:
+        """
+        Initializes a tag index.
+        """
+        all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=False)
+        pid_list = self.get_pid_list()
+
+        tag_index: dict[str, list[int]] = {}
+
+        for pid in pid_list:
+            tags = self.get_tags(pid).keys()
+            tag_in_tree = set()
+            for tag in tags:
+                if tag in all_parent_tag_dict:
+                    tag_in_tree.add(tag)
+            
+            # remove all parent tags from the tag set to remove excessive tags
+            tag_set = tag_in_tree.copy()
+            for tag in tag_in_tree:
+                if tag in tag_set:
+                    tag_set -= all_parent_tag_dict[tag]
+            
+            for tag in tag_set:
+                if tag in tag_index:
+                    tag_index[tag].append(pid)
+                else:
+                    tag_index[tag] = [pid]
+        
+        self.insert_tag_index_dict(tag_index)
+
+
+@dataclass
+class PicMetadata:
+    pid: int
+    title: str
+    tags: str
+    description: str
+    user: str
+    user_id: int
+    date: str
+    x_restrict: str
+    bookmark_count: int
+    like_count: int
+
+    def __post_init__(self):
+        self.tags = json.loads(self.tags)
+
+@dataclass
+class PicFile:
+    pid: int
+    num: int
+    directory: str
+    file_name: str
+    file_type: str
+    width: int
+    height: int
+    size: int
+    ratio: float
+    
