@@ -8,18 +8,23 @@ from service.tag_tree import TagTree, Tag
 from service.database import PicDatabase, PicFile, PicMetadata
 from tools.log import log_execution
 from component.widget.tag_widget import TagWidget
+from component.widget.picture_frame import PictureFrame
 if TYPE_CHECKING:
     from view.picture_manager import MainWindow
 
 class PictureManagerController:
     def __init__(self, view: 'MainWindow'):
         self.view = view
+        self.view.setup_controller(self)
+        self._init_ui()
         self.tag_index_cache = {}
         self.database = PicDatabase()
         self._init_context()
         self._init_tag_tree()
-        self.view.setup_controller(self)
         self._init_tag_search()
+        
+    def _init_ui(self):
+        self.view.sortComboBox.addItems(['id'])
         
     def _init_context(self):
         self.show_restricted = False
@@ -28,7 +33,7 @@ class PictureManagerController:
         self.tag_filtered_pids: list[int] = []
         self.pic_metadata_list: list[PicMetadata] = []
         self.pic_file_list: list[PicFile] = []
-        self.display_pic_file_list: list[PicFile] = []
+        self.display_pic_list: list[PicFile | PicMetadata] = []
         self.last_file_type_filter = {
             'jpg': True,
             'png': True,
@@ -38,6 +43,9 @@ class PictureManagerController:
             'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
             'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
         }
+        self.slider_edited = False
+        self.spin_box_edited = False
+        self.current_sort = 'id'
         
     def _init_tag_tree(self):
         self.tag_tree = TagTree()
@@ -74,11 +82,11 @@ class PictureManagerController:
         
         if tag_name not in self.include_tag_set and tag_name not in self.exclude_tag_set:
             self.include_tag_set.add(tag_name)
-            tag_widget = TagWidget(self.view.selectedTagFrame, self, tag_name, True)
+            tag_widget = TagWidget(self.view.selectedTagScrollAreaWidgetContent, self, tag_name, True)
             self.view.selectedTagLayout.insertWidget(0, tag_widget)
             self.last_added_tag = tag_widget
-        else:
-            return
+            self.last_added_tag_name = tag_name
+            self._pic_tag_search()
         
     def add_exclude_tag(self, item: QTreeWidgetItem, column: int):
         tag_name = item.text(0)
@@ -86,13 +94,13 @@ class PictureManagerController:
         if tag_name in self.exclude_tag_set:
             return
         
-        if not tag.is_tag or tag_name != self.last_added_tag.text():
+        if not tag.is_tag or tag_name != self.last_added_tag_name:
             return
 
         self.remove_selected_tag(self.last_added_tag) # remove the tag added by single click
         self.exclude_tag_set.add(tag_name)
-        self.view.selectedTagLayout.addWidget(TagWidget(self.view.selectedTagFrame, self, tag_name, False))
-
+        self.view.selectedTagLayout.addWidget(TagWidget(self.view.selectedTagScrollAreaWidgetContent, self, tag_name, False))
+        self._pic_tag_search()
         
     def remove_selected_tag(self, tag_widget: TagWidget):
         if tag_widget.include:
@@ -102,6 +110,7 @@ class PictureManagerController:
 
         self.view.selectedTagLayout.removeWidget(tag_widget)
         tag_widget.deleteLater()
+        self._pic_tag_search()
     
     def _init_tag_search(self):
         self.tag_last_search = ""
@@ -174,6 +183,8 @@ class PictureManagerController:
         self.tag_filtered_pids = list(included_pids - excluded_pids) if included_pids else list()
         self.pic_metadata_list = self.database.get_metadata_list(self.tag_filtered_pids)
         self.pic_file_list = self.database.get_file_list(self.tag_filtered_pids)
+        self.display_pic_list = self.pic_metadata_list
+        self.refresh_pic_display()
 
     def _is_match_file_type(self, pic_file: PicFile) -> bool:
         return self.last_file_type_filter.get(pic_file.file_type, False)
@@ -223,26 +234,28 @@ class PictureManagerController:
         }
         
         if self.last_file_type_filter == file_type_filter:
-            filter_file_type = False
+            filt_file_type = False
         else:
-            filter_file_type = True
+            filt_file_type = True
             self.last_file_type_filter = file_type_filter
 
         if self.last_resolution_filter == resolution_filter:
-            filter_resolution = False
+            filt_resolution = False
         else:
-            filter_resolution = True
+            filt_resolution = True
             self.last_resolution_filter = resolution_filter
             
-        self.display_pic_file_list = []
+        self.display_pic_list = []
         for pic_file in self.pic_file_list:
-            if filter_file_type and not self._is_match_file_type(pic_file):
+            if filt_file_type and not self._is_match_file_type(pic_file):
                 continue
 
-            if filter_resolution and not self._is_match_resolution(pic_file):
+            if filt_resolution and not self._is_match_resolution(pic_file):
                 continue
             
-            self.display_pic_file_list.append(pic_file)
+            self.display_pic_list.append(pic_file)
+        
+        self._sort_display_pic()
 
     def clear_resolution_filter(self) -> None:
         self.view.resolutionWidthEdit.clear()
@@ -250,34 +263,60 @@ class PictureManagerController:
         self.filter_pic_files()
         
     def ratio_slider_sort(self) -> None:
+        if self.spin_box_edited:
+            return
+        
+        self.slider_edited = True
         slider_value = self.view.ratioSlider.value()
         if slider_value >= 0:
-            ratio = 1 / (1 + (slider_value / 20))
-            self.view.heightRatioSpinBox.setValue(ratio)
+            temp = 1 + (slider_value / 20)
+            ratio = 1 / temp
+            self.view.heightRatioSpinBox.setValue(temp)
             self.view.widthRatioSpinBox.setValue(1)
         else:
             ratio = 1 - (slider_value / 20)
             self.view.widthRatioSpinBox.setValue(ratio)
             self.view.heightRatioSpinBox.setValue(1)
             
-        if self.view.enableRatioCheckBox.isChecked():
-            self.display_pic_file_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+        self.slider_edited = False
+        self._sort_display_pic(ratio)
             
     def ratio_spin_box_sort(self) -> None:
-        ratio = self.view.widthRatioSpinBox.value() / self.view.heightRatioSpinBox.value()
-        self.view.ratioSlider.setValue(self.convert_to_slider_value(ratio))
-        if self.view.enableRatioCheckBox.isChecked():
-            self.display_pic_file_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+        if self.slider_edited:
             return
-        # TODO: implement sort by id
+        
+        self.spin_box_edited = True
+        if self.view.widthRatioSpinBox.value() == 0:
+            ratio = 0
+        elif self.view.heightRatioSpinBox.value() == 0:
+            ratio = 10000
+        else:
+            ratio = self.view.widthRatioSpinBox.value() / self.view.heightRatioSpinBox.value()
+            
+        self.view.ratioSlider.setValue(self._convert_to_slider_value(ratio))
+        self.spin_box_edited = False
+        self._sort_display_pic()
 
-    def convert_to_slider_value(self, ratio: float) -> int:
+    def _sort_display_pic(self, ratio: float = None) -> None:
+        if self.view.enableRatioCheckBox.isChecked():
+            self.display_pic_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+        elif self.current_sort == 'id':
+            self.display_pic_list.sort(key=lambda pic_file: pic_file.pid)
+        
+        self.refresh_pic_display()
+            
+    def _convert_to_slider_value(self, ratio: float) -> int:
         if ratio <= 0:
-            return -60
+            return 40
         elif ratio >= 3:
-            return 60
+            return -40
         
         if ratio < 1:
-            return int((1 - (1/(ratio))) * 20)
+            return int(((1/(ratio)) - 1) * 20)
         else:
-            return int((ratio - 1) * 20)
+            return int((1 - ratio) * 20)
+
+    def refresh_pic_display(self) -> None:
+        for pic in self.display_pic_list:
+            pic_frame = PictureFrame(self.view.picBrowseContentWidget, self, pic)
+            self.view.picDisplayLayout.addWidget(pic_frame)

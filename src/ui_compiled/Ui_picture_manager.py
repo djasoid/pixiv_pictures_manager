@@ -17,19 +17,19 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QFrame, QGroupBox, QHBoxLayout, QHeaderView,
-    QLabel, QMainWindow, QMenu, QMenuBar,
-    QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy,
-    QSlider, QSpacerItem, QStatusBar, QTabWidget,
-    QToolBox, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+    QFrame, QGridLayout, QGroupBox, QHBoxLayout,
+    QHeaderView, QLabel, QMainWindow, QMenu,
+    QMenuBar, QPlainTextEdit, QPushButton, QScrollArea,
+    QSizePolicy, QSlider, QSpacerItem, QStatusBar,
+    QTabWidget, QToolBox, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(955, 661)
+        MainWindow.resize(940, 643)
         self.actionR_18 = QAction(MainWindow)
         self.actionR_18.setObjectName(u"actionR_18")
         self.action = QAction(MainWindow)
@@ -40,10 +40,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.filterToolBox = QToolBox(self.centralwidget)
         self.filterToolBox.setObjectName(u"filterToolBox")
-        self.filterToolBox.setMaximumSize(QSize(300, 16777215))
+        self.filterToolBox.setMaximumSize(QSize(250, 16777215))
         self.tagSelector = QWidget()
         self.tagSelector.setObjectName(u"tagSelector")
-        self.tagSelector.setGeometry(QRect(0, 0, 300, 533))
+        self.tagSelector.setGeometry(QRect(0, 0, 250, 515))
         self.verticalLayout = QVBoxLayout(self.tagSelector)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(-1, 0, -1, 0)
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
         self.filterToolBox.addItem(self.tagSelector, u"\u6807\u7b7e\u9009\u62e9")
         self.imageSelector = QWidget()
         self.imageSelector.setObjectName(u"imageSelector")
-        self.imageSelector.setGeometry(QRect(0, 0, 300, 533))
+        self.imageSelector.setGeometry(QRect(0, 0, 250, 515))
         self.verticalLayout_5 = QVBoxLayout(self.imageSelector)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.filterGroupBox = QGroupBox(self.imageSelector)
@@ -293,8 +293,9 @@ class Ui_MainWindow(object):
         self.ratioSlider.setStyleSheet(u"QSlider::sub-page:horizontal, QSlider::add-page:horizontal {\n"
 "background: rgb(200,200,200);\n"
 "}")
-        self.ratioSlider.setMinimum(-100)
-        self.ratioSlider.setMaximum(100)
+        self.ratioSlider.setMinimum(-40)
+        self.ratioSlider.setMaximum(40)
+        self.ratioSlider.setPageStep(1)
         self.ratioSlider.setValue(0)
         self.ratioSlider.setSliderPosition(0)
         self.ratioSlider.setOrientation(Qt.Orientation.Horizontal)
@@ -312,6 +313,9 @@ class Ui_MainWindow(object):
         self.widthRatioSpinBox = QDoubleSpinBox(self.sortGroupBox)
         self.widthRatioSpinBox.setObjectName(u"widthRatioSpinBox")
         self.widthRatioSpinBox.setMinimumSize(QSize(0, 30))
+        self.widthRatioSpinBox.setMaximum(100.000000000000000)
+        self.widthRatioSpinBox.setSingleStep(1.000000000000000)
+        self.widthRatioSpinBox.setValue(1.000000000000000)
 
         self.horizontalLayout_8.addWidget(self.widthRatioSpinBox)
 
@@ -330,6 +334,9 @@ class Ui_MainWindow(object):
         self.heightRatioSpinBox = QDoubleSpinBox(self.sortGroupBox)
         self.heightRatioSpinBox.setObjectName(u"heightRatioSpinBox")
         self.heightRatioSpinBox.setMinimumSize(QSize(0, 30))
+        self.heightRatioSpinBox.setMaximum(100.000000000000000)
+        self.heightRatioSpinBox.setSingleStep(1.000000000000000)
+        self.heightRatioSpinBox.setValue(1.000000000000000)
 
         self.horizontalLayout_8.addWidget(self.heightRatioSpinBox)
 
@@ -374,34 +381,35 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.selectedTagFrame = QFrame(self.centralwidget)
-        self.selectedTagFrame.setObjectName(u"selectedTagFrame")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        self.scrollArea = QScrollArea(self.centralwidget)
+        self.scrollArea.setObjectName(u"scrollArea")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.selectedTagFrame.sizePolicy().hasHeightForWidth())
-        self.selectedTagFrame.setSizePolicy(sizePolicy4)
-        self.selectedTagFrame.setMinimumSize(QSize(0, 50))
-        self.selectedTagFrame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.selectedTagFrame.setFrameShadow(QFrame.Shadow.Raised)
-        self.selectedTagLayout = QHBoxLayout(self.selectedTagFrame)
+        sizePolicy4.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy4)
+        self.scrollArea.setMinimumSize(QSize(0, 50))
+        self.scrollArea.setMaximumSize(QSize(16777215, 50))
+        self.scrollArea.setWidgetResizable(True)
+        self.selectedTagScrollAreaWidgetContent = QWidget()
+        self.selectedTagScrollAreaWidgetContent.setObjectName(u"selectedTagScrollAreaWidgetContent")
+        self.selectedTagScrollAreaWidgetContent.setGeometry(QRect(0, 0, 662, 48))
+        self.selectedTagLayout = QHBoxLayout(self.selectedTagScrollAreaWidgetContent)
+        self.selectedTagLayout.setSpacing(5)
         self.selectedTagLayout.setObjectName(u"selectedTagLayout")
+        self.selectedTagLayout.setContentsMargins(5, 5, 5, 5)
+        self.scrollArea.setWidget(self.selectedTagScrollAreaWidgetContent)
 
-        self.verticalLayout_2.addWidget(self.selectedTagFrame)
+        self.verticalLayout_2.addWidget(self.scrollArea)
 
         self.picBrowseScrollArea = QScrollArea(self.centralwidget)
         self.picBrowseScrollArea.setObjectName(u"picBrowseScrollArea")
         self.picBrowseScrollArea.setWidgetResizable(True)
         self.picBrowseContentWidget = QWidget()
         self.picBrowseContentWidget.setObjectName(u"picBrowseContentWidget")
-        self.picBrowseContentWidget.setGeometry(QRect(0, 0, 627, 531))
-        self.horizontalLayout_3 = QHBoxLayout(self.picBrowseContentWidget)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.picBrowseWidget = QWidget(self.picBrowseContentWidget)
-        self.picBrowseWidget.setObjectName(u"picBrowseWidget")
-
-        self.horizontalLayout_3.addWidget(self.picBrowseWidget)
-
+        self.picBrowseContentWidget.setGeometry(QRect(0, 0, 662, 513))
+        self.picDisplayLayout = QGridLayout(self.picBrowseContentWidget)
+        self.picDisplayLayout.setObjectName(u"picDisplayLayout")
         self.picBrowseScrollArea.setWidget(self.picBrowseContentWidget)
 
         self.verticalLayout_2.addWidget(self.picBrowseScrollArea)
@@ -415,7 +423,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 955, 33))
+        self.menubar.setGeometry(QRect(0, 0, 940, 33))
         self.menu = QMenu(self.menubar)
         self.menu.setObjectName(u"menu")
         self.menu_2 = QMenu(self.menubar)
@@ -432,8 +440,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.filterToolBox.setCurrentIndex(1)
+        self.filterToolBox.setCurrentIndex(0)
         self.tagTreeTabWidget.setCurrentIndex(0)
+        self.sortComboBox.setCurrentIndex(-1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -465,6 +474,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"\u957f\u56fe", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u":", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"\u6392\u5217\u987a\u5e8f", None))
+        self.sortComboBox.setCurrentText("")
         self.filterToolBox.setItemText(self.filterToolBox.indexOf(self.imageSelector), QCoreApplication.translate("MainWindow", u"\u7b5b\u9009\u6392\u5e8f", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))

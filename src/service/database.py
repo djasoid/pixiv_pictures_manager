@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 import json
 import sqlite3
 import os
 
 from utils.parser import parse_metadata, parse_picture, parse_csv
 from tools.log import log_execution
-from tag_tree import TagTree
+if TYPE_CHECKING:
+    from tag_tree import TagTree
 
 class PicDatabase:
     _instance = None
@@ -181,7 +183,7 @@ class PicDatabase:
         """
         Insert tag index into the database.
         """
-        self.cursor.execute("INSERT OR IGNORE INTO tagIndex VALUES (?, ?)", (tag, json.dumps(pids)))
+        self.cursor.execute("INSERT OR IGNORE INTO tagIndex VALUES (?, ?)", (tag, json.dumps(pids, ensure_ascii=False)))
         self.database.commit()
     
     def insert_tag_index_dict(self, tag_index_dict: dict[str, list[int]]):
@@ -196,7 +198,7 @@ class PicDatabase:
         """
         Get pids by tag.
         """
-        self.cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag))
+        self.cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag,))
         pids_json = self.cursor.fetchone()
         if pids_json:
             return set(json.loads(pids_json[0]))
@@ -207,7 +209,7 @@ class PicDatabase:
         """
         Get tags of a picture.
         """
-        self.cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid))
+        self.cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid,))
         tags_json = self.cursor.fetchone()
         if tags_json:
             return json.loads(tags_json[0])
@@ -244,7 +246,7 @@ class PicDatabase:
         Returns:
         None
         """
-        self.cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags), pid))
+        self.cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags, ensure_ascii=False), pid))
         self.database.commit()
     
     def add_tags(self, pid: int, tags: dict) -> None:
@@ -396,9 +398,10 @@ class PicDatabase:
         """
         metadata_list = []
         for pid in pids:
-            self.cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid))
+            self.cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid,))
             metadata = self.cursor.fetchone()
-            metadata_list.append(PicMetadata(*metadata))
+            if metadata:
+                metadata_list.append(PicMetadata(*metadata))
     
         return metadata_list
     
@@ -416,7 +419,7 @@ class PicDatabase:
         """
         file_list = []
         for pid in pids:
-            self.cursor.execute("SELECT * FROM imageData WHERE pid = ?", (pid))
+            self.cursor.execute("SELECT * FROM imageData WHERE pid = ?", (pid,))
             file_data = self.cursor.fetchall()
             for data in file_data:
                 file_list.append(PicFile(*data))
@@ -492,6 +495,8 @@ class PicMetadata:
     x_restrict: str
     bookmark_count: int
     like_count: int
+    view_count: int
+    comment_count: int
 
     def __post_init__(self):
         self.tags = json.loads(self.tags)
