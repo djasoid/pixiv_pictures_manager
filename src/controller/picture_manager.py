@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog
+from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDropEvent, QBrush
 
@@ -27,11 +27,15 @@ class PictureManagerController:
         self.view.sortComboBox.addItems(['id'])
         
     def _init_context(self):
+        self.refresh_browse_area_width()
+        self.display_index = 0
+        self.display_row = 0
+        self.display_column = 0
         self.show_restricted = False
         self.include_tag_set = set()
         self.exclude_tag_set = set()
-        self.tag_filtered_pids: list[int] = []
-        self.pic_metadata_list: list[PicMetadata] = []
+        self.tag_filtered_pids: set[int] = []
+        self.pic_metadata_dict: dict[int, PicMetadata] = {}
         self.pic_file_list: list[PicFile] = []
         self.display_pic_list: list[PicFile | PicMetadata] = []
         self.last_file_type_filter = {
@@ -43,6 +47,7 @@ class PictureManagerController:
             'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
             'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
         }
+        self.sort_ratio = 1
         self.slider_edited = False
         self.spin_box_edited = False
         self.current_sort = 'id'
@@ -180,10 +185,10 @@ class PictureManagerController:
         for tag in self.exclude_tag_set:
             excluded_pids.update(find_pids(tag))
         
-        self.tag_filtered_pids = list(included_pids - excluded_pids) if included_pids else list()
-        self.pic_metadata_list = self.database.get_metadata_list(self.tag_filtered_pids)
+        self.tag_filtered_pids = included_pids - excluded_pids if included_pids else set()
+        self.pic_metadata_dict = self.database.get_metadata_dict(self.tag_filtered_pids)
         self.pic_file_list = self.database.get_file_list(self.tag_filtered_pids)
-        self.display_pic_list = self.pic_metadata_list
+        self.display_pic_list = [i for i in self.pic_metadata_dict.values()]
         self.refresh_pic_display()
 
     def _is_match_file_type(self, pic_file: PicFile) -> bool:
@@ -220,9 +225,9 @@ class PictureManagerController:
                 return value, value
             
         except ValueError:
-            return -1, -1 # this will be treated as no limit, so it will always return True
+            return -1, -1 # this will be treated as no limit
 
-    def filter_pic_files(self) -> None:
+    def filt_and_sort_pic_files(self) -> None:
         file_type_filter = {
             'jpg': self.view.jpgCheckBox.isChecked(),
             'png': self.view.pngCheckBox.isChecked(),
@@ -260,7 +265,7 @@ class PictureManagerController:
     def clear_resolution_filter(self) -> None:
         self.view.resolutionWidthEdit.clear()
         self.view.resolutionHeightEdit.clear()
-        self.filter_pic_files()
+        self.filt_and_sort_pic_files()
         
     def ratio_slider_sort(self) -> None:
         if self.spin_box_edited:
@@ -279,7 +284,8 @@ class PictureManagerController:
             self.view.heightRatioSpinBox.setValue(1)
             
         self.slider_edited = False
-        self._sort_display_pic(ratio)
+        self.sort_ratio = ratio
+        self.filt_and_sort_pic_files()
             
     def ratio_spin_box_sort(self) -> None:
         if self.slider_edited:
@@ -295,11 +301,12 @@ class PictureManagerController:
             
         self.view.ratioSlider.setValue(self._convert_to_slider_value(ratio))
         self.spin_box_edited = False
-        self._sort_display_pic()
+        self.sort_ratio = ratio
+        self.filt_and_sort_pic_files()
 
-    def _sort_display_pic(self, ratio: float = None) -> None:
+    def _sort_display_pic(self) -> None:
         if self.view.enableRatioCheckBox.isChecked():
-            self.display_pic_list.sort(key=lambda pic_file: abs(pic_file.ratio - ratio))
+            self.display_pic_list.sort(key=lambda pic_file: abs(pic_file.ratio - self.sort_ratio))
         elif self.current_sort == 'id':
             self.display_pic_list.sort(key=lambda pic_file: pic_file.pid)
         
@@ -316,7 +323,62 @@ class PictureManagerController:
         else:
             return int((1 - ratio) * 20)
 
+    def _is_restricted(self, data: PicMetadata | PicFile) -> bool:
+        if isinstance(data, PicMetadata):
+            if data.x_restrict != 'allAges':
+                return True
+        elif isinstance(data, PicFile):
+            metadata = self.pic_metadata_dict.get(data.pid)
+            if metadata and metadata.x_restrict != 'allAges':
+                return True
+
+        return False
+    
+    def refresh_browse_area_width(self) -> None:
+        current_width = self.view.picBrowseContentWidget.width()
+        self.browse_area_width = int((current_width / 250) - 1)
+    
     def refresh_pic_display(self) -> None:
-        for pic in self.display_pic_list:
-            pic_frame = PictureFrame(self.view.picBrowseContentWidget, self, pic)
-            self.view.picDisplayLayout.addWidget(pic_frame)
+        self.refresh_browse_area_width()
+        self._clear_all_widgets(self.view.picDisplayLayout)
+        self.display_row = 0
+        self.display_column = 0
+        self.load_more_pics(0)
+            
+    def _clear_all_widgets(self, layout: 'QLayout') -> None:
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+            elif child.layout():
+                self._clear_all_widgets(child.layout())
+
+    def load_more_pics(self, current_index: int = None) -> None:
+        if current_index is None:
+            current_index = self.display_index
+        else:
+            self.display_index = current_index
+            
+        if current_index >= len(self.display_pic_list):
+            return
+        
+        load_amount = self.browse_area_width * 2
+        
+        while current_index < len(self.display_pic_list) and load_amount > 0:
+            if self._is_restricted(self.display_pic_list[current_index]) and not self.show_restricted:
+                current_index += 1
+                continue
+            
+            pic_frame = PictureFrame(self.view.picBrowseContentWidget, self, self.display_pic_list[current_index])
+            self.view.picDisplayLayout.addWidget(pic_frame, self.display_row, self.display_column)
+            self.display_column += 1
+            if self.display_column == self.browse_area_width:
+                self.display_column = 0
+                self.display_row += 1
+        
+            current_index += 1
+            load_amount -= 1
+            
+        self.display_index = current_index
+        
+        

@@ -99,7 +99,7 @@ class TagManagementController:
         self.view.tagInfo.verticalScrollBar().setValue(0)
         return
         
-    @log_execution("Info", "Saving tag tree", "Tag tree saved")
+    @log_execution("Info", None, "Tag tree saved")
     def save_tree(self):
         self.tag_tree.save_tree()
         write_json(self.new_tag_list, self.new_tag_path)
@@ -289,7 +289,7 @@ class TagManagementController:
             item.addChild(self._get_tree_item(subTag))
         return item
     
-    @log_execution("Info", "Loading tag tree", "Tag tree loaded")
+    @log_execution("Info", None, "Tag tree loaded")
     def _load_tag_tree(self):
         """load tag tree from tag_tree.json and show it in the tree widget"""
         self.view.viewTree.addTopLevelItem(self._get_tree_item(self.tag_tree.root))
@@ -305,7 +305,7 @@ class TagManagementController:
         
         return
             
-    @log_execution("Info", "Loading new tag", "New tag loaded")
+    @log_execution("Info", None, "New tag loaded")
     def _load_new_tag(self, new_tag_path: str):
         """load new tag file and show it in the new tag lst"""
         self.new_tag_list = load_json(new_tag_path)

@@ -27,13 +27,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.attributeTagTree.itemDoubleClicked.connect(self.controller.add_exclude_tag)
 
         # file type selection event
-        self.jpgCheckBox.stateChanged.connect(self.controller.filter_pic_files)
-        self.pngCheckBox.stateChanged.connect(self.controller.filter_pic_files)
-        self.gifCheckBox.stateChanged.connect(self.controller.filter_pic_files)
+        self.jpgCheckBox.stateChanged.connect(self.controller.filt_and_sort_pic_files)
+        self.pngCheckBox.stateChanged.connect(self.controller.filt_and_sort_pic_files)
+        self.gifCheckBox.stateChanged.connect(self.controller.filt_and_sort_pic_files)
         
         # resolution selection event
-        self.resolutionHeightEdit.textChanged.connect(self.controller.filter_pic_files)
-        self.resolutionWidthEdit.textChanged.connect(self.controller.filter_pic_files)
+        self.resolutionHeightEdit.textChanged.connect(self.controller.filt_and_sort_pic_files)
+        self.resolutionWidthEdit.textChanged.connect(self.controller.filt_and_sort_pic_files)
         self.clearResolutionPushButton.clicked.connect(self.controller.clear_resolution_filter)
 
         # ratio sort event
@@ -41,6 +41,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.widthRatioSpinBox.valueChanged.connect(self.controller.ratio_spin_box_sort)
         self.heightRatioSpinBox.valueChanged.connect(self.controller.ratio_spin_box_sort)
         self.ratioSlider.valueChanged.connect(self.controller.ratio_slider_sort)
+
+        # scroll event
+        self.picBrowseScrollArea.verticalScrollBar().valueChanged.connect(self.on_scroll_pic_browse)
 
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for tag_search_edit, implement enter to search tag
@@ -50,3 +53,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 return True
         
         return super().eventFilter(source, event)
+
+    def on_scroll_pic_browse(self):
+        scroll_bar = self.picBrowseScrollArea.verticalScrollBar()
+        if scroll_bar.value() == scroll_bar.maximum():
+            self.controller.load_more_pics()
+            
+    def resizeEvent(self, event):
+        self.controller.refresh_browse_area_width()
+        
+        return super().resizeEvent(event)

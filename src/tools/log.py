@@ -47,37 +47,39 @@ class Log:
     def critical(msg: str) -> None:
         Log.logger.critical(msg, exc_info=True)
 
-def log_execution(level: str, start_message: str, end_message: str): # log decorator
+def log_execution(level: str, start_message: str | None, end_message: str | None): # log decorator
     def decorator(func):
         def wrapper(*args, **kwargs):
             method = func.__name__
             try:
-                f_start_message = start_message.format(method=method, args=args, kwargs=kwargs)
-                if level == "Debug":
-                    Log.debug(f_start_message)
-                elif level == "Info":
-                    Log.info(f_start_message)
-                elif level == "Warning":
-                    Log.warning(f_start_message)
+                if start_message is not None:
+                    f_start_message = start_message.format(method=method, args=args, kwargs=kwargs)
+                    if level == "Debug":
+                        Log.debug(f_start_message)
+                    elif level == "Info":
+                        Log.info(f_start_message)
+                    elif level == "Warning":
+                        Log.warning(f_start_message)
 
                 start_time = time.time()
                 result = func(*args, **kwargs)
                 end_time = time.time()
                 execution_time = end_time - start_time
                 
-                f_end_message = end_message.format(
-                    method=method, 
-                    args=args, 
-                    kwargs=kwargs, 
-                    result=result, 
-                    execution_time=execution_time
-                )
-                if level == "Debug":
-                    Log.debug(f_end_message)
-                elif level == "Info":
-                    Log.info(f_end_message)
-                elif level == "Warning":
-                    Log.warning(f_end_message)
+                if end_message is not None:                
+                    f_end_message = end_message.format(
+                        method=method, 
+                        args=args, 
+                        kwargs=kwargs, 
+                        result=result, 
+                        execution_time=execution_time
+                    )
+                    if level == "Debug":
+                        Log.debug(f_end_message)
+                    elif level == "Info":
+                        Log.info(f_end_message)
+                    elif level == "Warning":
+                        Log.warning(f_end_message)
                     
                 return result
             

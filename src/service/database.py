@@ -384,7 +384,7 @@ class PicDatabase:
         
         self.database.commit()
 
-    def get_metadata_list(self, pids: list[int]) -> list['PicMetadata']:
+    def get_metadata_list(self, pids: list | set[int]) -> list['PicMetadata']:
         """
         Get metadata of a list of pids.
 
@@ -404,8 +404,29 @@ class PicDatabase:
                 metadata_list.append(PicMetadata(*metadata))
     
         return metadata_list
+
+    def get_metadata_dict(self, pids: list | set[int]) -> dict[int, 'PicMetadata']:
+        """
+        Get metadata of a list of pids as a dictionary.
+
+        This function gets the metadata of a list of pids as a dictionary.
+
+        Parameters:
+        pid_list (set): A set of pids.
+
+        Returns:
+        dict: A dictionary of PicMetadata objects.
+        """
+        metadata_dict = {}
+        for pid in pids:
+            self.cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid,))
+            metadata = self.cursor.fetchone()
+            if metadata:
+                metadata_dict[pid] = PicMetadata(*metadata)
+        
+        return metadata_dict
     
-    def get_file_list(self, pids: list[int]) -> list['PicFile']:
+    def get_file_list(self, pids: list | set[int]) -> list['PicFile']:
         """
         Get file data of a list of pids.
 

@@ -47,5 +47,8 @@ class PictureFrame(QFrame):
         self.ui.resolutionLabel.setText(f"{pic_file.width}x{pic_file.height}")
         self.ui.fileTypeAndSizeLabel.setText(f"{pic_file.file_type} | {pic_file.size / 1024**2:.2f} MB")
         metadata = self.controller.database.get_metadata_list([pic_file.pid])[0]
+        pixmap = QPixmap(os.path.join(pic_file.directory, pic_file.file_name))
+        pixmap = pixmap.scaled(self.ui.imageLabel.size(), aspectMode=Qt.AspectRatioMode.KeepAspectRatio, mode=Qt.TransformationMode.SmoothTransformation)
+        self.ui.imageLabel.setPixmap(pixmap)
         if metadata:
             self.ui.illustratorLabel.setText(metadata.user)
