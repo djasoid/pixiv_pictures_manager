@@ -199,20 +199,19 @@ class PicDatabase:
         existing_tags_set = {i[0] for i in cursor.execute("SELECT tag FROM tagIndex").fetchall()}
         for tag, pids in tag_index_dict.items():
             if tag in existing_tags_set:
-                current_pids = self.get_pids_by_tag(tag)
+                current_pids = self.get_pids_by_tag(tag, cursor=cursor)
                 current_pids.update(pids)
                 cursor.execute("UPDATE tagIndex SET pids = ? WHERE tag = ?", (json.dumps(list(current_pids), ensure_ascii=False), tag))
             else:
                cursor.execute("INSERT INTO tagIndex (tag, pids) VALUES (?, ?)", (tag, json.dumps(list(pids), ensure_ascii=False)))
     
-    def get_pids_by_tag(self, tag: str, connection: sqlite3.Connection = None) -> set[int]:
+    def get_pids_by_tag(self, tag: str, cursor: sqlite3.Cursor = None) -> set[int]:
         """
         Get pids by tag.
         """
-        if not connection:
-            connection = self.database
-        
-        cursor = connection.cursor()
+        if not cursor:
+            cursor = self.cursor
+            
         cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag,))
         pids_json = cursor.fetchone()
         if pids_json and pids_json[0]:

@@ -291,16 +291,15 @@ class PictureManagerController:
             filt_resolution = True
             self.last_resolution_filter = resolution_filter
         
-        if filt_file_type or filt_resolution:
-            self.display_pic_list = []
-            for pic_file in self.pic_file_list:
-                if filt_file_type and not self._is_match_file_type(pic_file):
-                    continue
+        self.display_pic_list = []
+        for pic_file in self.pic_file_list:
+            if filt_file_type and not self._is_match_file_type(pic_file):
+                continue
 
-                if filt_resolution and not self._is_match_resolution(pic_file):
-                    continue
-                
-                self.display_pic_list.append(pic_file)
+            if filt_resolution and not self._is_match_resolution(pic_file):
+                continue
+            
+            self.display_pic_list.append(pic_file)
         
         self._sort_display_pic()
 
