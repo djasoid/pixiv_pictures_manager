@@ -8,6 +8,7 @@ from utils.parser import parse_metadata, parse_picture, parse_csv
 from tools.log import log_execution
 if TYPE_CHECKING:
     from tag_tree import TagTree
+    from controller.picture_manager import DataCollectThread
 
 class PicDatabase:
     _instance = None
@@ -40,6 +41,9 @@ class PicDatabase:
             self.database = sqlite3.connect("pic_data.db")
             self.cursor = self.database.cursor()
             self._initialize_database()
+    
+    def get_new_connection(self):
+        return sqlite3.connect("pic_data.db")
            
     @log_execution("Info", "No existing database found. Creating new database", "Database created") 
     def _initialize_database(self):
@@ -93,7 +97,7 @@ class PicDatabase:
         self.cursor.execute('''CREATE INDEX dataPid ON metadata (pid)''')
         self.cursor.execute('''CREATE INDEX filePid ON imageData (pid)''')
     
-    def insert_image_data(
+    def _insert_image_data(
             self, 
             pid: int, 
             num: int, 
@@ -103,18 +107,21 @@ class PicDatabase:
             width: int, 
             height: int, 
             size: int,
-            ratio: float
+            ratio: float,
+            cursor: sqlite3.Cursor = None
         ) -> None:
         """
         Insert image data into the database.
         """
-        self.cursor.execute(
+        if not cursor:
+            cursor = self.cursor
+            
+        cursor.execute(
             "INSERT OR IGNORE INTO imageData VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (pid, num, directory, file_name, file_type, width, height, size, ratio)
         )
-        self.database.commit()
         
-    def insert_metadata(
+    def _insert_metadata(
             self, 
             pid: int, 
             title: str, 
@@ -127,12 +134,16 @@ class PicDatabase:
             bookmark_count: int = None, 
             like_count: int = None, 
             view_count: int = None, 
-            comment_count: int = None
+            comment_count: int = None,
+            cursor: sqlite3.Cursor = None
         ):
         """
         Insert metadata into the database.
         """
-        self.cursor.execute(
+        if not cursor:
+            cursor = self.cursor
+        
+        cursor.execute(
             """
                 INSERT INTO metadata (
                     pid, 
@@ -177,63 +188,76 @@ class PicDatabase:
                 comment_count
             )
         )
-        self.database.commit()
     
-    def insert_tag_index(self, tag: str, pids: list[int]):
-        """
-        Insert tag index into the database.
-        """
-        self.cursor.execute("INSERT OR IGNORE INTO tagIndex VALUES (?, ?)", (tag, json.dumps(pids, ensure_ascii=False)))
-        self.database.commit()
-    
-    def insert_tag_index_dict(self, tag_index_dict: dict[str, list[int]]):
+    def _update_tag_index(self, tag_index_dict: dict[str, set[int]], cursor: sqlite3.Cursor = None) -> None:
         """
         Insert tag index dictionary into the database.
         """
+        if not cursor:
+            cursor = self.cursor
+            
+        existing_tags_set = {i[0] for i in cursor.execute("SELECT tag FROM tagIndex").fetchall()}
         for tag, pids in tag_index_dict.items():
-            self.insert_tag_index(tag, pids)
-        self.database.commit()
+            if tag in existing_tags_set:
+                current_pids = self.get_pids_by_tag(tag)
+                current_pids.update(pids)
+                cursor.execute("UPDATE tagIndex SET pids = ? WHERE tag = ?", (json.dumps(list(current_pids), ensure_ascii=False), tag))
+            else:
+               cursor.execute("INSERT INTO tagIndex (tag, pids) VALUES (?, ?)", (tag, json.dumps(list(pids), ensure_ascii=False)))
     
-    def get_pids_by_tag(self, tag: str) -> set:
+    def get_pids_by_tag(self, tag: str, connection: sqlite3.Connection = None) -> set[int]:
         """
         Get pids by tag.
         """
-        self.cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag,))
-        pids_json = self.cursor.fetchone()
-        if pids_json:
+        if not connection:
+            connection = self.database
+        
+        cursor = connection.cursor()
+        cursor.execute("SELECT pids FROM tagIndex WHERE tag = ?", (tag,))
+        pids_json = cursor.fetchone()
+        if pids_json and pids_json[0]:
             return set(json.loads(pids_json[0]))
         else:
             return set()
     
-    def get_tags(self, pid: int) -> dict:
+    def _get_tags(self, pid: int, cursor: sqlite3.Cursor = None) -> dict:
         """
         Get tags of a picture.
         """
-        self.cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid,))
-        tags_json = self.cursor.fetchone()
+        if not cursor:
+            cursor = self.cursor
+            
+        cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid,))
+        tags_json = cursor.fetchone()
         if tags_json:
             return json.loads(tags_json[0])
         else:
             return {}
         
-    def get_pid_list(self) -> list[int]:
+    def _get_pid_list(self, cursor: sqlite3.Cursor = None) -> list[int]:
         """
         Get a list of all pids in metadata.
         """
-        self.cursor.execute("SELECT pid FROM metadata")
-        return [item[0] for item in self.cursor.fetchall()]
+        if not cursor:
+            cursor = self.cursor
+        
+        cursor.execute("SELECT pid FROM metadata")
+        return [item[0] for item in cursor.fetchall()]
     
-    def get_file_pid_list(self) -> list:
+    def get_file_pid_list(self, cursor: sqlite3.Cursor = None) -> list[int]:
         """
         Get a list of all pids in imageData.
 
         Returns:
         list: A list of all pids in imageData.
         """
-        self.cursor.execute("SELECT DISTINCT pid FROM imageData")
-        return [item[0] for item in self.cursor.fetchall()]
+        if not cursor:
+            cursor = self.cursor
+            
+        cursor.execute("SELECT DISTINCT pid FROM imageData")
+        return [item[0] for item in cursor.fetchall()]
         
-    def overwrite_tags(self, pid: str, tags: dict) -> None:
+    def overwrite_tags(self, pid: str, tags: dict, cursor: sqlite3.Cursor = None) -> None:
         """
         overwrite tags of a picture.
 
@@ -246,10 +270,9 @@ class PicDatabase:
         Returns:
         None
         """
-        self.cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags, ensure_ascii=False), pid))
-        self.database.commit()
+        cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags, ensure_ascii=False), pid))
     
-    def add_tags(self, pid: int, tags: dict) -> None:
+    def add_tags(self, pid: int, tags: dict, connection: sqlite3.Connection = None) -> None:
         """
         Add tags to a picture.
 
@@ -262,9 +285,13 @@ class PicDatabase:
         Returns:
         None
         """
-        current_tags = self.get_tags(pid)
+        if not connection:
+            connection = self.database
+            
+        current_tags = self._get_tags(pid, cursor=connection.cursor())
         current_tags.update(tags)
-        self.overwrite_tags(pid, current_tags)
+        self.overwrite_tags(pid, current_tags, cursor=connection.cursor())
+        connection.commit()
 
     def insert_csv_data(
             self,
@@ -281,6 +308,7 @@ class PicDatabase:
             comment: int,
             xRestrict: str, 
             date: str, 
+            cursor: sqlite3.Cursor = None
         ) -> None:
         """
         Insert data from a CSV file into the database.
@@ -290,12 +318,15 @@ class PicDatabase:
         Returns:
         None
         """
+        if not cursor:
+            cursor = self.cursor
+            
         tag_pairs = list(zip(tags, tags_transl))
         for tag, tag_transl in tag_pairs:
-            self.cursor.execute("INSERT OR IGNORE INTO tags VALUES (?, ?, ?)", (tag, tag_transl, 0))
+            cursor.execute("INSERT OR IGNORE INTO tags VALUES (?, ?, ?)", (tag, tag_transl, 0))
         
         tags_dict = {tag: "metadata" for tag in tags}
-        self.insert_metadata(
+        self._insert_metadata(
             pid,
             title, 
             tags_dict, 
@@ -304,10 +335,11 @@ class PicDatabase:
             user_id, 
             date, 
             xRestrict, 
-            bookmarks, 
-            like, 
-            view, 
-            comment
+            bookmark_count=bookmarks, 
+            like_count=like,
+            view_count=view,
+            comment_count=comment,
+            cursor=cursor
         )
 
     @log_execution(
@@ -315,7 +347,7 @@ class PicDatabase:
         "Collecting data from directroy {args[1]}", 
         "Collected data from directory {args[1]}, used {execution_time} seconds"
     )
-    def collect_data(self, directory: str) -> list:
+    def collect_data(self, directory: str, thread: 'DataCollectThread' = None, connection: sqlite3.Connection = None) -> list[int]:
         """
         Collects data from a directory and stores it in a database.
 
@@ -329,34 +361,37 @@ class PicDatabase:
         Returns:
         list: A list containing the metadata ids of the processed files.
         """
+        if not connection:
+            connection = self.database
+            
         processed_files = 0
         processed_metadata_ids = set()
         for root, dirs, files in os.walk(directory):
             for file in files:
                 processed_files += 1
-                print(f'Processed {processed_files} files', end='\r')
+                if thread:
+                    thread.status_update.emit(f"Processed {processed_files} files")
 
                 file_path = os.path.join(root, file)
                 if file.endswith(".txt"):
                     metadata = parse_metadata(file_path)
                     processed_metadata_ids.add(metadata[0])
-                    self.insert_metadata(*metadata)
+                    self._insert_metadata(*metadata, cursor=connection.cursor())
                     
                 elif file.endswith(".csv"):
                     csv_data = parse_csv(file_path)
                     for data in csv_data:
                         processed_metadata_ids.add(data[0])
-                        self.insert_csv_data(*data)
+                        self.insert_csv_data(*data, cursor=connection.cursor())
 
                 elif file.endswith(".jpg") or file.endswith(".png") or file.endswith(".jpeg") or file.endswith(".gif"):
                     image_data = parse_picture(file_path)
-                    self.insert_image_data(*image_data)
+                    self._insert_image_data(*image_data, cursor=connection.cursor())
                 
                 elif file.endswith(".webp"): # ignore webp files because they cannot be processed
                     continue
 
-        print("\n")
-        self.database.commit()
+        connection.commit()
         return list(processed_metadata_ids)
 
     def count_tags(self):
@@ -447,7 +482,7 @@ class PicDatabase:
         
         return file_list
     
-    def complete_tag(self, tag_tree: 'TagTree', pid_list: list[int] = None) -> None:
+    def complete_tag(self, tag_tree: 'TagTree', pid_list: list[int] = None, connection: sqlite3.Connection = None) -> None:
         """
         iterate through the picture tags and add all parent tags to the picture tags.
 
@@ -457,13 +492,16 @@ class PicDatabase:
         Returns:
             None
         """
+        if not connection:
+            connection = self.database
+        
         all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=True)
 
         if pid_list is None:
-            pid_list = self.get_pid_list()
+            pid_list = self._get_pid_list(cursor=connection.cursor())
 
         for pid in pid_list:
-            tags = set(self.get_tags(pid).keys())
+            tags = set(self._get_tags(pid, cursor=connection.cursor()).keys())
             new_tags = set()
             for tag in tags:
                 if tag in all_parent_tag_dict:
@@ -471,19 +509,25 @@ class PicDatabase:
             
             new_tags -= tags
             new_tags_dict = {tag: "tree" for tag in new_tags}
-            self.add_tags(pid, new_tags_dict)
+            self.add_tags(pid, new_tags_dict, connection=connection)
+        
+        connection.commit()
 
-    def init_tag_index(self, tag_tree: 'TagTree') -> None:
+    def init_tag_index(self, tag_tree: 'TagTree', pid_list: list[int] = None, connection: sqlite3.Connection = None) -> None:
         """
         Initializes a tag index.
         """
+        if not connection:
+            connection = self.database
+        
         all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=False)
-        pid_list = self.get_pid_list()
+        if pid_list is None:
+            pid_list = self._get_pid_list(cursor=connection.cursor())
 
-        tag_index: dict[str, list[int]] = {}
+        tag_index: dict[str, set[int]] = {}
 
         for pid in pid_list:
-            tags = self.get_tags(pid).keys()
+            tags = self._get_tags(pid, cursor=connection.cursor()).keys()
             tag_in_tree = set()
             for tag in tags:
                 if tag in all_parent_tag_dict:
@@ -497,18 +541,19 @@ class PicDatabase:
             
             for tag in tag_set:
                 if tag in tag_index:
-                    tag_index[tag].append(pid)
+                    tag_index[tag].add(pid)
                 else:
-                    tag_index[tag] = [pid]
+                    tag_index[tag] = {pid}
         
-        self.insert_tag_index_dict(tag_index)
+        self._update_tag_index(tag_index, cursor=connection.cursor())
+        connection.commit()
 
 
 @dataclass
 class PicMetadata:
     pid: int
     title: str
-    tags: str
+    tags_json: str
     description: str
     user: str
     user_id: int
@@ -520,7 +565,7 @@ class PicMetadata:
     comment_count: int
 
     def __post_init__(self):
-        self.tags = json.loads(self.tags)
+        self.tags: dict[str, str] = json.loads(self.tags_json)
 
 @dataclass
 class PicFile:

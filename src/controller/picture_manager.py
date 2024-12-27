@@ -1,14 +1,17 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout
+from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout, QFileDialog
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QDropEvent, QBrush
+from PySide6.QtGui import QDropEvent, QBrush, QColor, QPalette
+from PySide6.QtCore import QThread, Signal
 
 from service.tag_tree import TagTree, Tag
 from service.database import PicDatabase, PicFile, PicMetadata
 from tools.log import log_execution
 from component.widget.tag_widget import TagWidget
 from component.widget.picture_frame import PictureFrame
+from component.dialog.data_collect_progress_message_box import DataCollectProcessMessageBox
+
 if TYPE_CHECKING:
     from view.picture_manager import MainWindow
 
@@ -55,15 +58,17 @@ class PictureManagerController:
     def _init_tag_tree(self):
         self.tag_tree = TagTree()
         self.tag_item_dict: dict[str, set[QTreeWidgetItem]] = {}
+        self.highlighted_tags: set[str] = set()
+        self.default_background_color = self.view.characterTagTree.palette().color(QPalette.ColorRole.Base)
         for top_tag in self.tag_tree.root.sub_tags.values():
             if top_tag.tag_type == '__CHARACTER__':
                 self.character_top_tag = top_tag
-                self.view.characterTagTree.addTopLevelItem(self._get_tree_item(top_tag))
-                self.view.characterTagTree.expandItem(self.view.characterTagTree.topLevelItem(0))
+                for sub_tag in top_tag.sub_tags.values():
+                    self.view.characterTagTree.addTopLevelItem(self._get_tree_item(sub_tag))
             elif top_tag.tag_type == '__ATTRIBUTE__':
                 self.attribute_top_tag = top_tag
-                self.view.attributeTagTree.addTopLevelItem(self._get_tree_item(top_tag))
-                self.view.attributeTagTree.expandItem(self.view.attributeTagTree.topLevelItem(0))
+                for sub_tag in top_tag.sub_tags.values():
+                    self.view.attributeTagTree.addTopLevelItem(self._get_tree_item(sub_tag))
         
     def _get_tree_item(self, tag: Tag) -> QTreeWidgetItem:
         item = QTreeWidgetItem([tag.name])
@@ -189,7 +194,43 @@ class PictureManagerController:
         self.pic_metadata_dict = self.database.get_metadata_dict(self.tag_filtered_pids)
         self.pic_file_list = self.database.get_file_list(self.tag_filtered_pids)
         self.display_pic_list = [i for i in self.pic_metadata_dict.values()]
-        self.refresh_pic_display()
+        self._refresh_pic_display()
+        self._clear_highlighted_tags()
+        self._highlight_available_tags()
+        
+    def _highlight_available_tags(self) -> None:
+        def highlight_item(tag: str) -> None:
+            if tag in self.tag_item_dict:
+                self.highlighted_tags.add(tag)
+                for item in self.tag_item_dict[tag]:
+                    font = item.font(0)
+                    font.setBold(True)
+                    item.setFont(0, font)
+                    item.setBackground(0, QBrush('#808080'))
+                    parent_item = item.parent()
+                    if parent_item:
+                        parent_tag = parent_item.text(0)
+                        if parent_tag not in self.highlighted_tags:
+                            highlight_item(parent_tag)
+                        
+        
+        available_tags = set()
+        for data in self.pic_metadata_dict.values():
+            available_tags.update(data.tags)
+        
+        for available_tag in available_tags:
+            if available_tag in self.tag_item_dict:
+                highlight_item(available_tag)
+                
+    def _clear_highlighted_tags(self) -> None:
+        for tag in self.tag_item_dict:
+            for item in self.tag_item_dict[tag]:
+                font = item.font(0)
+                font.setBold(False)
+                item.setFont(0, font)
+                item.setBackground(0, QBrush(self.default_background_color))
+                
+        self.highlighted_tags.clear()            
 
     def _is_match_file_type(self, pic_file: PicFile) -> bool:
         return self.last_file_type_filter.get(pic_file.file_type, False)
@@ -249,16 +290,17 @@ class PictureManagerController:
         else:
             filt_resolution = True
             self.last_resolution_filter = resolution_filter
-            
-        self.display_pic_list = []
-        for pic_file in self.pic_file_list:
-            if filt_file_type and not self._is_match_file_type(pic_file):
-                continue
+        
+        if filt_file_type or filt_resolution:
+            self.display_pic_list = []
+            for pic_file in self.pic_file_list:
+                if filt_file_type and not self._is_match_file_type(pic_file):
+                    continue
 
-            if filt_resolution and not self._is_match_resolution(pic_file):
-                continue
-            
-            self.display_pic_list.append(pic_file)
+                if filt_resolution and not self._is_match_resolution(pic_file):
+                    continue
+                
+                self.display_pic_list.append(pic_file)
         
         self._sort_display_pic()
 
@@ -310,7 +352,7 @@ class PictureManagerController:
         elif self.current_sort == 'id':
             self.display_pic_list.sort(key=lambda pic_file: pic_file.pid)
         
-        self.refresh_pic_display()
+        self._refresh_pic_display()
             
     def _convert_to_slider_value(self, ratio: float) -> int:
         if ratio <= 0:
@@ -336,9 +378,9 @@ class PictureManagerController:
     
     def refresh_browse_area_width(self) -> None:
         current_width = self.view.picBrowseContentWidget.width()
-        self.browse_area_width = int((current_width / 250) - 1)
+        self.browse_area_width = int(current_width / 250)
     
-    def refresh_pic_display(self) -> None:
+    def _refresh_pic_display(self) -> None:
         self.refresh_browse_area_width()
         self._clear_all_widgets(self.view.picDisplayLayout)
         self.display_row = 0
@@ -381,4 +423,61 @@ class PictureManagerController:
             
         self.display_index = current_index
         
+    @log_execution("Info", "Adding new pictures from directory {args[1]}", "new pictures added")
+    def add_new_pics(self, directory: str) -> None:
+        message_box = DataCollectProcessMessageBox()
+
+        def update_status(status):
+            message_box.setText(status)
+
+        def close_message_box():
+            print("Data collection finished. Closing message box.")
+            message_box.done(0)
+
+        thread = DataCollectThread(self.database, self.tag_tree, directory)
+        thread.status_update.connect(update_status)
+        thread.finished.connect(close_message_box)
+        thread.start()
+
+        message_box.exec_()
         
+    def select_directory_for_new_pics(self) -> None:
+        dialog = QFileDialog()
+        dialog.setFileMode(QFileDialog.FileMode.Directory)
+        dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        if dialog.exec():
+            directory = dialog.selectedFiles()[0]
+            if directory:
+                self.add_new_pics(directory)
+        
+    def show_restricted_pics(self) -> None:
+        if self.view.showRestrictedAction.isChecked():
+            self.show_restricted = True
+        else:
+            self.show_restricted = False
+            
+        self.view.attributeTagTree.clear()
+        self.view.characterTagTree.clear()
+        self._init_tag_tree()
+        self._highlight_available_tags()
+        self._pic_tag_search()
+
+class DataCollectThread(QThread):
+    status_update = Signal(str)
+    finished = Signal()
+
+    def __init__(self, database: PicDatabase, tag_tree: TagTree, directory):
+        super().__init__()
+        self.database = database
+        self.tag_tree = tag_tree
+        self.directory = directory
+
+    def run(self):
+        self.connection = self.database.get_new_connection()
+        new_pics = self.database.collect_data(self.directory, thread=self, connection=self.connection)
+        self.status_update.emit("Completing tags...")
+        self.database.complete_tag(self.tag_tree, new_pics, self.connection)
+        self.status_update.emit("Indexing tags...")
+        self.database.init_tag_index(self.tag_tree, new_pics, self.connection)
+        print("Data collection finished.")
+        self.finished.emit()

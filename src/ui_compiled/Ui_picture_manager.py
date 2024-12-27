@@ -30,10 +30,11 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(940, 643)
-        self.actionR_18 = QAction(MainWindow)
-        self.actionR_18.setObjectName(u"actionR_18")
-        self.action = QAction(MainWindow)
-        self.action.setObjectName(u"action")
+        self.showRestrictedAction = QAction(MainWindow)
+        self.showRestrictedAction.setObjectName(u"showRestrictedAction")
+        self.showRestrictedAction.setCheckable(True)
+        self.addNewPicsAction = QAction(MainWindow)
+        self.addNewPicsAction.setObjectName(u"addNewPicsAction")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_4 = QHBoxLayout(self.centralwidget)
@@ -435,8 +436,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
-        self.menu.addAction(self.action)
-        self.menu_3.addAction(self.actionR_18)
+        self.menu.addAction(self.addNewPicsAction)
+        self.menu_3.addAction(self.showRestrictedAction)
 
         self.retranslateUi(MainWindow)
 
@@ -450,8 +451,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.actionR_18.setText(QCoreApplication.translate("MainWindow", u"R-18", None))
-        self.action.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u6587\u4ef6\u5939", None))
+        self.showRestrictedAction.setText(QCoreApplication.translate("MainWindow", u"R-18", None))
+        self.addNewPicsAction.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u65b0\u56fe\u7247...", None))
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.characterTagTab), QCoreApplication.translate("MainWindow", u"\u89d2\u8272", None))
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.attributeTagTab), QCoreApplication.translate("MainWindow", u"\u5c5e\u6027", None))
         self.searchTagTreeTextEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u6807\u7b7e", None))

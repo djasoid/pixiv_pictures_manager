@@ -26,6 +26,9 @@ class Log:
         Log.file_handler.setLevel(logging.INFO)
         Log.file_handler.setFormatter(formatter)
         Log.logger.addHandler(Log.file_handler)
+
+        pil_logger = logging.getLogger('PIL')
+        pil_logger.setLevel(logging.INFO)
         
     @staticmethod
     def debug(msg: str) -> None:

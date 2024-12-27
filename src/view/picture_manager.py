@@ -45,6 +45,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # scroll event
         self.picBrowseScrollArea.verticalScrollBar().valueChanged.connect(self.on_scroll_pic_browse)
 
+        # add new picture event
+        self.addNewPicsAction.triggered.connect(self.controller.select_directory_for_new_pics)
+        
+        # show restricted pictures event
+        self.showRestrictedAction.triggered.connect(self.controller.show_restricted_pics)
+
     def eventFilter(self, source: QObject, event: QEvent) -> bool:
         # Filter for tag_search_edit, implement enter to search tag
         if (source == self.searchTagTreeTextEdit and event.type() == QEvent.Type.KeyPress):

@@ -17,18 +17,23 @@ class PictureFrame(QFrame):
         self.ui = Ui_pictureFrame()
         self.ui.setupUi(self)
         self.controller = controller
-        if isinstance(pic_data, PicMetadata):
-            self.setup_metadata(pic_data)
-        elif isinstance(pic_data, PicFile):
-            self.setup_pic_file(pic_data)
+        try:
+            if isinstance(pic_data, PicMetadata):
+                self.setup_metadata(pic_data)
+            elif isinstance(pic_data, PicFile):
+                self.setup_pic_file(pic_data)
+        except Exception as e:
+            print(f"Error in PictureFrame: {e}")
     
     def setup_metadata(self, metadata: PicMetadata):
         self.ui.titleLabel.setText(metadata.title)
         self.ui.illustratorLabel.setText(metadata.user)
         self.ui.pidLabel.setText(str(metadata.pid))
         self.pic_files = self.controller.database.get_file_list([metadata.pid])
+        if not self.pic_files:
+            return
         if len(self.pic_files) > 1:
-            self.ui.fileTypeAndSizeLabel.setText(f"{self.pic_files[0].file_type}, {len(self.pic_files)} pics")
+            self.ui.fileTypeAndSizeLabel.setText(f"{len(self.pic_files)} pics")
             for pic in self.pic_files:
                 if pic.num == 0:
                     pixmap = QPixmap(os.path.join(pic.directory, pic.file_name))

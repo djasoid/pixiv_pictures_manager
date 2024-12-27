@@ -712,7 +712,7 @@ background: rgb(200,200,200);
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="addNewPicsAction"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -723,20 +723,23 @@ background: rgb(200,200,200);
     <property name="title">
      <string>选项</string>
     </property>
-    <addaction name="actionR_18"/>
+    <addaction name="showRestrictedAction"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_3"/>
    <addaction name="menu_2"/>
   </widget>
-  <action name="actionR_18">
+  <action name="showRestrictedAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>R-18</string>
    </property>
   </action>
-  <action name="action">
+  <action name="addNewPicsAction">
    <property name="text">
-    <string>添加文件夹</string>
+    <string>添加新图片...</string>
    </property>
   </action>
  </widget>
