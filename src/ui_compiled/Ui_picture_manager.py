@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
         self.filterToolBox.addItem(self.tagSelector, u"\u6807\u7b7e\u9009\u62e9")
         self.imageSelector = QWidget()
         self.imageSelector.setObjectName(u"imageSelector")
-        self.imageSelector.setGeometry(QRect(0, 0, 250, 515))
+        self.imageSelector.setGeometry(QRect(0, 0, 213, 454))
         self.verticalLayout_5 = QVBoxLayout(self.imageSelector)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.filterGroupBox = QGroupBox(self.imageSelector)
@@ -405,6 +405,7 @@ class Ui_MainWindow(object):
 
         self.picBrowseScrollArea = QScrollArea(self.centralwidget)
         self.picBrowseScrollArea.setObjectName(u"picBrowseScrollArea")
+        self.picBrowseScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.picBrowseScrollArea.setWidgetResizable(True)
         self.picBrowseContentWidget = QWidget()
         self.picBrowseContentWidget.setObjectName(u"picBrowseContentWidget")
@@ -442,7 +443,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.filterToolBox.setCurrentIndex(0)
-        self.tagTreeTabWidget.setCurrentIndex(0)
+        self.tagTreeTabWidget.setCurrentIndex(1)
         self.sortComboBox.setCurrentIndex(-1)
 
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout, QFileDialog
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QTreeWidget, QApplication, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout, QFileDialog
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QDropEvent, QBrush, QColor, QPalette
 from PySide6.QtCore import QThread, Signal
 
@@ -28,8 +28,12 @@ class PictureManagerController:
         
     def _init_ui(self):
         self.view.sortComboBox.addItems(['id'])
+        self.timer = QTimer(self.view)
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.add_include_tag)
         
     def _init_context(self):
+        self.displayed_widget = []
         self.refresh_browse_area_width()
         self.display_index = 0
         self.display_row = 0
@@ -83,31 +87,36 @@ class PictureManagerController:
             item.addChild(self._get_tree_item(sub_tag))
         
         return item
+    
+    def handle_single_click(self, item: QTreeWidgetItem) -> None:
+        self.single_clicked_item = item
+        self.timer.start(250)
 
-    def add_include_tag(self, item: QTreeWidgetItem, column: int):
+    def add_include_tag(self):
+        item = self.single_clicked_item
         tag_name = item.text(0)
         tag = self.tag_tree.get_tag(tag_name)
         if not tag.is_tag:
             return
         
-        if tag_name not in self.include_tag_set and tag_name not in self.exclude_tag_set:
-            self.include_tag_set.add(tag_name)
-            tag_widget = TagWidget(self.view.selectedTagScrollAreaWidgetContent, self, tag_name, True)
-            self.view.selectedTagLayout.insertWidget(0, tag_widget)
-            self.last_added_tag = tag_widget
-            self.last_added_tag_name = tag_name
-            self._pic_tag_search()
+        if tag_name in self.include_tag_set and tag_name in self.exclude_tag_set:
+            return
         
-    def add_exclude_tag(self, item: QTreeWidgetItem, column: int):
+        self.include_tag_set.add(tag_name)
+        tag_widget = TagWidget(self.view.selectedTagScrollAreaWidgetContent, self, tag_name, True)
+        self.view.selectedTagLayout.insertWidget(0, tag_widget)
+        self._pic_tag_search()
+        
+    def add_exclude_tag(self, item: QTreeWidgetItem):
+        self.timer.stop()
         tag_name = item.text(0)
         tag = self.tag_tree.get_tag(tag_name)
-        if tag_name in self.exclude_tag_set:
+        if tag_name in self.exclude_tag_set or tag_name in self.include_tag_set:
             return
         
-        if not tag.is_tag or tag_name != self.last_added_tag_name:
+        if not tag.is_tag:
             return
 
-        self.remove_selected_tag(self.last_added_tag) # remove the tag added by single click
         self.exclude_tag_set.add(tag_name)
         self.view.selectedTagLayout.addWidget(TagWidget(self.view.selectedTagScrollAreaWidgetContent, self, tag_name, False))
         self._pic_tag_search()
@@ -213,7 +222,6 @@ class PictureManagerController:
                         if parent_tag not in self.highlighted_tags:
                             highlight_item(parent_tag)
                         
-        
         available_tags = set()
         for data in self.pic_metadata_dict.values():
             available_tags.update(data.tags)
@@ -376,10 +384,15 @@ class PictureManagerController:
         return False
     
     def refresh_browse_area_width(self) -> None:
-        current_width = self.view.picBrowseContentWidget.width()
-        self.browse_area_width = int(current_width / 250)
+        current_width = self.view.picBrowseScrollArea.width()
+        self.max_widgets_per_row = current_width // 250 if current_width >= 250 else 1
+        for i, widget in enumerate(self.displayed_widget):
+            row = i // self.max_widgets_per_row
+            column = i % self.max_widgets_per_row
+            self.view.picDisplayLayout.addWidget(widget, row, column)
     
     def _refresh_pic_display(self) -> None:
+        self.displayed_widget.clear()
         self.refresh_browse_area_width()
         self._clear_all_widgets(self.view.picDisplayLayout)
         self.display_row = 0
@@ -403,7 +416,7 @@ class PictureManagerController:
         if current_index >= len(self.display_pic_list):
             return
         
-        load_amount = self.browse_area_width * 2
+        load_amount = self.max_widgets_per_row * 3
         
         while current_index < len(self.display_pic_list) and load_amount > 0:
             if self._is_restricted(self.display_pic_list[current_index]) and not self.show_restricted:
@@ -411,9 +424,10 @@ class PictureManagerController:
                 continue
             
             pic_frame = PictureFrame(self.view.picBrowseContentWidget, self, self.display_pic_list[current_index])
+            self.displayed_widget.append(pic_frame)
             self.view.picDisplayLayout.addWidget(pic_frame, self.display_row, self.display_column)
             self.display_column += 1
-            if self.display_column == self.browse_area_width:
+            if self.display_column == self.max_widgets_per_row:
                 self.display_column = 0
                 self.display_row += 1
         

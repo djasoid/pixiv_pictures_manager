@@ -57,7 +57,7 @@
            <enum>QTabWidget::TabShape::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="tabsClosable">
            <bool>false</bool>
@@ -167,8 +167,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>250</width>
-         <height>515</height>
+         <width>213</width>
+         <height>454</height>
         </rect>
        </property>
        <attribute name="label">
@@ -678,6 +678,9 @@ background: rgb(200,200,200);
       </item>
       <item>
        <widget class="QScrollArea" name="picBrowseScrollArea">
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+        </property>
         <property name="widgetResizable">
          <bool>true</bool>
         </property>

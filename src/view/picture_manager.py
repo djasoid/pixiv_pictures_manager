@@ -21,8 +21,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.searchTagTreeTextEdit.installEventFilter(self)
 
         # tag tree item click event
-        self.characterTagTree.itemClicked.connect(self.controller.add_include_tag)
-        self.attributeTagTree.itemClicked.connect(self.controller.add_include_tag)
+        self.characterTagTree.itemClicked.connect(self.controller.handle_single_click)
+        self.attributeTagTree.itemClicked.connect(self.controller.handle_single_click)
         self.characterTagTree.itemDoubleClicked.connect(self.controller.add_exclude_tag)
         self.attributeTagTree.itemDoubleClicked.connect(self.controller.add_exclude_tag)
 
