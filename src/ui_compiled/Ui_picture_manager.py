@@ -30,6 +30,9 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(940, 643)
+        icon = QIcon()
+        icon.addFile(u"res/image/icon/picture_manager.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
         self.showRestrictedAction = QAction(MainWindow)
         self.showRestrictedAction.setObjectName(u"showRestrictedAction")
         self.showRestrictedAction.setCheckable(True)
@@ -105,7 +108,7 @@ class Ui_MainWindow(object):
         self.filterToolBox.addItem(self.tagSelector, u"\u6807\u7b7e\u9009\u62e9")
         self.imageSelector = QWidget()
         self.imageSelector.setObjectName(u"imageSelector")
-        self.imageSelector.setGeometry(QRect(0, 0, 213, 454))
+        self.imageSelector.setGeometry(QRect(0, 0, 250, 515))
         self.verticalLayout_5 = QVBoxLayout(self.imageSelector)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.filterGroupBox = QGroupBox(self.imageSelector)
@@ -443,7 +446,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.filterToolBox.setCurrentIndex(0)
-        self.tagTreeTabWidget.setCurrentIndex(1)
+        self.tagTreeTabWidget.setCurrentIndex(0)
         self.sortComboBox.setCurrentIndex(-1)
 
 
@@ -451,7 +454,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Pixiv\u56fe\u7247\u7ba1\u7406", None))
         self.showRestrictedAction.setText(QCoreApplication.translate("MainWindow", u"R-18", None))
         self.addNewPicsAction.setText(QCoreApplication.translate("MainWindow", u"\u6dfb\u52a0\u65b0\u56fe\u7247...", None))
         self.tagTreeTabWidget.setTabText(self.tagTreeTabWidget.indexOf(self.characterTagTab), QCoreApplication.translate("MainWindow", u"\u89d2\u8272", None))

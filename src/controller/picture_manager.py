@@ -492,5 +492,4 @@ class DataCollectThread(QThread):
         self.database.complete_tag(self.tag_tree, new_pics, self.connection)
         self.status_update.emit("Indexing tags...")
         self.database.init_tag_index(self.tag_tree, new_pics, self.connection)
-        print("Data collection finished.")
         self.finished.emit()

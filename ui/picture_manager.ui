@@ -14,7 +14,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Pixiv图片管理</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>res/image/icon/picture_manager.png</normaloff>res/image/icon/picture_manager.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -57,7 +61,7 @@
            <enum>QTabWidget::TabShape::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="tabsClosable">
            <bool>false</bool>
@@ -167,8 +171,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>213</width>
-         <height>454</height>
+         <width>250</width>
+         <height>515</height>
         </rect>
        </property>
        <attribute name="label">
