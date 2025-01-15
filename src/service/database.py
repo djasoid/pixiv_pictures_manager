@@ -369,7 +369,7 @@ class PicDatabase:
             for file in files:
                 processed_files += 1
                 if thread:
-                    thread.status_update.emit(f"Processed {processed_files} files")
+                    thread.status_update.emit(f"处理了 {processed_files} 个文件")
 
                 file_path = os.path.join(root, file)
                 if file.endswith(".txt"):

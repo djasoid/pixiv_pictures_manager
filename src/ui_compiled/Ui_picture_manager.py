@@ -18,8 +18,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
     QFrame, QGridLayout, QGroupBox, QHBoxLayout,
-    QHeaderView, QLabel, QMainWindow, QMenu,
-    QMenuBar, QPlainTextEdit, QPushButton, QScrollArea,
+    QHeaderView, QLabel, QLineEdit, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QScrollArea,
     QSizePolicy, QSlider, QSpacerItem, QStatusBar,
     QTabWidget, QToolBox, QTreeWidget, QTreeWidgetItem,
     QVBoxLayout, QWidget)
@@ -89,19 +89,9 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.tagTreeTabWidget)
 
-        self.searchTagTreeTextEdit = QPlainTextEdit(self.tagSelector)
+        self.searchTagTreeTextEdit = QLineEdit(self.tagSelector)
         self.searchTagTreeTextEdit.setObjectName(u"searchTagTreeTextEdit")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.searchTagTreeTextEdit.sizePolicy().hasHeightForWidth())
-        self.searchTagTreeTextEdit.setSizePolicy(sizePolicy)
-        self.searchTagTreeTextEdit.setMaximumSize(QSize(16777215, 25))
-        self.searchTagTreeTextEdit.viewport().setProperty(u"cursor", QCursor(Qt.CursorShape.IBeamCursor))
-        self.searchTagTreeTextEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.searchTagTreeTextEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.searchTagTreeTextEdit.setBackgroundVisible(False)
-        self.searchTagTreeTextEdit.setCenterOnScroll(False)
+        self.searchTagTreeTextEdit.setMinimumSize(QSize(0, 25))
 
         self.verticalLayout.addWidget(self.searchTagTreeTextEdit)
 
@@ -180,12 +170,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6.addWidget(self.label)
 
-        self.resolutionWidthEdit = QPlainTextEdit(self.filterGroupBox)
+        self.resolutionWidthEdit = QLineEdit(self.filterGroupBox)
         self.resolutionWidthEdit.setObjectName(u"resolutionWidthEdit")
-        sizePolicy.setHeightForWidth(self.resolutionWidthEdit.sizePolicy().hasHeightForWidth())
-        self.resolutionWidthEdit.setSizePolicy(sizePolicy)
-        self.resolutionWidthEdit.setMaximumSize(QSize(16777215, 25))
-        self.resolutionWidthEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.resolutionWidthEdit.setMinimumSize(QSize(0, 25))
 
         self.horizontalLayout_6.addWidget(self.resolutionWidthEdit)
 
@@ -196,21 +183,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.label_2 = QLabel(self.filterGroupBox)
         self.label_2.setObjectName(u"label_2")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
-        self.label_2.setSizePolicy(sizePolicy1)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
 
         self.horizontalLayout_7.addWidget(self.label_2)
 
-        self.resolutionHeightEdit = QPlainTextEdit(self.filterGroupBox)
+        self.resolutionHeightEdit = QLineEdit(self.filterGroupBox)
         self.resolutionHeightEdit.setObjectName(u"resolutionHeightEdit")
-        sizePolicy.setHeightForWidth(self.resolutionHeightEdit.sizePolicy().hasHeightForWidth())
-        self.resolutionHeightEdit.setSizePolicy(sizePolicy)
-        self.resolutionHeightEdit.setMaximumSize(QSize(16777215, 25))
-        self.resolutionHeightEdit.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.resolutionHeightEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.resolutionHeightEdit.setMinimumSize(QSize(0, 25))
 
         self.horizontalLayout_7.addWidget(self.resolutionHeightEdit)
 
@@ -263,26 +246,26 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.label_7 = QLabel(self.sortGroupBox)
         self.label_7.setObjectName(u"label_7")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
-        self.label_7.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
+        self.label_7.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout_5.addWidget(self.label_7)
 
         self.label_8 = QLabel(self.sortGroupBox)
         self.label_8.setObjectName(u"label_8")
-        sizePolicy2.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
-        self.label_8.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
+        self.label_8.setSizePolicy(sizePolicy1)
         self.label_8.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_5.addWidget(self.label_8)
 
         self.label_9 = QLabel(self.sortGroupBox)
         self.label_9.setObjectName(u"label_9")
-        sizePolicy2.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
-        self.label_9.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
+        self.label_9.setSizePolicy(sizePolicy1)
         self.label_9.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
 
         self.horizontalLayout_5.addWidget(self.label_9)
@@ -325,11 +308,11 @@ class Ui_MainWindow(object):
 
         self.label_10 = QLabel(self.sortGroupBox)
         self.label_10.setObjectName(u"label_10")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
-        self.label_10.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
+        self.label_10.setSizePolicy(sizePolicy2)
         self.label_10.setMaximumSize(QSize(10, 16777215))
         self.label_10.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -387,11 +370,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.scrollArea = QScrollArea(self.centralwidget)
         self.scrollArea.setObjectName(u"scrollArea")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
-        self.scrollArea.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy3)
         self.scrollArea.setMinimumSize(QSize(0, 50))
         self.scrollArea.setMaximumSize(QSize(16777215, 50))
         self.scrollArea.setWidgetResizable(True)
@@ -468,7 +451,6 @@ class Ui_MainWindow(object):
         self.pngCheckBox.setText(QCoreApplication.translate("MainWindow", u"PNG", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"\u5206\u8fa8\u7387", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u5bbd\uff1a", None))
-        self.resolutionWidthEdit.setPlaceholderText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\uff1a", None))
         self.clearResolutionPushButton.setText(QCoreApplication.translate("MainWindow", u"\u6e05\u7a7a", None))
         self.sortGroupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6392\u5e8f", None))

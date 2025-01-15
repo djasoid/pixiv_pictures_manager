@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QTreeWidget, QApplication, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog, QLayout, QFileDialog
+from PySide6.QtWidgets import QTreeWidgetItem, QAbstractItemView, QLayout, QFileDialog
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QDropEvent, QBrush, QColor, QPalette
+from PySide6.QtGui import QBrush, QPalette
 from PySide6.QtCore import QThread, Signal
 
 from service.tag_tree import TagTree, Tag
@@ -51,8 +51,8 @@ class PictureManagerController:
             'gif': True
         }
         self.last_resolution_filter = {
-            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
-            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
+            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.text()),
+            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.text())
         }
         self.sort_ratio = 1
         self.slider_edited = False
@@ -283,8 +283,8 @@ class PictureManagerController:
             'gif': self.view.gifCheckBox.isChecked()
         }
         resolution_filter = {
-            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.toPlainText()),
-            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.toPlainText())
+            'width': self._parse_resolution_range(self.view.resolutionWidthEdit.text()),
+            'height': self._parse_resolution_range(self.view.resolutionHeightEdit.text())
         }
         
         if self.last_file_type_filter == file_type_filter:
@@ -488,8 +488,8 @@ class DataCollectThread(QThread):
     def run(self):
         self.connection = self.database.get_new_connection()
         new_pics = self.database.collect_data(self.directory, thread=self, connection=self.connection)
-        self.status_update.emit("Completing tags...")
+        self.status_update.emit("补全标签...")
         self.database.complete_tag(self.tag_tree, new_pics, self.connection)
-        self.status_update.emit("Indexing tags...")
+        self.status_update.emit("建立标签索引...")
         self.database.init_tag_index(self.tag_tree, new_pics, self.connection)
         self.finished.emit()

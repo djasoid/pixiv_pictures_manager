@@ -43,7 +43,7 @@
        <item>
         <layout class="QVBoxLayout" name="viewTreeLayout">
          <property name="spacing">
-          <number>0</number>
+          <number>3</number>
          </property>
          <property name="sizeConstraint">
           <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
@@ -115,18 +115,15 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QTextEdit" name="viewTreeSearchEdit">
-              <property name="maximumSize">
+             <widget class="QLineEdit" name="viewTreeSearchEdit">
+              <property name="minimumSize">
                <size>
-                <width>16777215</width>
+                <width>0</width>
                 <height>30</height>
                </size>
               </property>
-              <property name="acceptRichText">
-               <bool>false</bool>
-              </property>
               <property name="placeholderText">
-               <string>Search Above</string>
+               <string>搜索标签</string>
               </property>
              </widget>
             </item>
@@ -145,7 +142,7 @@
        <item>
         <layout class="QVBoxLayout" name="mainTreeLayout">
          <property name="spacing">
-          <number>0</number>
+          <number>3</number>
          </property>
          <item>
           <widget class="MainTagTreeWidget" name="mainTree">
@@ -175,18 +172,21 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="mainTreeSearchEdit">
-           <property name="maximumSize">
+          <widget class="QLineEdit" name="mainTreeSearchEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
             <size>
-             <width>16777215</width>
+             <width>0</width>
              <height>30</height>
             </size>
            </property>
-           <property name="acceptRichText">
-            <bool>false</bool>
-           </property>
            <property name="placeholderText">
-            <string>Search Above</string>
+            <string>搜索标签</string>
            </property>
           </widget>
          </item>
@@ -195,7 +195,7 @@
        <item>
         <layout class="QVBoxLayout" name="tagEditLayout">
          <property name="spacing">
-          <number>0</number>
+          <number>3</number>
          </property>
          <item>
           <layout class="QHBoxLayout" name="newTagLayout">
@@ -283,24 +283,15 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="newTagInput">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
+          <widget class="QLineEdit" name="newTagInput">
+           <property name="minimumSize">
             <size>
-             <width>16777215</width>
+             <width>0</width>
              <height>30</height>
             </size>
            </property>
-           <property name="acceptRichText">
-            <bool>false</bool>
-           </property>
            <property name="placeholderText">
-            <string>Enter new tags</string>
+            <string>输入新标签</string>
            </property>
           </widget>
          </item>

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QTextEdit, QListWidgetItem, QDialog
+from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QAbstractItemView, QLineEdit, QListWidgetItem, QDialog
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDropEvent, QBrush
 
@@ -35,7 +35,7 @@ class TagManagementController:
     def search_tree(
             self,
             tree: QTreeWidget, 
-            searchEdit: QTextEdit, 
+            searchEdit: QLineEdit, 
         ):
         """search the tree widget"""
         if tree is self.view.viewTree:
@@ -47,7 +47,7 @@ class TagManagementController:
             search_index = self.main_tree_search_index
             search_list = self.main_tree_search_list
         
-        search_text = searchEdit.toPlainText()
+        search_text = searchEdit.text()
         if search_text == last_search and search_list:
             if search_index < len(search_list):
                 self._expand_and_scroll_to_item(search_list[search_index])
@@ -202,7 +202,7 @@ class TagManagementController:
         result = dialog.exec_()
         if result == QDialog.DialogCode.Accepted:
             synonyms_input = set(dialog.synonymTextEdit.toPlainText().split("\n"))
-            en_name_input = dialog.englishNameEdit.toPlainText()
+            en_name_input = dialog.englishNameEdit.text()
             type_input = dialog.typeComboBox.currentText()
             if en_name_input.isascii():
                 self.tag_tree.tag_dict[tag_name].set_en_name(en_name_input)

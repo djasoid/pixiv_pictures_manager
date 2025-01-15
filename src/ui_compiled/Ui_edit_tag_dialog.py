@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
-    QDialogButtonBox, QHBoxLayout, QLabel, QPlainTextEdit,
-    QSizePolicy, QVBoxLayout, QWidget)
+    QDialogButtonBox, QHBoxLayout, QLabel, QLineEdit,
+    QPlainTextEdit, QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_edit_tag_dialog(object):
     def setupUi(self, edit_tag_dialog):
@@ -33,9 +33,9 @@ class Ui_edit_tag_dialog(object):
 
         self.verticalLayout.addWidget(self.english_name_label)
 
-        self.englishNameEdit = QPlainTextEdit(edit_tag_dialog)
+        self.englishNameEdit = QLineEdit(edit_tag_dialog)
         self.englishNameEdit.setObjectName(u"englishNameEdit")
-        self.englishNameEdit.setMaximumSize(QSize(16777215, 30))
+        self.englishNameEdit.setMinimumSize(QSize(0, 30))
 
         self.verticalLayout.addWidget(self.englishNameEdit)
 
@@ -65,8 +65,8 @@ class Ui_edit_tag_dialog(object):
 
         self.buttonBox = QDialogButtonBox(edit_tag_dialog)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Vertical)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.buttonBox.setOrientation(Qt.Orientation.Vertical)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setCenterButtons(False)
 
         self.horizontalLayout.addWidget(self.buttonBox)
@@ -80,9 +80,9 @@ class Ui_edit_tag_dialog(object):
     # setupUi
 
     def retranslateUi(self, edit_tag_dialog):
-        edit_tag_dialog.setWindowTitle(QCoreApplication.translate("edit_tag_dialog", u"Edit Synonym", None))
-        self.english_name_label.setText(QCoreApplication.translate("edit_tag_dialog", u"English Name", None))
-        self.type_label.setText(QCoreApplication.translate("edit_tag_dialog", u"Type", None))
-        self.synonyms_label.setText(QCoreApplication.translate("edit_tag_dialog", u"Synonyms", None))
+        edit_tag_dialog.setWindowTitle(QCoreApplication.translate("edit_tag_dialog", u"\u7f16\u8f91\u540c\u4e49\u6807\u7b7e", None))
+        self.english_name_label.setText(QCoreApplication.translate("edit_tag_dialog", u"\u82f1\u6587\u540d", None))
+        self.type_label.setText(QCoreApplication.translate("edit_tag_dialog", u"\u6807\u7b7e\u7c7b\u578b", None))
+        self.synonyms_label.setText(QCoreApplication.translate("edit_tag_dialog", u"\u540c\u4e49\u6807\u7b7e", None))
     # retranslateUi
 

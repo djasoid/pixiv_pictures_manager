@@ -17,9 +17,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QHBoxLayout,
-    QHeaderView, QLayout, QListWidget, QListWidgetItem,
-    QMainWindow, QSizePolicy, QStatusBar, QTextEdit,
-    QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
+    QHeaderView, QLayout, QLineEdit, QListWidget,
+    QListWidgetItem, QMainWindow, QSizePolicy, QStatusBar,
+    QTextEdit, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+    QWidget)
 
 from component.widget.main_tag_tree_widget import MainTagTreeWidget
 
@@ -56,7 +57,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QHBoxLayout(self.tagWidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.viewTreeLayout = QVBoxLayout()
-        self.viewTreeLayout.setSpacing(0)
+        self.viewTreeLayout.setSpacing(3)
         self.viewTreeLayout.setObjectName(u"viewTreeLayout")
         self.viewTreeLayout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.viewTree = QTreeWidget(self.tagWidget)
@@ -87,10 +88,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.viewTreeSearchEdit = QTextEdit(self.viewTreeSearchWidget)
+        self.viewTreeSearchEdit = QLineEdit(self.viewTreeSearchWidget)
         self.viewTreeSearchEdit.setObjectName(u"viewTreeSearchEdit")
-        self.viewTreeSearchEdit.setMaximumSize(QSize(16777215, 30))
-        self.viewTreeSearchEdit.setAcceptRichText(False)
+        self.viewTreeSearchEdit.setMinimumSize(QSize(0, 30))
 
         self.horizontalLayout_2.addWidget(self.viewTreeSearchEdit)
 
@@ -106,7 +106,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.viewTreeLayout)
 
         self.mainTreeLayout = QVBoxLayout()
-        self.mainTreeLayout.setSpacing(0)
+        self.mainTreeLayout.setSpacing(3)
         self.mainTreeLayout.setObjectName(u"mainTreeLayout")
         self.mainTree = MainTagTreeWidget(self.tagWidget)
         __qtreewidgetitem1 = QTreeWidgetItem()
@@ -122,10 +122,14 @@ class Ui_MainWindow(object):
 
         self.mainTreeLayout.addWidget(self.mainTree)
 
-        self.mainTreeSearchEdit = QTextEdit(self.tagWidget)
+        self.mainTreeSearchEdit = QLineEdit(self.tagWidget)
         self.mainTreeSearchEdit.setObjectName(u"mainTreeSearchEdit")
-        self.mainTreeSearchEdit.setMaximumSize(QSize(16777215, 30))
-        self.mainTreeSearchEdit.setAcceptRichText(False)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.mainTreeSearchEdit.sizePolicy().hasHeightForWidth())
+        self.mainTreeSearchEdit.setSizePolicy(sizePolicy2)
+        self.mainTreeSearchEdit.setMinimumSize(QSize(0, 30))
 
         self.mainTreeLayout.addWidget(self.mainTreeSearchEdit)
 
@@ -133,18 +137,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.mainTreeLayout)
 
         self.tagEditLayout = QVBoxLayout()
-        self.tagEditLayout.setSpacing(0)
+        self.tagEditLayout.setSpacing(3)
         self.tagEditLayout.setObjectName(u"tagEditLayout")
         self.newTagLayout = QHBoxLayout()
         self.newTagLayout.setSpacing(0)
         self.newTagLayout.setObjectName(u"newTagLayout")
         self.newTagTranslList = QListWidget(self.tagWidget)
         self.newTagTranslList.setObjectName(u"newTagTranslList")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.newTagTranslList.sizePolicy().hasHeightForWidth())
-        self.newTagTranslList.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.newTagTranslList.sizePolicy().hasHeightForWidth())
+        self.newTagTranslList.setSizePolicy(sizePolicy3)
         self.newTagTranslList.setMaximumSize(QSize(150, 16777215))
         self.newTagTranslList.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.newTagTranslList.setEditTriggers(QAbstractItemView.EditTrigger.DoubleClicked)
@@ -156,8 +160,8 @@ class Ui_MainWindow(object):
 
         self.newTagOriginalList = QListWidget(self.tagWidget)
         self.newTagOriginalList.setObjectName(u"newTagOriginalList")
-        sizePolicy2.setHeightForWidth(self.newTagOriginalList.sizePolicy().hasHeightForWidth())
-        self.newTagOriginalList.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.newTagOriginalList.sizePolicy().hasHeightForWidth())
+        self.newTagOriginalList.setSizePolicy(sizePolicy3)
         self.newTagOriginalList.setMaximumSize(QSize(150, 16777215))
         self.newTagOriginalList.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.newTagOriginalList.setDragEnabled(True)
@@ -170,20 +174,17 @@ class Ui_MainWindow(object):
 
         self.newTagStoreList = QListWidget(self.tagWidget)
         self.newTagStoreList.setObjectName(u"newTagStoreList")
-        sizePolicy2.setHeightForWidth(self.newTagStoreList.sizePolicy().hasHeightForWidth())
-        self.newTagStoreList.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.newTagStoreList.sizePolicy().hasHeightForWidth())
+        self.newTagStoreList.setSizePolicy(sizePolicy3)
         self.newTagStoreList.setMaximumSize(QSize(16777215, 100))
         self.newTagStoreList.setDragEnabled(True)
         self.newTagStoreList.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
 
         self.tagEditLayout.addWidget(self.newTagStoreList)
 
-        self.newTagInput = QTextEdit(self.tagWidget)
+        self.newTagInput = QLineEdit(self.tagWidget)
         self.newTagInput.setObjectName(u"newTagInput")
-        sizePolicy2.setHeightForWidth(self.newTagInput.sizePolicy().hasHeightForWidth())
-        self.newTagInput.setSizePolicy(sizePolicy2)
-        self.newTagInput.setMaximumSize(QSize(16777215, 30))
-        self.newTagInput.setAcceptRichText(False)
+        self.newTagInput.setMinimumSize(QSize(0, 30))
 
         self.tagEditLayout.addWidget(self.newTagInput)
 
@@ -237,9 +238,9 @@ class Ui_MainWindow(object):
         self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.actionUndo.setText(QCoreApplication.translate("MainWindow", u"Undo", None))
         self.actionRedo.setText(QCoreApplication.translate("MainWindow", u"Redo", None))
-        self.viewTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search Above", None))
+        self.viewTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u6807\u7b7e", None))
         self.tagMovingCheckBox.setText(QCoreApplication.translate("MainWindow", u"\u79fb\u52a8\u6807\u7b7e", None))
-        self.mainTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search Above", None))
-        self.newTagInput.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Enter new tags", None))
+        self.mainTreeSearchEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u6807\u7b7e", None))
+        self.newTagInput.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u8f93\u5165\u65b0\u6807\u7b7e", None))
     # retranslateUi
 

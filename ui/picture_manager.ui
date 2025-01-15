@@ -131,33 +131,12 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="searchTagTreeTextEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
+         <widget class="QLineEdit" name="searchTagTreeTextEdit">
+          <property name="minimumSize">
            <size>
-            <width>16777215</width>
+            <width>0</width>
             <height>25</height>
            </size>
-          </property>
-          <property name="cursor" stdset="0">
-           <cursorShape>IBeamCursor</cursorShape>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="backgroundVisible">
-           <bool>false</bool>
-          </property>
-          <property name="centerOnScroll">
-           <bool>false</bool>
           </property>
           <property name="placeholderText">
            <string>搜索标签</string>
@@ -284,24 +263,12 @@
               </widget>
              </item>
              <item>
-              <widget class="QPlainTextEdit" name="resolutionWidthEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
+              <widget class="QLineEdit" name="resolutionWidthEdit">
+               <property name="minimumSize">
                 <size>
-                 <width>16777215</width>
+                 <width>0</width>
                  <height>25</height>
                 </size>
-               </property>
-               <property name="verticalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
-               </property>
-               <property name="placeholderText">
-                <string/>
                </property>
               </widget>
              </item>
@@ -323,24 +290,12 @@
               </widget>
              </item>
              <item>
-              <widget class="QPlainTextEdit" name="resolutionHeightEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
+              <widget class="QLineEdit" name="resolutionHeightEdit">
+               <property name="minimumSize">
                 <size>
-                 <width>16777215</width>
+                 <width>0</width>
                  <height>25</height>
                 </size>
-               </property>
-               <property name="verticalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
-               </property>
-               <property name="horizontalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                </property>
               </widget>
              </item>

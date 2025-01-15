@@ -56,14 +56,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Filter for new_tag_input, implement tab to add '#' and enter to add tag
         if (source == self.newTagInput and event.type() == QEvent.Type.KeyPress):
             if event.key() == Qt.Key.Key_Tab:
-                text = self.newTagInput.toPlainText()
+                text = self.newTagInput.text()
                 if text.startswith('#'):
-                    self.newTagInput.setPlainText(text[1:])
+                    self.newTagInput.setText(text[1:])
                 else:
-                    self.newTagInput.setPlainText('#' + text)
+                    self.newTagInput.setText('#' + text)
                 return True
             elif event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
-                item = QListWidgetItem(self.newTagInput.toPlainText())
+                item = QListWidgetItem(self.newTagInput.text())
                 self.newTagStoreList.addItem(item)
                 self.newTagInput.clear()
                 return True
