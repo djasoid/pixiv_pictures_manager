@@ -55,14 +55,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Filter for tag_search_edit, implement enter to search tag
         if (source == self.searchTagTreeTextEdit and event.type() == QEvent.Type.KeyPress):
             if event.key() == Qt.Key.Key_Return:
-                self.controller.tag_search(self.searchTagTreeTextEdit.toPlainText())
+                self.controller.tag_search(self.searchTagTreeTextEdit.text())
                 return True
         
         return super().eventFilter(source, event)
 
     def on_scroll_pic_browse(self):
         scroll_bar = self.picBrowseScrollArea.verticalScrollBar()
-        if scroll_bar.value() == scroll_bar.maximum():
+        if scroll_bar.maximum() == scroll_bar.value() and not self.controller.loading_pics:
             self.controller.load_more_pics()
             
     def resizeEvent(self, event):

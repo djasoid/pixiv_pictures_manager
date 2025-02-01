@@ -150,8 +150,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>250</width>
-         <height>515</height>
+         <width>213</width>
+         <height>454</height>
         </rect>
        </property>
        <attribute name="label">
@@ -651,6 +651,12 @@ background: rgb(200,200,200);
            <width>662</width>
            <height>513</height>
           </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <layout class="QGridLayout" name="picDisplayLayout"/>
         </widget>

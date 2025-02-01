@@ -418,7 +418,7 @@ class PicDatabase:
         
         self.database.commit()
 
-    def get_metadata_list(self, pids: list | set[int]) -> list['PicMetadata']:
+    def get_metadata_list(self, pids: list | set[int], cursor: sqlite3.Cursor = None) -> list['PicMetadata']:
         """
         Get metadata of a list of pids.
 
@@ -430,9 +430,11 @@ class PicDatabase:
         Returns:
         list: A list of PicMetadata objects.
         """
+        if cursor is None:
+            cursor = self.cursor
         metadata_list = []
         for pid in pids:
-            self.cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid,))
+            cursor.execute("SELECT * FROM metadata WHERE pid = ?", (pid,))
             metadata = self.cursor.fetchone()
             if metadata:
                 metadata_list.append(PicMetadata(*metadata))

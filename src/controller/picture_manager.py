@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
+import os
 
-from PySide6.QtWidgets import QTreeWidgetItem, QAbstractItemView, QLayout, QFileDialog
+from PySide6.QtWidgets import QTreeWidgetItem, QAbstractItemView, QLayout, QFileDialog, QGridLayout
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QBrush, QPalette
+from PySide6.QtGui import QBrush, QPalette, QPixmap
 from PySide6.QtCore import QThread, Signal
 
 from service.tag_tree import TagTree, Tag
@@ -58,6 +59,8 @@ class PictureManagerController:
         self.slider_edited = False
         self.spin_box_edited = False
         self.current_sort = 'id'
+        self.loading_pics = False
+        self.load_pic_thread = None
         
     def _init_tag_tree(self):
         self.tag_tree = TagTree()
@@ -395,6 +398,7 @@ class PictureManagerController:
         self.displayed_widget.clear()
         self.refresh_browse_area_width()
         self._clear_all_widgets(self.view.picDisplayLayout)
+        self.view.picBrowseScrollArea.verticalScrollBar().setValue(0)
         self.display_row = 0
         self.display_column = 0
         self.load_more_pics(0)
@@ -406,36 +410,79 @@ class PictureManagerController:
                 child.widget().deleteLater()
             elif child.layout():
                 self._clear_all_widgets(child.layout())
+        
+        layout.update()
 
-    def load_more_pics(self, current_index: int = None) -> None:
-        if current_index is None:
-            current_index = self.display_index
+    def display_loaded_pics(self, images: list[QPixmap]) -> None:
+        pic_frames = []
+        if self.displaying_metadata:
+            for i in range(len(images)):
+                pic_frame = PictureFrame(self.view.picBrowseContentWidget, images[i], self.pic_files_for_each_metadata[i], pic_data=self.display_pic_list[i])
+                pic_frames.append(pic_frame)
         else:
-            self.display_index = current_index
-            
-        if current_index >= len(self.display_pic_list):
-            return
+            for i in range(len(images)):
+                pic_frame = PictureFrame(self.view.picBrowseContentWidget, images[i], [self.display_pic_list[i]])
+                pic_frames.append(pic_frame)
         
-        load_amount = self.max_widgets_per_row * 3
-        
-        while current_index < len(self.display_pic_list) and load_amount > 0:
-            if self._is_restricted(self.display_pic_list[current_index]) and not self.show_restricted:
-                current_index += 1
-                continue
-            
-            pic_frame = PictureFrame(self.view.picBrowseContentWidget, self, self.display_pic_list[current_index])
+        for pic_frame in pic_frames:
             self.displayed_widget.append(pic_frame)
             self.view.picDisplayLayout.addWidget(pic_frame, self.display_row, self.display_column)
             self.display_column += 1
             if self.display_column == self.max_widgets_per_row:
                 self.display_column = 0
                 self.display_row += 1
+
+        self.load_pic_thread = None
+        self.loading_pics = False
         
+    def load_more_pics(self, current_index: int = None) -> None:
+        self.loading_pics = True
+        
+        if current_index is None:
+            current_index = self.display_index
+        else:
+            self.display_index = current_index
+            
+        if current_index >= len(self.display_pic_list):
+            self.loading_pics = False
+            return
+        
+        load_amount = self.max_widgets_per_row * 3
+
+        to_be_displayed_pics: list[PicFile | PicMetadata] = []
+        
+        while current_index < len(self.display_pic_list) and load_amount > 0:
+            if self._is_restricted(self.display_pic_list[current_index]) and not self.show_restricted:
+                current_index += 1
+                continue
+            
+            to_be_displayed_pics.append(self.display_pic_list[current_index])
             current_index += 1
             load_amount -= 1
-            
+        
         self.display_index = current_index
         
+        if isinstance(to_be_displayed_pics[0], PicMetadata):
+            self.displaying_metadata = True
+            self.pic_files_for_each_metadata = []
+            for pic_metadata in to_be_displayed_pics:
+                self.pic_files_for_each_metadata.append(self.database.get_file_list([pic_metadata.pid]))
+
+            display_pic_files = []
+            for pic_files in self.pic_files_for_each_metadata:
+                for pic_file in pic_files:
+                    if pic_file.num == 0:
+                        display_pic_files.append(pic_file)
+        else:
+            self.displaying_metadata = False
+            display_pic_files = to_be_displayed_pics
+            
+
+        self.load_pic_thread = PictureLoaderThread(display_pic_files)
+        self.load_pic_thread.return_result.connect(self.display_loaded_pics)
+        self.load_pic_thread.start()
+        
+            
     @log_execution("Info", "Adding new pictures from directory {args[1]}", "new pictures added")
     def add_new_pics(self, directory: str) -> None:
         message_box = DataCollectProcessMessageBox()
@@ -444,7 +491,6 @@ class PictureManagerController:
             message_box.setText(status)
 
         def close_message_box():
-            print("Data collection finished. Closing message box.")
             message_box.done(0)
 
         thread = DataCollectThread(self.database, self.tag_tree, directory)
@@ -492,4 +538,20 @@ class DataCollectThread(QThread):
         self.database.complete_tag(self.tag_tree, new_pics, self.connection)
         self.status_update.emit("建立标签索引...")
         self.database.init_tag_index(self.tag_tree, new_pics, self.connection)
+        self.finished.emit()
+
+class PictureLoaderThread(QThread):
+    return_result = Signal(list)
+    finished = Signal()
+
+    def __init__(self, to_be_loaded_pics: list[PicFile]):
+        super().__init__()
+        self.to_be_loaded_pics = to_be_loaded_pics
+
+    def run(self):
+        result = []
+        for pic_file in self.to_be_loaded_pics:
+            result.append(QPixmap(os.path.join(pic_file.directory, pic_file.file_name)))
+        
+        self.return_result.emit(result)
         self.finished.emit()
