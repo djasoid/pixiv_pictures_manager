@@ -49,7 +49,7 @@ def parse_metadata(file_path: str) -> tuple:
     Returns:
     tuple: A tuple containing the metadata information.
     """
-    tags = {}
+    tags = set()
     xRestrict = "allAges"
     pid = int(getline(file_path, 2).strip())
     title = getline(file_path, 5).strip()
@@ -59,7 +59,7 @@ def parse_metadata(file_path: str) -> tuple:
     line_num = 17
     while True: # read tags
         if getline(file_path, line_num) != "\n":
-            tags.update({getline(file_path, line_num).strip(): "metadata"})
+            tags.add(getline(file_path, line_num).strip())
         else:
             if "#R-18" in tags:
                 xRestrict = "R-18"
@@ -69,6 +69,7 @@ def parse_metadata(file_path: str) -> tuple:
             description_lines = []
             line_num += 6
             break
+        
         line_num += 1
     while True: # read description
         line = getline(file_path, line_num)
@@ -76,7 +77,8 @@ def parse_metadata(file_path: str) -> tuple:
             description_lines.append(line)
         else:
             description = '\n'.join(description_lines)
-            return pid, title, tags, description, user, user_id, date, xRestrict
+            return pid, title, list(tags), description, user, user_id, date, xRestrict
+        
         line_num += 1
 
 def parse_csv(file_path: str) -> list[tuple]:
@@ -92,8 +94,9 @@ def parse_csv(file_path: str) -> list[tuple]:
     list: A list containing the metadata information.
     """
     pics = []
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         reader = csv.reader(file)
+        next(reader)
         for row in reader:
             pid = int(row[0])
             tags = ["#" + tag for tag in row[1].split(',')]

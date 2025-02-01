@@ -66,6 +66,7 @@ class PicDatabase:
                 pid INT, 
                 title TEXT, 
                 tags TEXT,
+                completedTags TEXT,
                 description TEXT,
                 user TEXT,
                 userId INT,
@@ -125,7 +126,7 @@ class PicDatabase:
             self, 
             pid: int, 
             title: str, 
-            tags: dict, 
+            tags: list[str], 
             description: str, 
             user: str, 
             user_id: int, 
@@ -205,6 +206,20 @@ class PicDatabase:
             else:
                cursor.execute("INSERT INTO tagIndex (tag, pids) VALUES (?, ?)", (tag, json.dumps(list(pids), ensure_ascii=False)))
     
+    def get_pids_without_tags(self, cursor: sqlite3.Cursor = None) -> list[int]:
+        """
+        Get pids without tags.
+        """
+        if not cursor:
+            cursor = self.cursor
+        
+        result = set()    
+        cursor.execute("SELECT pid FROM metadata WHERE completedTags = '[]'")
+        result.update([i[0] for i in cursor.fetchall()])
+        cursor.execute("SELECT pid FROM imageData WHERE pid NOT IN (SELECT pid FROM metadata)")
+        result.update([i[0] for i in cursor.fetchall()])
+        return list(result)
+    
     def get_pids_by_tag(self, tag: str, cursor: sqlite3.Cursor = None) -> set[int]:
         """
         Get pids by tag.
@@ -219,7 +234,7 @@ class PicDatabase:
         else:
             return set()
     
-    def _get_tags(self, pid: int, cursor: sqlite3.Cursor = None) -> dict:
+    def _get_tags(self, pid: int, cursor: sqlite3.Cursor = None) -> set[str]:
         """
         Get tags of a picture.
         """
@@ -229,9 +244,23 @@ class PicDatabase:
         cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid,))
         tags_json = cursor.fetchone()
         if tags_json:
-            return json.loads(tags_json[0])
+            return set(json.loads(tags_json[0]))
         else:
-            return {}
+            return set()
+    
+    def _get_completed_tags(self, pid: int, cursor: sqlite3.Cursor = None) -> set[str]:
+        """
+        Get completed tags of a picture.
+        """
+        if not cursor:
+            cursor = self.cursor
+            
+        cursor.execute("SELECT completedTags FROM metadata WHERE pid = ?", (pid,))
+        tags_json = cursor.fetchone()
+        if tags_json:
+            return set(json.loads(tags_json[0]))
+        else:
+            return set()
         
     def _get_pid_list(self, cursor: sqlite3.Cursor = None) -> list[int]:
         """
@@ -256,7 +285,7 @@ class PicDatabase:
         cursor.execute("SELECT DISTINCT pid FROM imageData")
         return [item[0] for item in cursor.fetchall()]
         
-    def overwrite_tags(self, pid: str, tags: dict, cursor: sqlite3.Cursor = None) -> None:
+    def overwrite_tags(self, pid: str, tags: list, cursor: sqlite3.Cursor = None) -> None:
         """
         overwrite tags of a picture.
 
@@ -269,9 +298,30 @@ class PicDatabase:
         Returns:
         None
         """
+        if cursor is None:
+            cursor = self.cursor
+
         cursor.execute("UPDATE metadata SET tags = ? WHERE pid = ?", (json.dumps(tags, ensure_ascii=False), pid))
+        
+    def overwrite_completed_tags(self, pid: str, tags: list, cursor: sqlite3.Cursor = None) -> None:
+        """
+        overwrite completed tags of a picture.
+
+        This function overwrites the completed tags of a picture.
+
+        Parameters:
+        pid (str): The picture id.
+        tags (dict): The tags to overwrite.
+
+        Returns:
+        None
+        """
+        if cursor is None:
+            cursor = self.cursor
+            
+        cursor.execute("UPDATE metadata SET completedTags = ? WHERE pid = ?", (json.dumps(tags, ensure_ascii=False), pid))
     
-    def add_tags(self, pid: int, tags: dict, connection: sqlite3.Connection = None) -> None:
+    def add_tags(self, pid: int, tags: set, connection: sqlite3.Connection = None) -> None:
         """
         Add tags to a picture.
 
@@ -291,12 +341,33 @@ class PicDatabase:
         current_tags.update(tags)
         self.overwrite_tags(pid, current_tags, cursor=connection.cursor())
         connection.commit()
+        
+    def add_completed_tags(self, pid: int, tags: set, connection: sqlite3.Connection = None) -> None:
+        """
+        Add completed tags to a picture.
+
+        This function adds completed tags to a picture. If the tag already exists, it will be overwritten.
+
+        Parameters:
+        pid (str): The picture id.
+        tags (dict): The tags to add.
+        
+        Returns:
+        None
+        """
+        if not connection:
+            connection = self.database
+            
+        current_tags = self._get_tags(pid, cursor=connection.cursor())
+        current_tags.update(tags)
+        self.overwrite_tags(pid, current_tags, cursor=connection.cursor())
+        connection.commit()
 
     def insert_csv_data(
             self,
             pid: int, 
-            tags: list, 
-            tags_transl: list, 
+            tags: list[str], 
+            tags_transl: list[str], 
             user: str, 
             user_id: int, 
             title: str,
@@ -322,15 +393,15 @@ class PicDatabase:
             
         tag_pairs = list(zip(tags, tags_transl))
         for tag, tag_transl in tag_pairs:
-            cursor.execute("INSERT OR IGNORE INTO tags VALUES (?, ?, ?)", (tag, tag_transl, 0))
+            cursor.execute("INSERT OR REPLACE INTO tags VALUES (?, ?, ?)", (tag, tag_transl, 0))
         
-        tags_dict = {tag: "metadata" for tag in tags}
+        tags_list = [tag for tag in tags]
         self._insert_metadata(
             pid,
             title, 
-            tags_dict, 
+            tags_list, 
             description, 
-            user, 
+            user,
             user_id, 
             date, 
             xRestrict, 
@@ -389,34 +460,53 @@ class PicDatabase:
                 
                 elif file.endswith(".webp"): # ignore webp files because they cannot be processed
                     continue
-
+        
+        processed_metadata_ids = list(processed_metadata_ids)
+        self.count_tags(cursor=connection.cursor())
         connection.commit()
-        return list(processed_metadata_ids)
+        return processed_metadata_ids
 
-    def count_tags(self):
+    def count_tags(self, pid_list: list[int] = None, cursor: sqlite3.Cursor = None) -> None:
         """
         Count the number of appearances of each tag in the metadata.
         """
-        self.cursor.execute("UPDATE tags SET appearanceCount = 0")
-        self.cursor.execute("SELECT tags FROM metadata")
-        pic_tags = self.cursor.fetchall()
+        if cursor is None:
+            cursor = self.cursor
+
+        if pid_list is None:
+            update_existing = False
+            cursor.execute("UPDATE tags SET appearanceCount = 0")
+            cursor.execute("SELECT tags FROM metadata")
+            pic_tags = cursor.fetchall()
+        else:
+            update_existing = True
+            for pid in pid_list:
+                cursor.execute("SELECT tags FROM metadata WHERE pid = ?", (pid,))
+                pic_tags = cursor.fetchall()
         
         tag_count = {}
         
         for tags in pic_tags:
-            tags_dict = json.loads(tags[0])
-            for tag in tags_dict:
-                if tags_dict[tag] == "metadata":
-                    if tag in tag_count:
-                        tag_count[tag] += 1
-                    else:
-                        tag_count[tag] = 1
-        
-        for tag, count in tag_count.items():
-            self.cursor.execute("INSERT OR IGNORE INTO tags (originalTag, appearanceCount) VALUES (?, ?)", (tag, count))
-            self.cursor.execute("UPDATE tags SET appearanceCount = ? WHERE originalTag = ?", (count, tag))
-        
-        self.database.commit()
+            tags_list = json.loads(tags[0])
+            for tag in tags_list:
+                if tag in tag_count:
+                    tag_count[tag] += 1
+                else:
+                    tag_count[tag] = 1
+
+        if update_existing:
+            for tag, count in tag_count.items():
+                cursor.execute("SELECT appearanceCount FROM tags WHERE originalTag = ?", (tag,)).fetchone()
+                result = cursor.fetchone()
+                if result:
+                    current_count = result[0]
+                    cursor.execute("UPDATE tags SET appearanceCount = ? WHERE originalTag = ?", (current_count + count, tag))
+                else:
+                    cursor.execute("INSERT INTO tags (originalTag, appearanceCount) VALUES (?, ?)", (tag, count))
+        else:
+            for tag, count in tag_count.items():
+                cursor.execute("INSERT OR IGNORE INTO tags (originalTag, appearanceCount) VALUES (?, ?)", (tag, count))
+                cursor.execute("UPDATE tags SET appearanceCount = ? WHERE originalTag = ?", (count, tag))
 
     def get_metadata_list(self, pids: list | set[int], cursor: sqlite3.Cursor = None) -> list['PicMetadata']:
         """
@@ -482,10 +572,26 @@ class PicDatabase:
                 file_list.append(PicFile(*data))
         
         return file_list
+
+    def get_tag_count_list(self, cursor: sqlite3.Cursor = None) -> list[tuple[str, str, int]]:
+        """
+        Get a list of tag counts.
+
+        This function gets a list of tag counts.
+
+        Returns:
+        list: A list of tuples containing the tag, the translated tag, and the count.
+        """
+        if not cursor:
+            cursor = self.cursor
+            
+        cursor.execute("SELECT * FROM tags")
+        return cursor.fetchall()
     
     def complete_tag(self, tag_tree: 'TagTree', pid_list: list[int] = None, connection: sqlite3.Connection = None) -> None:
         """
-        iterate through the picture tags and add all parent tags to the picture tags.
+        iterate through the picture tags and complete the tags with parent tags.
+        this function will overwrite the completed tags of the pictures.
 
         Args:
             pid_list (list[int], optional): a list of picture ids to complete the tags. If None, all picture tags will be completed. Defaults to None.
@@ -495,22 +601,23 @@ class PicDatabase:
         """
         if not connection:
             connection = self.database
-        
+
         all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=True)
 
         if pid_list is None:
             pid_list = self._get_pid_list(cursor=connection.cursor())
 
         for pid in pid_list:
-            tags = set(self._get_tags(pid, cursor=connection.cursor()).keys())
-            new_tags = set()
+            tags = self._get_tags(pid, cursor=connection.cursor())
+            completed_tags = set()
             for tag in tags:
                 if tag in all_parent_tag_dict:
-                    new_tags.update(all_parent_tag_dict[tag])
+                    completed_tags.update(all_parent_tag_dict[tag])
+                
+                if tag_tree.is_in_tree(tag):
+                    completed_tags.add(tag)
             
-            new_tags -= tags
-            new_tags_dict = {tag: "tree" for tag in new_tags}
-            self.add_tags(pid, new_tags_dict, connection=connection)
+            self.overwrite_completed_tags(pid, list(completed_tags), cursor=connection.cursor())
         
         connection.commit()
 
@@ -518,7 +625,7 @@ class PicDatabase:
         """
         Initializes a tag index.
         """
-        if not connection:
+        if connection is None:
             connection = self.database
         
         all_parent_tag_dict = tag_tree.get_all_parent_tag(include_synonyms=False)
@@ -528,15 +635,11 @@ class PicDatabase:
         tag_index: dict[str, set[int]] = {}
 
         for pid in pid_list:
-            tags = self._get_tags(pid, cursor=connection.cursor()).keys()
-            tag_in_tree = set()
-            for tag in tags:
-                if tag in all_parent_tag_dict:
-                    tag_in_tree.add(tag)
+            tags = self._get_completed_tags(pid, cursor=connection.cursor())
             
             # remove all parent tags from the tag set to remove excessive tags
-            tag_set = tag_in_tree.copy()
-            for tag in tag_in_tree:
+            tag_set = tags.copy()
+            for tag in tags:
                 if tag in tag_set:
                     tag_set -= all_parent_tag_dict[tag]
             
@@ -555,6 +658,7 @@ class PicMetadata:
     pid: int
     title: str
     tags_json: str
+    completed_tags_json: str
     description: str
     user: str
     user_id: int
@@ -566,7 +670,9 @@ class PicMetadata:
     comment_count: int
 
     def __post_init__(self):
-        self.tags: dict[str, str] = json.loads(self.tags_json)
+        self.tags: set[str] = set(json.loads(self.tags_json))
+        self.completed_tags: set[str] = set(json.loads(self.completed_tags_json))
+        
 
 @dataclass
 class PicFile:

@@ -69,3 +69,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.controller.refresh_browse_area_width()
         
         return super().resizeEvent(event)
+
+    def showEvent(self, event):
+        self.controller.display_pic_without_tags()
+        return super().showEvent(event)

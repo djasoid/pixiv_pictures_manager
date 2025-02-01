@@ -172,6 +172,14 @@ class PictureManagerController:
             
         tree_widget.setCurrentItem(tag_item)
         tree_widget.scrollToItem(tag_item, QAbstractItemView.ScrollHint.PositionAtCenter)
+
+    def display_pic_without_tags(self):
+        self.display_pic_list = []
+        pids = self.database.get_pids_without_tags()
+        for pid in pids:
+            self.display_pic_list.extend(self.database.get_file_list([pid]))
+        
+        self._refresh_pic_display()
         
     def _pic_tag_search(self) -> None:
         """
@@ -190,7 +198,11 @@ class PictureManagerController:
                     pids.update(tag_pids)
 
             return pids
-                
+        
+        if not self.include_tag_set and not self.exclude_tag_set:
+            self.display_pic_without_tags()
+            return
+        
         included_pids = None
         for tag in self.include_tag_set:
             if included_pids is None:
@@ -533,11 +545,11 @@ class DataCollectThread(QThread):
 
     def run(self):
         self.connection = self.database.get_new_connection()
-        new_pics = self.database.collect_data(self.directory, thread=self, connection=self.connection)
+        new_pics_id = self.database.collect_data(self.directory, thread=self, connection=self.connection)
         self.status_update.emit("补全标签...")
-        self.database.complete_tag(self.tag_tree, new_pics, self.connection)
+        self.database.complete_tag(self.tag_tree, new_pics_id, self.connection)
         self.status_update.emit("建立标签索引...")
-        self.database.init_tag_index(self.tag_tree, new_pics, self.connection)
+        self.database.init_tag_index(self.tag_tree, new_pics_id, self.connection)
         self.finished.emit()
 
 class PictureLoaderThread(QThread):

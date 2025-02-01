@@ -10,6 +10,6 @@ if __name__ == "__main__":
     Log.init()
     app = QApplication([])
     window = MainWindow()
-    controller = Controller(window, tag_tree_path, new_tag_path)
+    controller = Controller(window)
     window.show()
     app.exec()

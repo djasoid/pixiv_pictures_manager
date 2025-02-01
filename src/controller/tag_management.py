@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QDropEvent, QBrush
 
 from service.tag_tree import TagTree, Tag
+from service.database import PicDatabase
 from utils.json import load_json, write_json
 from component.dialog.tag_delete_dialog import DeleteDialog
 from component.dialog.tag_edit_dialog import TagEditDialog
@@ -15,17 +16,19 @@ if TYPE_CHECKING:
 
 
 class TagManagementController:
-    new_tag_list: list[list[str]]
+    new_tag_list: list[tuple[str, str, int]]
     
-    def __init__(self, view: 'MainWindow', tag_tree_path: str, new_tag_path: str) -> None:
+    
+    def __init__(self, view: 'MainWindow') -> None:
+        self.MIN_APPEARANCE = 5
         self.view = view
         self.view.setup_controller(self)
         
-        self.tag_tree = TagTree(tag_tree_path)
+        self.tag_tree = TagTree()
         self._load_tag_tree()
         
-        self.new_tag_path = new_tag_path
-        self._load_new_tag(new_tag_path)
+        self.database = PicDatabase()
+        self._load_new_tag()
         
         self._init_tree_search()
 
@@ -306,13 +309,17 @@ class TagManagementController:
         return
             
     @log_execution("Info", None, "New tag loaded")
-    def _load_new_tag(self, new_tag_path: str):
+    def _load_new_tag(self):
         """load new tag file and show it in the new tag lst"""
-        self.new_tag_list = load_json(new_tag_path)
+        self.database.count_tags()
+        self.new_tag_list = self.database.get_tag_count_list()
         existing_tags = self._get_existing_tags()
         new_tag_count = 0
         for tag_pair in self.new_tag_list:
-            if tag_pair[0] in existing_tags or tag_pair[1] in existing_tags: # skip existing tags
+            if tag_pair[0].endswith("入り"):
+                continue
+            
+            if tag_pair[0] in existing_tags or tag_pair[1] in existing_tags or tag_pair[2] < self.MIN_APPEARANCE: # skip existing tags and tags with low appearance
                 continue
 
             self.view.newTagOriginalList.addItem(tag_pair[0])
