@@ -178,7 +178,8 @@ class PictureManagerController:
         pids = self.database.get_pids_without_tags()
         for pid in pids:
             self.display_pic_list.extend(self.database.get_file_list([pid]))
-        
+
+        self._clear_highlighted_tags()
         self._refresh_pic_display()
         
     def _pic_tag_search(self) -> None:
@@ -218,9 +219,9 @@ class PictureManagerController:
         self.pic_metadata_dict = self.database.get_metadata_dict(self.tag_filtered_pids)
         self.pic_file_list = self.database.get_file_list(self.tag_filtered_pids)
         self.display_pic_list = [i for i in self.pic_metadata_dict.values()]
-        self._refresh_pic_display()
         self._clear_highlighted_tags()
         self._highlight_available_tags()
+        self._refresh_pic_display()
         
     def _highlight_available_tags(self) -> None:
         def highlight_item(tag: str) -> None:

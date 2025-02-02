@@ -3,5 +3,4 @@ __pycache__/
 backup/
 log/
 *.db
-*.json
 test*

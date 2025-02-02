@@ -105,7 +105,6 @@ class TagManagementController:
     @log_execution("Info", None, "Tag tree saved")
     def save_tree(self):
         self.tag_tree.save_tree()
-        write_json(self.new_tag_list, self.new_tag_path)
         self.view.outputTextEdit.append("标签树已保存")
         return
 
